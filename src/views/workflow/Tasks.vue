@@ -1,0 +1,169 @@
+<template xmlns:v-slot="http://www.w3.org/1999/XSL/Transform">
+    <div>
+
+
+        <v-container grid-list-xl fluid>
+            <v-toolbar flat color="white">
+                <v-toolbar-title>任务执行日志</v-toolbar-title>
+                <v-divider></v-divider>
+                <v-spacer></v-spacer>
+
+            </v-toolbar>
+
+            <v-tabs fixed-tabs>
+                <v-tab key="1" href="#log">任务列表</v-tab>
+                <v-tab key="2" href="#test">工作流</v-tab>
+
+                <v-tabs-items>
+                    <v-tab-item key="1" value="log">
+                        <v-card flat>
+                            <v-data-table :headers="headers" :items="desserts" class="elevation-1" :pagination.sync="pagination"
+                                          :total-items="totalDesserts" :rows-per-page-items="[10,15,20,25,30]" >
+                                <template v-slot:items="props">
+                                    <td>{{ props.item.flowTaskId }}</td>
+                                    <td>{{ props.item.taskId }}</td>
+                                    <td>{{ props.item.jobId }}</td>
+                                    <td>{{ props.item.flowId }}</td>
+                                    <td>{{ props.item.postTask | parsePostTask }}</td>
+                                    <td>{{ props.item.shardStatus }}</td>
+                                    <td>{{ props.item.handler }}</td>
+                                    <td>{{ props.item.host }}</td>
+                                    <td>{{ props.item.beginTime | formatDate}}</td>
+                                    <td v-if="props.item.taskStatus >= 5">{{ props.item.endTime | formatDate}}</td><td v-else></td>
+                                    <td>
+                                        <v-btn small v-if="props.item.taskStatus === 0" color="info">New</v-btn>
+                                        <v-btn small v-else-if="props.item.taskStatus === 1" color="info">Ready</v-btn>
+                                        <v-btn small v-else-if="props.item.taskStatus === 2" color="info">Pending</v-btn>
+                                        <v-btn small v-else-if="props.item.taskStatus === 3" color="info">Submitted</v-btn>
+                                        <v-btn small v-else-if="props.item.taskStatus === 4" color="info">Running</v-btn>
+                                        <v-btn small v-else-if="props.item.taskStatus === 5" color="error">Failed</v-btn>
+                                        <v-btn small v-else-if="props.item.taskStatus === 6" color="success">Finished</v-btn>
+                                        <v-btn small v-else="props.item.taskStatus === 7" color="error">Killed</v-btn>
+                                    </td>
+                                    <td class="justify-center layout px-0">
+                                        <v-icon small class="mr-2" v-on:click="query(props.item)">search</v-icon>
+                                    </td>
+                                </template>
+                            </v-data-table>
+                        </v-card>
+                    </v-tab-item>
+                    <v-tab-item key="2" value="test">
+                        <v-card flat>
+                            <v-card-text>
+                                test test
+                            </v-card-text>
+                        </v-card>
+                    </v-tab-item>
+                </v-tabs-items>
+
+            </v-tabs>
+
+        </v-container>
+    </div>
+
+</template>
+
+<script>
+    import {getAllFlowTasks, getFlowTasksByFlowId, getTasks, dataFormat, queryLog, getFlow} from '@/api/workFlow';
+    export default {
+        data: () => ({
+            totalDesserts: 10,
+            pagination: {
+                sortBy: 'flowTaskId',
+                descending: true,
+                rowsPerPage: 10,
+            },
+            flowTaskId: -1,
+            flowData: {},
+            headers: [
+                { text: 'FlowTaskID', align: 'left', sortable: false, value: 'flowTaskId'},
+                { text: 'TaskID', value: 'taskId', sortable: false },
+                { text: 'JobID', value: 'jobId', sortable: false },
+                { text: 'FlowID', value: 'flowId', sortable: false },
+                { text: '后置任务', value: 'postTask', sortable: false },
+                { text: '是否分片', value: 'shardStatus', sortable: false },
+                { text: 'Handler', value: 'handler', sortable: false },
+                { text: '执行位置', value: 'host', sortable: false },
+                { text: '开始时间', value: 'beginTime',sortable: false },
+                { text: '结束时间', value: 'endTime', sortable: false },
+                { text: '作业状态', value: 'taskStatus', sortable: false },
+                { text: '操作', sortable: false }
+            ],
+            desserts: [],
+            editedItem: {
+                flowTaskId: '',
+                taskId: 0,
+                jobId: 0,
+                flowId: 0,
+                postTask:0,
+                taskStatus: 0,
+                shardStatus: 0,
+                beginTime: '',
+                handler:'',
+                host:'',
+                endTime: ''
+            },
+            defaultItem: {
+                flowTaskId: '',
+                taskId: 0,
+                jobId: 0,
+                flowId: 0,
+                postTask:0,
+                taskStatus: 0,
+                shardStatus: 0,
+                beginTime: '',
+                handler:'',
+                host:'',
+                endTime: ''
+            }
+        }),
+        created () {
+            //this.queryTasks()
+        },
+        methods: {
+            queryTasks () {
+                this.flowTaskId = this.$route.query["id"];
+                let pageNum = this.pagination.page === null || this.pagination.page === undefined
+                    ? 1 : this.pagination.page;
+                let pageSize = this.pagination.rowsPerPage === null || this.pagination.rowsPerPage === undefined
+                    ? 10 : this.pagination.rowsPerPage;
+                getTasks(this.flowTaskId, pageNum, pageSize).then(data => {
+                    this.desserts = data.list;
+                    this.totalDesserts = data.total;
+                    this.pagination.page = data['pageNum'];
+                    this.pagination.totalItems = data.total;
+                })
+            },
+            query(item) {
+                this.$router.push({
+                    path: '/workflow/task/log',
+                    query: {item: item}
+                });
+            }
+        },
+        watch: {
+            pagination: {
+                deep: true,
+                handler() {
+                    this.queryTasks();
+                }
+            }
+        },
+        filters: {
+            formatDate: function (value) {
+                return dataFormat(value);
+            },
+            parsePostTask: function (postTask) {
+                let post = postTask;
+                let ret = [];
+                for(let i = 0; post > 0 ;i++, post = post >> 1) {
+                    if((post & 1) > 0) {
+                        ret.push(i);
+                    }
+                }
+
+                return ret;
+            }
+        }
+    }
+</script>

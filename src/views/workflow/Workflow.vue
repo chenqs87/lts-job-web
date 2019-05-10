@@ -1,0 +1,283 @@
+<template xmlns:v-slot="http://www.w3.org/1999/XSL/Transform">
+    <div>
+        <v-container grid-list-xl fluid>
+            <v-toolbar flat color="white">
+                <v-toolbar-title>工作流配置</v-toolbar-title>
+                <v-divider></v-divider>
+                <v-spacer></v-spacer>
+                <v-dialog v-model="dialog" max-width="500px">
+                    <template v-slot:activator="{ on }">
+                        <v-btn color="primary" dark class="mb-2" v-on="on">新建工作流</v-btn>
+                    </template>
+                    <v-card>
+                        <v-card-title>
+                            <span class="headline">{{ formTitle }}</span>
+                        </v-card-title>
+
+                        <v-card-text>
+                            <v-container grid-list-md>
+                                <v-layout wrap>
+                                    <v-flex xs12 sm6 md12>
+                                        <v-text-field v-model="editedItem.name" label="工作流名称"></v-text-field>
+                                    </v-flex>
+                                    <v-flex xs12 sm6 md12>
+                                        <v-text-field label="Cron表达式" v-model="editedItem.cron"></v-text-field>
+                                    </v-flex>
+                                    <v-flex xs12 sm6 md12>
+                                        <v-textarea v-model="editedItem.params" label="工作流参数"></v-textarea>
+                                    </v-flex>
+                                    <v-flex xs12 sm6 md12>
+                                        <v-text-field v-model="editedItem.postFlow" label="子工作流（多个使用逗号分隔）"></v-text-field>
+                                    </v-flex>
+                                </v-layout>
+                            </v-container>
+                        </v-card-text>
+
+                        <v-card-actions>
+                            <v-spacer></v-spacer>
+                            <v-btn color="blue darken-1" flat @click="close">Cancel</v-btn>
+                            <v-btn color="blue darken-1" flat @click="save">Save</v-btn>
+                        </v-card-actions>
+                    </v-card>
+                </v-dialog>
+            </v-toolbar>
+            <v-data-table :headers="headers" :items="desserts" class="elevation-1" :pagination.sync="pagination"
+                          :total-items="totalDesserts" :rows-per-page-items="[1, 10,15,20,25,30]">
+                <template v-slot:items="props">
+                    <td>{{ props.item.id }}</td>
+                    <td>{{ props.item.name }}</td>
+                    <td>{{ props.item.cron }}</td>
+                    <td>{{ props.item.postFlow }}</td>
+                    <td>{{ props.item.params }}</td>
+                    <td>{{ props.item.createUser }}</td>
+                    <td>{{ props.item.isSchedule === 0 ? "否" : "是" }}</td>
+                    <td>{{ props.item.startTime | formatDate }}</td>
+                    <td>{{ props.item.createTime | formatDate }}</td>
+
+                    <td class="justify-center layout px-0">
+
+                        <v-tooltip top>
+                            <template v-slot:activator="{ on }">
+                                <v-icon v-on="on" small class="mr-2" @click="trigger(props.item.id)">play_circle_outline</v-icon>
+                            </template>
+                            <span>执行工作流</span>
+                        </v-tooltip>
+
+                        <v-tooltip top>
+                            <template v-slot:activator="{ on }">
+                                <v-icon v-if="props.item.isSchedule === 0" v-on="on" small class="mr-2" v-on:click="startCron(props.item)">play_arrow</v-icon>
+                                <v-icon v-on="on" v-else small class="mr-2" v-on:click="stopCron(props.item)">stop</v-icon>
+                            </template>
+                            <span>{{props.item.isSchedule === 0 ? "启动定时任务": "终止定时任务"}}</span>
+                        </v-tooltip>
+
+                        <v-tooltip top>
+                            <template v-slot:activator="{ on }">
+                                <v-icon v-on="on" small class="mr-2" @click="editFlow(props.item)">share</v-icon>
+                            </template>
+                            <span>编辑工作流</span>
+                        </v-tooltip>
+
+                        <v-tooltip top>
+                            <template v-slot:activator="{ on }">
+                                <v-icon v-on="on" small class="mr-2" @click="editItem(props.item)">edit</v-icon>
+                            </template>
+                            <span>编辑</span>
+                        </v-tooltip>
+
+                        <v-tooltip top>
+                            <template v-slot:activator="{ on }">
+                                <v-icon v-on="on" small @click="deleteItem(props.item)">delete</v-icon>
+                            </template>
+                            <span>删除</span>
+                        </v-tooltip>
+
+                        <v-tooltip top>
+                            <template v-slot:activator="{ on }">
+                                <v-icon v-on="on" small @click="history(props.item.id)">history</v-icon>
+                            </template>
+                            <span>执行历史</span>
+                        </v-tooltip>
+                    </td>
+                </template>
+            </v-data-table>
+        </v-container>
+    </div>
+</template>
+
+<script>
+    import ModelFlowEditor from '@/components/flow-editor/model-flow-editor';
+    import {getAllFlows, newFlow, updateFlow, deleteFlow, dataFormat, triggerFlow, startCronFlow, stopCronFlow} from '@/api/workFlow';
+    export default {
+        components: { ModelFlowEditor },
+        data: () => ({
+            totalDesserts: 0,
+            pagination: {
+                sortBy: 'id',
+                descending: true,
+                rowsPerPage: 10,
+            },
+            flowEditorInfo:"",
+            dialog: false,
+            handlerList: ["test", "test1","test2"],
+            jobTypes: ["shell", "python","zip"],
+            currentUser: true,
+            headers: [
+                { text: 'ID', value: 'id', sortable: false },
+                { text: '工作流名称', align: 'left', sortable: false, value: 'name'},
+                { text: 'Cron表达式', value: 'cron', sortable: false },
+                { text: '子任务', value: 'postFlow', sortable: false },
+                { text: '参数', value: 'shardType', sortable: false },
+                { text: '创建人', value: 'createUser', sortable: false },
+                { text: '是否调度', value: 'isSchedule', sortable: false },
+                { text: '启动时间', value: 'startTime' },
+                { text: '创建时间', value: 'createTime' },
+                { text: '操作', sortable: false }
+            ],
+            desserts: [],
+            editedIndex: -1,
+            editedItem: {
+                id: -1,
+                name: "",
+                flowConfig: "",
+                cron: "",
+                flowStatus: 1,
+                params:"",
+                createUser: "",
+                isSchedule: 0,
+                startTime: "",
+                createTime: "",
+                postFlow:""
+            },
+            defaultItem: {
+                id: -1,
+                name: "",
+                flowConfig: "",
+                cron: "",
+                flowStatus: 1,
+                params:"",
+                createUser: "",
+                isSchedule: 0,
+                startTime: "",
+                createTime: "",
+                postFlow:""
+            }
+        }),
+        computed: {
+            formTitle () {
+                return this.editedIndex === -1 ? '新建' : '编辑'
+            }
+        },
+        watch: {
+            dialog (val) {
+                val || this.close()
+            },
+            pagination: {
+                deep: true,
+                handler() {
+                    this.queryTasks();
+                }
+            }
+
+        },
+        created () {
+           // this.queryTasks()
+        },
+        methods: {
+            test(data) {
+                console.log(data)
+                this.fullscreen.dialog =false;
+            },
+            editFlow(item) {
+                this.$router.push({
+                    path: '/workflow/flow-editor',
+                    query: {id: item.id, flowEditorInfo: item.flowEditorInfo}
+                });
+
+            },
+            queryTasks () {
+                let pageNum = this.pagination.page === null || this.pagination.page === undefined
+                    ? 1 : this.pagination.page;
+                let pageSize = this.pagination.rowsPerPage === null || this.pagination.rowsPerPage === undefined
+                    ? 10 : this.pagination.rowsPerPage;
+                 getAllFlows(pageNum, pageSize).then(data => {
+                     this.desserts = data.list;
+                     this.totalDesserts = data.total;
+                     this.pagination.page = data['pageNum'];
+                     this.pagination.totalItems = data.total;
+                });
+            },
+            editItem (item) {
+                this.editedIndex = this.desserts.indexOf(item);
+                this.editedItem = Object.assign({}, item);
+                this.dialog = true
+            },
+            deleteItem (item) {
+                const index = this.desserts.indexOf(item);
+                if(confirm('Are you sure you want to delete this item?')) {
+                    deleteFlow(item.id).then(() => {
+                        this.desserts.splice(index, 1)
+                    })
+                }
+            },
+            close () {
+                this.dialog = false
+                setTimeout(() => {
+                    this.editedItem = Object.assign({}, this.defaultItem)
+                    this.editedIndex = -1
+                }, 300)
+            },
+            save () {
+                if (this.editedIndex > -1) {
+                    updateFlow(this.editedItem).then(data => {
+                        Object.assign(this.desserts[this.editedIndex], data);
+
+                    });
+                } else {
+                    newFlow(this.editedItem).then(data => {
+                        this.desserts.push(data)
+                    })
+                }
+                this.close()
+            },
+            trigger(flowId) {
+                triggerFlow(flowId, "").then(data => {
+                    this.$router.push({
+                        path: '/workflow/flow-tasks',
+                        query: {flowId: flowId}
+                    });
+                });
+            },
+            history(flowId) {
+                this.$router.push({
+                    path: '/workflow/flow-tasks',
+                    query: {flowId: flowId}
+                });
+            },
+            startCron(item) {
+                if(confirm('确定要启动定时任务吗？')) {
+                    this.editedIndex = this.desserts.indexOf(item);
+                    this.editedItem = Object.assign({}, item)
+                    startCronFlow(item.id).then(data => {
+                        Object.assign(this.desserts[this.editedIndex], data);
+                    });
+                }
+            },
+            stopCron(item) {
+                if(confirm('确定要终止定时任务吗？')) {
+                    this.editedIndex = this.desserts.indexOf(item);
+                    this.editedItem = Object.assign({}, item);
+                    stopCronFlow(item.id).then(data => {
+                        Object.assign(this.desserts[this.editedIndex], data);
+                    });
+                }
+            }
+        },
+        filters: {
+            formatDate: function (value) {
+                return dataFormat(value);
+            }
+        }
+    }
+</script>
+

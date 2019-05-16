@@ -12,14 +12,15 @@ const Menu =  [
       ]
   },
     {
-        title: 'Handler管理',
-        group: 'handlers',
-        component: 'handlers',
+        title: '管理',
+        group: 'manager',
+        component: 'manager',
         icon: 'cast_connected',
         items: [
-            { name: 'Handlers', title: 'Handlers', component: 'Handlers'}
+            { name: 'Handlers', title: 'Handlers', component: 'Handlers'},
+            { name: 'Users', title: 'Users', component: 'Users'}
         ]
-    }
+    },
     /*,
     {
       title: 'Dashboard',
@@ -128,7 +129,7 @@ const Menu =  [
         { name: 'steppers', title: 'Steppers', component: 'components/steppers' },
         { name: 'editors', title: 'Editors', component: 'components/editors' },
       ]
-    },
+    },*/
     { divider: true },
     { header: 'Extras' },
     {
@@ -141,7 +142,7 @@ const Menu =  [
         { name: '403', title: '403', component: 'AccessDenied' },
         { name: '500', title: '500', component: 'ServerError' },
       ]
-    },*/
+    },
 ];
 // reorder menu
 /*Menu.forEach((item) => {

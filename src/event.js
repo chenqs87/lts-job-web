@@ -38,23 +38,23 @@ export default [
   {
     name: 'APP_ACCESS_DENIED',
     // @error api response data
-    callback: function (msg) {
-      this.$message.error(msg);
-      this.$router.push('/forbidden');
+    callback: function () {
+      this.$message.error('对不起，您没有相应权限，请联系管理员！');
+      //this.$router.push('/403');
     }
   },
   {
     name: 'APP_RESOURCE_DELETED',
     // @error api response data
-    callback: function (msg) {
-      this.$message.success(msg);
+    callback: function () {
+      this.$message.success("删除成功！");
     }
   },
   {
     name: 'APP_RESOURCE_UPDATED',
     // @error api response data
-    callback: function (msg) {
-      this.$message.success(msg);
+    callback: function () {
+      this.$message.success("更新成功！");
     }
   },
 

@@ -58,7 +58,7 @@ export default [
     meta: { },
     name: 'Root',
     redirect: {
-      name: 'Dashboard'
+      name: 'Jobs'
     }
   },
   {
@@ -583,5 +583,11 @@ export default [
         meta: { breadcrumb: true },
         name: 'Handlers',
         component: () => import(`@/views/handler/Handlers.vue`)
+    },
+    {
+        path: '/manager/users',
+        meta: { breadcrumb: true },
+        name: 'Users',
+        component: () => import(`@/views/users/Users.vue`)
     },
 ];

@@ -5,7 +5,7 @@
 </template>
 
 <script>
-    // require styles
+    // require st先yles
     import 'codemirror/lib/codemirror.css'
     // mode: text/javascript
     import 'codemirror/mode/javascript/javascript.js'

@@ -2,7 +2,7 @@
     <div>
         <v-container grid-list-xl fluid>
             <v-toolbar flat color="white">
-                <v-toolbar-title>工作流执行日志</v-toolbar-title>
+                <v-toolbar-title>执行日志</v-toolbar-title>
                 <v-spacer></v-spacer>
 
             </v-toolbar>

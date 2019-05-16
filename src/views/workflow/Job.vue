@@ -95,21 +95,28 @@
 
                 <td class="justify-center layout px-0">
 
-                    <v-tooltip top>
+                    <v-tooltip v-if="(permitRule['JobAuthorized'] & props.item['permit']) > 0" top>
+                        <template v-slot:activator="{ on }">
+                            <v-icon v-on="on" small class="mr-2" @click="auth(props.item)">lock_open</v-icon>
+                        </template>
+                        <span>授权</span>
+                    </v-tooltip>
+
+                    <v-tooltip v-if="(permitRule['JobEdit'] & props.item['permit']) > 0" top>
                         <template v-slot:activator="{ on }">
                             <v-icon v-on="on" small class="mr-2" @click="editItem(props.item)">edit</v-icon>
                         </template>
                         <span>编辑</span>
                     </v-tooltip>
 
-                    <v-tooltip top>
+                    <v-tooltip v-if="(permitRule['JobEdit'] & props.item['permit']) > 0" top>
                         <template v-slot:activator="{ on }">
                             <v-icon v-on="on" small class="mr-2" @click="editCode(props.item)">code</v-icon>
                         </template>
                         <span>编辑代码</span>
                     </v-tooltip>
 
-                    <v-tooltip top>
+                    <v-tooltip v-if="(permitRule['JobDelete'] & props.item['permit']) > 0" top>
                         <template v-slot:activator="{ on }">
                             <v-icon v-on="on" small @click="deleteItem(props.item)">delete</v-icon>
                         </template>
@@ -118,6 +125,20 @@
                 </td>
             </template>
         </v-data-table>
+
+<!--
+            <select-auth></select-auth>
+-->
+            <!-- 授权对话框 -->
+            <v-dialog v-model="permitAuthDialog" persistent max-width="1000">
+<!--
+                <v-checkbox v-model="editedItem['permitSelected']" v-for="(v, k) in permitRule" :key="k" :label="k" :value="v"></v-checkbox>
+-->
+                <select-auth @save="cancelAuthDialog"></select-auth>
+            </v-dialog>
+
+
+
         </v-container>
     </div>
 </template>
@@ -130,10 +151,15 @@
     import 'codemirror/mode/python/python.js'
     import 'codemirror/theme/base16-dark.css'
 
-    import {getAllJobs, newJob, updateJob, deleteJob, dataFormat} from '@/api/workFlow';
+    import {getAllJobs, newJob, updateJob, deleteJob, dataFormat, getJobPermit} from '@/api/workFlow';
+    import SelectAuth from '@/components/workflow/SelectAuth';
 
     export default {
+        components: { SelectAuth },
         data: () => ({
+
+            permitRule: {},
+            permitAuthDialog: false,
             search: {
                 group: null,
                 name: null
@@ -185,7 +211,9 @@
                 config: "",
                 createUser:"",
                 createTime: "",
-                group:""
+                group:"",
+                permit:0,
+                permitSelected:[]
             },
             defaultItem: {
                 id: -1,
@@ -225,7 +253,7 @@
             }
         },
         created () {
-           // this.queryTasks()
+           this.getPermitRule();
         },
         methods: {
             editCode(item) {
@@ -293,6 +321,31 @@
                 updateJob(this.editedItem).then(data => {
                     Object.assign(this.desserts[this.editedIndex], data);
                 })
+            },
+            getPermitRule() {
+                getJobPermit().then(data => {
+                    this.permitRule = data;
+                })
+            },
+            auth(item) {
+                this.editedIndex = this.desserts.indexOf(item);
+                this.editedItem = Object.assign({}, item);
+                this.editedItem['permitSelected'] = [];
+                let permit = this.editedItem.permit;
+                for (let permitRuleKey in this.permitRule) {
+                    let cur = this.permitRule[permitRuleKey];
+                    if((permit & cur) > 0) {
+                        this.editedItem['permitSelected'].push(cur);
+                    }
+                }
+
+                this.permitAuthDialog = true;
+            },
+            doAuth() {
+
+            },
+            cancelAuthDialog () {
+                this.permitAuthDialog = false;
             }
         },
         filters: {

@@ -85,3 +85,48 @@ export const startCronFlow = (flowId) => {
 export const stopCronFlow = (flowId) => {
     return axios.delete(`/console/flow/cronFlow?flowId=${flowId}`).then(res => res.data);
 };
+
+
+export const getUsers = (pageNum, pageSize) => {
+    return axios.get("/console/manager/getAllUsers", {params: {pageNum: pageNum, pageSize: pageSize}}).then(res => res.data);
+};
+
+export const getGroups = (pageNum, pageSize) => {
+    return axios.get("/console/manager/getAllGroups",  {params: {pageNum: pageNum, pageSize: pageSize}}).then(res => res.data);
+};
+
+export const newUser = params => {
+    return axios.put('/console/manager/addUser', params).then(res => res.data);
+};
+
+export const newGroup = params => {
+    return axios.put('/console/manager/addGroup', params).then(res => res.data);
+};
+
+export const updateUser = (user) => {
+    return axios.post(`/console/manager/updateUser`, {params: user}).then(res => res.data);
+};
+
+export const updateGroup = (group) => {
+    return axios.post(`/console/manager/updateGroup`, {params: group}).then(res => res.data);
+};
+
+export const deleteUser = (userName) => {
+    return axios.delete(`/console/manager/deleteUser?userName=${userName}`).then(res => res.data);
+};
+
+export const deleteGroup = (groupName) => {
+    return axios.delete(`/console/manager/deleteGroup?groupName=${groupName}`).then(res => res.data);
+};
+
+export const getJobPermit = () => {
+    return axios.get(`/console/manager/getJobPermit`).then(res => res.data);
+};
+
+export const getFlowPermit = () => {
+    return axios.get(`/console/manager/getFlowPermit`).then(res => res.data);
+};
+
+export const getAllUsers = () => {
+    return axios.get(`/console/manager/getUsers`).then(res => res.data);
+};

@@ -110,9 +110,6 @@
             </v-data-table>
             <!-- 授权对话框 -->
             <v-dialog v-model="permitAuthDialog" persistent max-width="1000">
-                <!--
-                                <v-checkbox v-model="editedItem['permitSelected']" v-for="(v, k) in permitRule" :key="k" :label="k" :value="v"></v-checkbox>
-                -->
                 <select-auth authType="flow" :resource="editedItem.id" :permit="editedItem.permit" @close="cancelAuthDialog" @save="cancelAuthDialog"></select-auth>
             </v-dialog>
         </v-container>
@@ -122,7 +119,7 @@
 <script>
     import SelectAuth from '@/components/workflow/SelectAuth';
     import ModelFlowEditor from '@/components/flow-editor/model-flow-editor';
-    import {getAllFlows, newFlow, updateFlow, deleteFlow, dataFormat, triggerFlow, startCronFlow, stopCronFlow, getFlowPermit} from '@/api/workFlow';
+    import {getAllFlows, newFlow, updateFlow, deleteFlow, dataFormat, triggerFlow, startCronFlow, stopCronFlow, getFlowPermit, reTriggerFlow} from '@/api/workFlow';
     export default {
         components: { ModelFlowEditor, SelectAuth },
         data: () => ({

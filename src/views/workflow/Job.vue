@@ -19,9 +19,7 @@
                             <v-btn color="primary" dark class="mb-2" v-on:click="queryTasks">搜索</v-btn>
                             <v-btn color="primary" dark class="mb-2" v-on="on">新建任务</v-btn>
                         </v-flex>
-
                     </v-layout>
-
                 </template>
                 <v-card>
                     <v-card-title>
@@ -337,9 +335,6 @@
                 }
 
                 this.permitAuthDialog = true;
-            },
-            doAuth() {
-
             },
             cancelAuthDialog () {
                 this.permitAuthDialog = false;

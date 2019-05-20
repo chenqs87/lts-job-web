@@ -8,7 +8,13 @@
             </v-toolbar>
 
 
-            <blockquote class="blockquote">{{log}}</blockquote>
+            <blockquote class="blockquote">
+                <p v-text="log"></p>
+
+                <!--<pre>
+                  {{log.replace(/\r\n/g,'</br>')}}
+              </pre>-->
+            </blockquote>
         </v-container>
     </div>
 </template>
@@ -56,7 +62,7 @@
 
             },
             getLog() {
-                queryLog(this.host, this.flowTaskId, this.taskId, this.shardStatus)
+                queryLog(this.host, this.flowTaskId, this.taskId, 0)
                     .then(data=> {
                         this.log = data;
                     })

@@ -25,6 +25,13 @@
                     </td>
                     <td class="justify-center layout px-0">
 
+                        <v-tooltip top v-if="props.item.status === 3 || props.item.status === 5">
+                            <template v-slot:activator="{ on }">
+                                <v-icon v-on="on" small class="mr-2" v-on:click="reTrigger(props.item)">loop</v-icon>
+                            </template>
+                            <span>重新执行</span>
+                        </v-tooltip>
+
                         <v-tooltip top>
                             <template v-slot:activator="{ on }">
                                 <v-icon v-on="on" small class="mr-2" v-on:click="query(props.item)">search</v-icon>
@@ -47,7 +54,7 @@
 </template>
 
 <script>
-    import {getAllFlowTasks, getFlowTasksByFlowId, getTasks, dataFormat, queryLog, killFlowTask} from '@/api/workFlow';
+    import {getAllFlowTasks, getFlowTasksByFlowId, getTasks, dataFormat, queryLog, killFlowTask, reTriggerFlow} from '@/api/workFlow';
     export default {
         data: () => ({
             totalDesserts: 0,
@@ -133,7 +140,15 @@
             },
             close() {
                 this.dialog = false;
-            }
+            },
+            reTrigger(item) {
+                reTriggerFlow(item.flowId, item.id, "").then(data => {
+                    this.$router.push({
+                        path: '/workflow/flow-tasks',
+                        query: {flowId: item.flowId}
+                    });
+                });
+            },
         },
         filters: {
             formatDate: function (value) {

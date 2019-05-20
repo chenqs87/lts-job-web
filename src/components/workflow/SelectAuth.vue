@@ -1,9 +1,6 @@
 <template xmlns:v-slot="http://www.w3.org/1999/XSL/Transform">
   <v-card>
-    <v-toolbar
-            card
-            color="grey lighten-3"
-    >
+    <v-toolbar card color="grey lighten-3">
       <v-icon>mdi-silverware</v-icon>
       <v-toolbar-title>授权</v-toolbar-title>
     </v-toolbar>
@@ -11,14 +8,10 @@
     <v-layout>
       <v-flex>
         <v-card-text>
-          <v-card
-                  class="mx-auto"
-                  max-width="500"
-          >
-            <v-sheet class="pa-3 primary lighten-2">
-              <v-text-field v-model="search" label="搜索用户" dark flat
-                      solo-inverted hide-details clearable clear-icon="mdi-close-circle-outline"></v-text-field>
-              <v-checkbox v-model="caseSensitive" dark hide-details label="大小写敏感"></v-checkbox>
+          <v-card class="mx-auto" max-width="500">
+            <v-sheet class="pa-3  lighten-2">
+              <v-checkbox v-model="authUser"  hide-details :label="authUser?'用户授权':'用户组授权'"></v-checkbox>
+
             </v-sheet>
             <v-card-text>
               <v-treeview
@@ -31,13 +24,9 @@
                       selected-color="indigo"
                       open-on-click
                       :open.sync="open"
-                      transition
-              >
+                      transition>
                 <template v-slot:prepend="{ item }">
-                  <v-icon
-                          v-if="item.children"
-                          v-text="`mdi-${item.id === 1 ? 'home-variant' : 'folder-network'}`"
-                  ></v-icon>
+                  <v-icon v-if="item.children" v-text="`mdi-${item.id === 1 ? 'home-variant' : 'folder-network'}`"></v-icon>
                 </template>
               </v-treeview>
             </v-card-text>
@@ -48,39 +37,35 @@
       <v-divider vertical></v-divider>
 
       <v-flex xs12 md6>
-        <div v-if="!selections"
-                class="title grey--text text--lighten-1 font-weight-light"
-                style="align-self: center;">
-          Select a User
-        </div>
-        <v-card
-                v-else
-                :key="selections.id"
-                class="pt-4 mx-auto"
-                flat
-                max-width="400"
-        >
-          <v-card-text>
-            {{selections.id}}
+        <v-card>
+            <v-card-title>
+                {{authType==='job'?"JobId":"FlowId"}}:{{resource}}
+            </v-card-title>
+          <v-card-text v-if="!selections">
+            Select a {{authUser ? 'User' : 'Group'}}
           </v-card-text>
 
+          <v-card-text v-else :key="selections.id">
+<!--
+            {{selections.id}}
+-->
+            <v-checkbox v-model="authSelected" v-for="(v,i) in permits" :label="i" :value="v"></v-checkbox>
+          </v-card-text>
         </v-card>
+
       </v-flex>
     </v-layout>
 
     <v-divider></v-divider>
 
     <v-card-actions>
-      <v-btn
-              flat
-
-      >
-        Reset
+      <v-btn flat v-on:click="$emit('close')">
+        Close
       </v-btn>
 
       <v-spacer></v-spacer>
 
-      <v-btn class="white--text" color="green darken-1" depressed v-on:click="$emit('save')">
+      <v-btn class="white--text" color="green darken-1" depressed v-on:click="savePermit">
         Save
         <v-icon right>mdi-content-save</v-icon>
       </v-btn>
@@ -89,19 +74,33 @@
 </template>
 
 <script>
-    import {getAllUsers} from '@/api/workFlow';
+    import {getAllUsers, getAllGroups, getResourcePermit, getJobPermit, getFlowPermit, updatePermit} from '@/api/workFlow';
     export default {
         data: () => ({
-            items: [
-
-            ],
+            items: [],
             open: [],
             search: null,
             caseSensitive: false,
             active:[],
             tree: [],
-            types: []
+            permits: [],
+            authUser: true,
+            authSelected:[]
         }),
+        props: {
+            userOrGroup: {
+              type: String
+            },
+            authType : {
+                type: String
+            },
+            resource: {
+                type: Number
+            },
+            permit: {
+                type: Number
+            }
+        },
         computed: {
             filter () {
                 return this.caseSensitive
@@ -113,12 +112,22 @@
                     return undefined;
 
                 const id = this.active[0];
-
+                //getResourcePermit(this.userOrGroup, id, this.resource, this.authType);
+                this.getResourcePermit( id, this.resource, this.authType);
                 return {
                     id: id,
-                    name: 'test'
+                    name: id
                 }
             }
+        },
+        watch: {
+          authUser(val) {
+              if(val) {
+                  this.getAllUsers();
+              } else {
+                  this.getAllGroups();
+              }
+          }
         },
         methods: {
            getAllUsers() {
@@ -127,7 +136,7 @@
 
                    for (let i=0; i< data.length; i++) {
                        let group = data[i]['groupName'];
-                       let users = map[group]
+                       let users = map[group];
                        if(users == null) {
                            users = [];
                            map[group] = users;
@@ -140,12 +149,61 @@
                        items.push({id:g, name: g, children: map[g]})
                    }
                    this.items = items;
-
                })
-           }
+           },
+            getAllGroups() {
+                getAllGroups().then(data => {
+                    let items = [];
+                    for (let i=0; i< data.length; i++) {
+                        let group = data[i]['groupName'];
+                        items.push({id: group, name: group})
+                    }
+                    this.items = items;
+                });
+            },
+            getResourcePermit( name, resource, resourceType) {
+                getResourcePermit(this.authUser? 'User' : 'Group', name, resource, resourceType).then(permit => {
+                    let selected = [];
+                    for (let permitRuleKey in this.permits) {
+                        let cur = this.permits[permitRuleKey];
+                        if((permit & cur) > 0) {
+                            selected.push(cur);
+                        }
+                    }
+                    this.authSelected = selected;
+                });
+            },
+            getJobPermit() {
+                getJobPermit().then(data=> {
+                    this.permits = data;
+                });
+            },
+            getFlowPermit() {
+                getFlowPermit().then(data=> {
+                    this.permits = data;
+                });
+            },
+            savePermit() {
+                if (!this.active.length)
+                    return undefined;
+                const id = this.active[0];
+                let permit = 0;
+                for(let i = 0; i < this.authSelected.length; i++) {
+                    permit |= this.authSelected[i];
+                }
+
+                updatePermit(this.authUser? 'User' : 'Group', id, this.resource, this.authType, permit).then(data => {
+
+                })
+            }
         },
         created() {
             this.getAllUsers();
+            if(this.authType === 'job') {
+                this.getJobPermit();
+            } else {
+               this.getFlowPermit();
+            }
         }
     }
 </script>

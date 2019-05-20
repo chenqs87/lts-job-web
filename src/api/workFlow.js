@@ -130,3 +130,28 @@ export const getFlowPermit = () => {
 export const getAllUsers = () => {
     return axios.get(`/console/manager/getUsers`).then(res => res.data);
 };
+
+export const getAllGroups = () => {
+    return axios.get(`/console/manager/getGroups`).then(res => res.data);
+};
+
+export const getResourcePermit = (userOrGroup, name, resource, resourceType) => {
+    return axios.get(`/console/manager/getResourcePermit`,
+            { params: {
+                userOrGroup: userOrGroup,
+                name: name,
+                resource: resource,
+                resourceType: resourceType
+            }})
+        .then(res => res.data);
+};
+
+export const updatePermit = (userOrGroup, name, resource, resourceType, permit) => {
+    return axios.post(`/console/manager/updatePermit`, {
+            userOrGroup: userOrGroup,
+            name: name,
+            resource: resource,
+            resourceType: resourceType,
+            permit: permit
+        }).then(res => res.data);
+};

@@ -96,11 +96,11 @@
                 <td class="justify-center layout px-0">
 
                     <v-tooltip v-if="(permitRule['JobAuthorized'] & props.item['permit']) > 0" top>
-                        <template v-slot:activator="{ on }">
-                            <v-icon v-on="on" small class="mr-2" @click="auth(props.item)">lock_open</v-icon>
-                        </template>
-                        <span>授权</span>
-                    </v-tooltip>
+                    <template v-slot:activator="{ on }">
+                        <v-icon v-on="on" small class="mr-2" @click="auth(props.item)">lock_open</v-icon>
+                    </template>
+                    <span>授权</span>
+                </v-tooltip>
 
                     <v-tooltip v-if="(permitRule['JobEdit'] & props.item['permit']) > 0" top>
                         <template v-slot:activator="{ on }">
@@ -126,15 +126,12 @@
             </template>
         </v-data-table>
 
-<!--
-            <select-auth></select-auth>
--->
             <!-- 授权对话框 -->
             <v-dialog v-model="permitAuthDialog" persistent max-width="1000">
 <!--
                 <v-checkbox v-model="editedItem['permitSelected']" v-for="(v, k) in permitRule" :key="k" :label="k" :value="v"></v-checkbox>
 -->
-                <select-auth @save="cancelAuthDialog"></select-auth>
+                <select-auth authType="job" :resource="editedItem.id" :permit="editedItem.permit" @close="cancelAuthDialog" @save="cancelAuthDialog"></select-auth>
             </v-dialog>
 
 

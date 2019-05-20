@@ -56,14 +56,21 @@
 
                     <td class="justify-center layout px-0">
 
-                        <v-tooltip top>
+                        <v-tooltip v-if="(permitRule['FlowAuthorized'] & props.item['permit']) > 0" top>
+                            <template v-slot:activator="{ on }">
+                                <v-icon v-on="on" small class="mr-2" @click="auth(props.item)">lock_open</v-icon>
+                            </template>
+                            <span>授权</span>
+                        </v-tooltip>
+
+                        <v-tooltip top v-if="(permitRule['FlowExec'] & props.item['permit']) > 0">
                             <template v-slot:activator="{ on }">
                                 <v-icon v-on="on" small class="mr-2" @click="trigger(props.item.id)">play_circle_outline</v-icon>
                             </template>
                             <span>执行工作流</span>
                         </v-tooltip>
 
-                        <v-tooltip top>
+                        <v-tooltip top v-if="(permitRule['FlowCron'] & props.item['permit']) > 0">
                             <template v-slot:activator="{ on }">
                                 <v-icon v-if="props.item.isSchedule === 0" v-on="on" small class="mr-2" v-on:click="startCron(props.item)">play_arrow</v-icon>
                                 <v-icon v-on="on" v-else small class="mr-2" v-on:click="stopCron(props.item)">stop</v-icon>
@@ -71,28 +78,28 @@
                             <span>{{props.item.isSchedule === 0 ? "启动定时任务": "终止定时任务"}}</span>
                         </v-tooltip>
 
-                        <v-tooltip top>
+                        <v-tooltip top v-if="(permitRule['FlowEdit'] & props.item['permit']) > 0">
                             <template v-slot:activator="{ on }">
                                 <v-icon v-on="on" small class="mr-2" @click="editFlow(props.item)">share</v-icon>
                             </template>
                             <span>编辑工作流</span>
                         </v-tooltip>
 
-                        <v-tooltip top>
+                        <v-tooltip top v-if="(permitRule['FlowEdit'] & props.item['permit']) > 0 ">
                             <template v-slot:activator="{ on }">
                                 <v-icon v-on="on" small class="mr-2" @click="editItem(props.item)">edit</v-icon>
                             </template>
                             <span>编辑</span>
                         </v-tooltip>
 
-                        <v-tooltip top>
+                        <v-tooltip top v-if="(permitRule['FlowDelete'] & props.item['permit']) > 0">
                             <template v-slot:activator="{ on }">
                                 <v-icon v-on="on" small @click="deleteItem(props.item)">delete</v-icon>
                             </template>
                             <span>删除</span>
                         </v-tooltip>
 
-                        <v-tooltip top>
+                        <v-tooltip top v-if="(permitRule['FlowView'] & props.item['permit']) > 0" >
                             <template v-slot:activator="{ on }">
                                 <v-icon v-on="on" small @click="history(props.item.id)">history</v-icon>
                             </template>
@@ -101,16 +108,26 @@
                     </td>
                 </template>
             </v-data-table>
+            <!-- 授权对话框 -->
+            <v-dialog v-model="permitAuthDialog" persistent max-width="1000">
+                <!--
+                                <v-checkbox v-model="editedItem['permitSelected']" v-for="(v, k) in permitRule" :key="k" :label="k" :value="v"></v-checkbox>
+                -->
+                <select-auth authType="flow" :resource="editedItem.id" :permit="editedItem.permit" @close="cancelAuthDialog" @save="cancelAuthDialog"></select-auth>
+            </v-dialog>
         </v-container>
     </div>
 </template>
 
 <script>
+    import SelectAuth from '@/components/workflow/SelectAuth';
     import ModelFlowEditor from '@/components/flow-editor/model-flow-editor';
-    import {getAllFlows, newFlow, updateFlow, deleteFlow, dataFormat, triggerFlow, startCronFlow, stopCronFlow} from '@/api/workFlow';
+    import {getAllFlows, newFlow, updateFlow, deleteFlow, dataFormat, triggerFlow, startCronFlow, stopCronFlow, getFlowPermit} from '@/api/workFlow';
     export default {
-        components: { ModelFlowEditor },
+        components: { ModelFlowEditor, SelectAuth },
         data: () => ({
+            permitAuthDialog: false,
+            permitRule: {},
             totalDesserts: 0,
             pagination: {
                 sortBy: 'id',
@@ -181,7 +198,7 @@
 
         },
         created () {
-           // this.queryTasks()
+            this.getPermitRule();
         },
         methods: {
             test(data) {
@@ -271,7 +288,30 @@
                         Object.assign(this.desserts[this.editedIndex], data);
                     });
                 }
-            }
+            },
+            cancelAuthDialog () {
+                this.permitAuthDialog = false;
+            },
+            getPermitRule() {
+                getFlowPermit().then(data => {
+                    this.permitRule = data;
+                })
+            },
+            auth(item) {
+                this.editedIndex = this.desserts.indexOf(item);
+                this.editedItem = Object.assign({}, item);
+                this.editedItem['permitSelected'] = [];
+                let permit = this.editedItem.permit;
+                for (let permitRuleKey in this.permitRule) {
+                    let cur = this.permitRule[permitRuleKey];
+                    if((permit & cur) > 0) {
+                        this.editedItem['permitSelected'].push(cur);
+                    }
+                }
+
+                this.permitAuthDialog = true;
+            },
+
         },
         filters: {
             formatDate: function (value) {

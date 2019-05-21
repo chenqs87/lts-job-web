@@ -29,6 +29,15 @@
                                     <v-flex xs12 sm6 md12>
                                         <v-text-field v-model="editedItem.postFlow" label="子工作流（多个使用逗号分隔）"></v-text-field>
                                     </v-flex>
+
+                                    <v-flex xs12 sm6 md12>
+                                        <v-textarea v-model="editedItem.phoneList" label="手机号（失败告警，多个使用逗号分隔）"></v-textarea>
+                                    </v-flex>
+
+                                    <v-flex xs12 sm6 md12>
+                                        <v-textarea v-model="editedItem.emailList" label="电子邮件（失败告警，多个使用逗号分隔）"></v-textarea>
+                                    </v-flex>
+
                                 </v-layout>
                             </v-container>
                         </v-card-text>
@@ -42,7 +51,7 @@
                 </v-dialog>
             </v-toolbar>
             <v-data-table :headers="headers" :items="desserts" class="elevation-1" :pagination.sync="pagination"
-                          :total-items="totalDesserts" :rows-per-page-items="[1, 10,15,20,25,30]">
+                          :total-items="totalDesserts" :rows-per-page-items="[10,15,20,25,30]">
                 <template v-slot:items="props">
                     <td>{{ props.item.id }}</td>
                     <td>{{ props.item.name }}</td>
@@ -110,7 +119,7 @@
             </v-data-table>
             <!-- 授权对话框 -->
             <v-dialog v-model="permitAuthDialog" persistent max-width="1000">
-                <select-auth authType="flow" :resource="editedItem.id" :permit="editedItem.permit" @close="cancelAuthDialog" @save="cancelAuthDialog"></select-auth>
+                <select-auth authType="flow" :resource="editedItem.id" :permit="editedItem.permit" @close="cancelAuthDialog" @save="queryTasks"></select-auth>
             </v-dialog>
         </v-container>
     </div>
@@ -119,7 +128,8 @@
 <script>
     import SelectAuth from '@/components/workflow/SelectAuth';
     import ModelFlowEditor from '@/components/flow-editor/model-flow-editor';
-    import {getAllFlows, newFlow, updateFlow, deleteFlow, dataFormat, triggerFlow, startCronFlow, stopCronFlow, getFlowPermit, reTriggerFlow} from '@/api/workFlow';
+    import {getAllFlows, newFlow, updateFlow, deleteFlow, dataFormat, triggerFlow,
+        startCronFlow, stopCronFlow, getFlowPermit, reTriggerFlow, getAlertConfig} from '@/api/workFlow';
     export default {
         components: { ModelFlowEditor, SelectAuth },
         data: () => ({
@@ -161,7 +171,9 @@
                 isSchedule: 0,
                 startTime: "",
                 createTime: "",
-                postFlow:""
+                postFlow:"",
+                emailList:"",
+                phoneList:"",
             },
             defaultItem: {
                 id: -1,
@@ -174,7 +186,9 @@
                 isSchedule: 0,
                 startTime: "",
                 createTime: "",
-                postFlow:""
+                postFlow:"",
+                emailList:"",
+                phoneList:"",
             }
         }),
         computed: {
@@ -222,9 +236,15 @@
                 });
             },
             editItem (item) {
-                this.editedIndex = this.desserts.indexOf(item);
-                this.editedItem = Object.assign({}, item);
-                this.dialog = true
+                getAlertConfig(item.id).then(data => {
+                    this.editedIndex = this.desserts.indexOf(item);
+                    this.editedItem = Object.assign({}, item);
+                    this.editedItem['emailList'] = data.emailList;
+                    this.editedItem['phoneList'] = data.phoneList;
+
+                    this.dialog = true
+                })
+
             },
             deleteItem (item) {
                 const index = this.desserts.indexOf(item);
@@ -273,7 +293,8 @@
                     this.editedIndex = this.desserts.indexOf(item);
                     this.editedItem = Object.assign({}, item)
                     startCronFlow(item.id).then(data => {
-                        Object.assign(this.desserts[this.editedIndex], data);
+                        //Object.assign(this.desserts[this.editedIndex], data);
+                        this.queryTasks();
                     });
                 }
             },
@@ -282,7 +303,8 @@
                     this.editedIndex = this.desserts.indexOf(item);
                     this.editedItem = Object.assign({}, item);
                     stopCronFlow(item.id).then(data => {
-                        Object.assign(this.desserts[this.editedIndex], data);
+                        //Object.assign(this.desserts[this.editedIndex], data);
+                        this.queryTasks();
                     });
                 }
             },

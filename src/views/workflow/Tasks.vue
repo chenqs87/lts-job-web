@@ -12,7 +12,6 @@
 
             <v-tabs fixed-tabs>
                 <v-tab key="1" href="#log">任务列表</v-tab>
-                <v-tab key="2" href="#test">工作流</v-tab>
 
                 <v-tabs-items>
                     <v-tab-item key="1" value="log">
@@ -37,11 +36,12 @@
                                         <v-btn small v-else-if="props.item.taskStatus === 3" color="info">Submitted</v-btn>
                                         <v-btn small v-else-if="props.item.taskStatus === 4" color="info">Running</v-btn>
                                         <v-btn small v-else-if="props.item.taskStatus === 5" color="error">Failed</v-btn>
-                                        <v-btn small v-else-if="props.item.taskStatus === 6" color="success">Finished</v-btn>
+                                        <v-btn small v-else-if="props.item.taskStatus === 6" color="success">
+                                            {{props.item.host===""? "Skipped": "Finished"}}</v-btn>
                                         <v-btn small v-else="props.item.taskStatus === 7" color="error">Killed</v-btn>
                                     </td>
                                     <td class="justify-center layout px-0">
-                                        <v-icon small class="mr-2" v-on:click="query(props.item)">search</v-icon>
+                                        <v-icon v-if="props.item.host !== ''" small class="mr-2" v-on:click="query(props.item)">search</v-icon>
                                     </td>
                                 </template>
                             </v-data-table>

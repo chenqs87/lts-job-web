@@ -46,9 +46,6 @@
           </v-card-text>
 
           <v-card-text v-else :key="selections.id">
-<!--
-            {{selections.id}}
--->
             <v-checkbox v-model="authSelected" v-for="(v,i) in permits" :label="i" :value="v"></v-checkbox>
           </v-card-text>
         </v-card>
@@ -193,7 +190,7 @@
                 }
 
                 updatePermit(this.authUser? 'User' : 'Group', id, this.resource, this.authType, permit).then(data => {
-
+                    this.$emit('save')
                 })
             }
         },

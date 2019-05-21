@@ -126,10 +126,9 @@
 
             <!-- 授权对话框 -->
             <v-dialog v-model="permitAuthDialog" persistent max-width="1000">
-<!--
-                <v-checkbox v-model="editedItem['permitSelected']" v-for="(v, k) in permitRule" :key="k" :label="k" :value="v"></v-checkbox>
--->
-                <select-auth authType="job" :resource="editedItem.id" :permit="editedItem.permit" @close="cancelAuthDialog" @save="cancelAuthDialog"></select-auth>
+                <select-auth authType="job" :resource="editedItem.id" :permit="editedItem.permit"
+                             @close="cancelAuthDialog"
+                             @save="queryTasks"></select-auth>
             </v-dialog>
 
 

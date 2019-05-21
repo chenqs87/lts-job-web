@@ -108,11 +108,11 @@ export const newGroup = params => {
 };
 
 export const updateUser = (user) => {
-    return axios.post(`/console/manager/updateUser`, {params: user}).then(res => res.data);
+    return axios.post(`/console/manager/updateUser`,  user).then(res => res.data);
 };
 
 export const updateGroup = (group) => {
-    return axios.post(`/console/manager/updateGroup`, {params: group}).then(res => res.data);
+    return axios.post(`/console/manager/updateGroup`, group).then(res => res.data);
 };
 
 export const deleteUser = (userName) => {
@@ -158,4 +158,8 @@ export const updatePermit = (userOrGroup, name, resource, resourceType, permit) 
             resourceType: resourceType,
             permit: permit
         }).then(res => res.data);
+};
+
+export const getAlertConfig = (flowId) => {
+    return axios.get(`/console/flow/getAlertConfig?flowId=${flowId}`).then(res => res.data);
 };

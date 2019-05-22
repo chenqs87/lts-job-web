@@ -1,3 +1,4 @@
+import auth from '../router/auth'
 const Menu =  [
   { header: 'Apps' },
   {
@@ -10,8 +11,11 @@ const Menu =  [
           { name: 'Workflow', title: '工作流', component: 'Workflow' },
           { name: 'FlowTask', title: '历史任务', component: 'FlowTask' },
       ]
-  },
-    {
+  }
+];
+
+if (auth.getRole()==='ROLE_ADMIN') {
+    Menu.push({
         title: '管理',
         group: 'manager',
         component: 'manager',
@@ -20,7 +24,7 @@ const Menu =  [
             { name: 'Handlers', title: 'Handlers', component: 'Handlers'},
             { name: 'Users', title: 'Users', component: 'Users'}
         ]
-    }
-];
+    });
+}
 
 export default Menu;

@@ -9,12 +9,6 @@
             <v-card-text>
                 <pre>{{log}}</pre>
             </v-card-text>
-
-
-               <!-- <pre>
-                  {{log.replace(/\r\n/g,'</br>')}}
-              </pre>-->
-
         </v-container>
     </div>
 </template>

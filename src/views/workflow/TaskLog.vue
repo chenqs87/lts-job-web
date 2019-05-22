@@ -6,15 +6,15 @@
                 <v-spacer></v-spacer>
                 <v-icon small class="mr-2" v-on:click="getLog">refresh</v-icon>
             </v-toolbar>
+            <v-card-text>
+                <pre>{{log}}</pre>
+            </v-card-text>
 
 
-            <blockquote class="blockquote">
-                <p v-text="log"></p>
-
-                <!--<pre>
+               <!-- <pre>
                   {{log.replace(/\r\n/g,'</br>')}}
               </pre>-->
-            </blockquote>
+
         </v-container>
     </div>
 </template>

@@ -138,15 +138,9 @@
                     this.query(item);
                 })
             },
-            close() {
-                this.dialog = false;
-            },
             reTrigger(item) {
                 reTriggerFlow(item.flowId, item.id, "").then(data => {
-                    this.$router.push({
-                        path: '/workflow/flow-tasks',
-                        query: {flowId: item.flowId}
-                    });
+                    this.queryTasks();
                 });
             },
         },

@@ -16,9 +16,8 @@
                             <v-container grid-list-md>
                                 <v-layout wrap>
                                     <v-flex xs12 sm6 md12>
-                                        <v-text-field v-if="users.editedIndex !==-1 " disabled v-model="users.editedItem.username" label="用户名称"></v-text-field>
+                                        <v-text-field v-if="users.editedIndex !== -1 " disabled v-model="users.editedItem.username" label="用户名称"></v-text-field>
                                         <v-text-field v-else v-model="users.editedItem.username" label="用户名称"></v-text-field>
-
                                     </v-flex>
                                     <v-flex xs12 sm6 md12>
                                         <v-text-field v-model="users.editedItem.role" label="角色"></v-text-field>
@@ -59,7 +58,7 @@
                                 <v-layout wrap>
                                     <v-flex xs12 sm6 md12>
                                         <v-text-field v-if="groups.editedIndex !==-1 " disabled v-model="groups.editedItem.groupName" label="用户名称"></v-text-field>
-                                        <v-text-field v-else v-model="users.editedItem.groupName" label="用户组名称"></v-text-field>
+                                        <v-text-field v-else v-model="groups.editedItem.groupName" label="用户组名称"></v-text-field>
 
                                     </v-flex>
                                     <v-flex xs12 sm6 md12>

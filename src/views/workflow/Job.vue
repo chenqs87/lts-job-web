@@ -145,7 +145,7 @@
     import 'codemirror/mode/python/python.js'
     import 'codemirror/theme/base16-dark.css'
 
-    import {getAllJobs, newJob, updateJob, deleteJob, dataFormat, getJobPermit} from '@/api/workFlow';
+    import {getAllJobs, newJob, updateJob, deleteJob, dataFormat, getJobPermit, getActiveHandlers} from '@/api/workFlow';
     import SelectAuth from '@/components/workflow/SelectAuth';
 
     export default {
@@ -173,11 +173,10 @@
                 lines: 20
             },
             dialog: false,
-            handlerList: ["test", "test1","test2"],
+            handlerList: [],
             jobTypes: [
                 {name: "shell", value: 1},
-                {name: "python", value: 2},
-                {name: "zip", value: 3}
+                {name: "python", value: 2}
                 ],
             currentUser: true,
             headers: [
@@ -248,6 +247,7 @@
         },
         created () {
            this.getPermitRule();
+           this.getHandlers();
         },
         methods: {
             editCode(item) {
@@ -337,6 +337,15 @@
             },
             cancelAuthDialog () {
                 this.permitAuthDialog = false;
+            },
+            getHandlers() {
+                getActiveHandlers().then(data=> {
+                    let hs = [];
+                    for(let handler in data) {
+                        hs.push(handler)
+                    }
+                    this.handlerList = hs;
+                })
             }
         },
         filters: {

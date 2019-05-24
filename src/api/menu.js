@@ -14,7 +14,7 @@ const Menu =  [
   }
 ];
 
-if (auth.getRole()==='ROLE_ADMIN') {
+if (auth.getRole() === 'ROLE_ADMIN') {
     Menu.push({
         title: '管理',
         group: 'manager',

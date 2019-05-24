@@ -12,7 +12,6 @@
                     <td><a v-on:click="query(props.item)">{{ props.item.id }}</a></td>
                     <td>{{ props.item.flowId }}</td>
                     <td>{{ props.item.triggerMode | formatTriggerMode }}</td>
-                    <td>{{ props.item.createUser }}</td>
                     <td>{{ props.item.beginTime | formatDate}}</td>
                     <td>{{ props.item.endTime | formatDate}}</td>
                     <td>
@@ -69,7 +68,6 @@
                 { text: 'ID', align: 'left', sortable: false, value: 'id'},
                 { text: '工作流ID', value: 'flowId', sortable: false },
                 { text: '触发方式', value: 'triggerMode', sortable: false },
-                { text: '创建者', value: 'createUser', sortable: false },
                 { text: '开始时间', value: 'beginTime',sortable: false },
                 { text: '结束时间', value: 'endTime', sortable: false },
                 { text: '状态', value: 'status', sortable: false },
@@ -79,7 +77,6 @@
             editedItem: {
                 id: '',
                 flowId: 0,
-                createUser: 0,
                 status: 0,
                 beginTime: '',
                 endTime: '',
@@ -88,7 +85,6 @@
             defaultItem: {
                 id: '',
                 flowId: 0,
-                createUser: 0,
                 status: 0,
                 beginTime: '',
                 endTime: '',
@@ -135,7 +131,7 @@
             },
             killTask(item) {
                 killFlowTask(item.id).then(data => {
-                    this.query(item);
+                    this.queryTasks();
                 })
             },
             reTrigger(item) {

@@ -20,7 +20,8 @@
                                         <v-text-field v-else v-model="users.editedItem.username" label="用户名称"></v-text-field>
                                     </v-flex>
                                     <v-flex xs12 sm6 md12>
-                                        <v-text-field v-model="users.editedItem.role" label="角色"></v-text-field>
+                                        <v-select :items="roles" label="角色" v-model="users.editedItem.role"></v-select>
+
                                     </v-flex>
                                     <v-flex xs12 sm6 md12>
                                         <v-text-field v-model="users.editedItem.iphone" label="手机号"></v-text-field>
@@ -129,6 +130,7 @@
     import {getUsers,getGroups,updateUser,updateGroup,deleteUser,deleteGroup,newUser,newGroup, dataFormat} from '@/api/workFlow';
     export default {
         data: () => ({
+            roles:['ROLE_ADMIN','ROLE_USER'],
             usersDialog: false,
             groupDialog: false,
             users: {

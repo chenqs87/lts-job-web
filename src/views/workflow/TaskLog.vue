@@ -7,7 +7,7 @@
                 <v-icon small class="mr-2" v-on:click="getLog">refresh</v-icon>
             </v-toolbar>
             <v-card-text>
-                <pre>{{log}}</pre>
+               <pre>{{log}}</pre>
             </v-card-text>
         </v-container>
     </div>

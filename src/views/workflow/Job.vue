@@ -35,7 +35,7 @@
                                     <v-select :items="handlerList" label="Handler" v-model="editedItem.handler"></v-select>
                                 </v-flex>
                                 <v-flex xs12 sm6 md12>
-                                    <v-select :items="jobTypes" item-text="name" item-value="value" label="作业类型" v-model="editedItem.jobType"></v-select>
+                                    <v-combobox :items="jobTypes" label="作业类型" v-model="editedItem.jobType"></v-combobox>
                                 </v-flex>
 
                                 <v-flex xs12 sm6 md12>
@@ -85,7 +85,7 @@
                 <td>{{ props.item.id }}</td>
                 <td>{{ props.item.name }}</td>
                 <td>{{ props.item.handler }}</td>
-                <td>{{ props.item.jobType | jobTypeFilter}}</td>
+                <td>{{ props.item.jobType }}</td>
                 <td>{{ props.item.shardType === 0 ? "否" : "是" }}</td>
                 <td>{{ props.item.group }}</td>
                 <td>{{ props.item.createUser }}</td>
@@ -174,10 +174,7 @@
             },
             dialog: false,
             handlerList: [],
-            jobTypes: [
-                {name: "shell", value: 1},
-                {name: "python", value: 2}
-                ],
+            jobTypes: [ 'shell','python'],
             currentUser: true,
             headers: [
                 { text: 'ID', value: 'id', sortable: false},
@@ -349,14 +346,6 @@
             }
         },
         filters: {
-            jobTypeFilter: function (value) {
-                switch (value) {
-                    case 1: return "shell";
-                    case 2: return "python";
-                    case 3: return "zip";
-                    default: return "UnKnown";
-                }
-            },
             formatDate: function (value) {
                 return dataFormat(value);
             }

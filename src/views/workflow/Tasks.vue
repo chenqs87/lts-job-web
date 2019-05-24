@@ -24,7 +24,9 @@
                                     <td>{{ props.item.jobId }}</td>
                                     <td>{{ props.item.flowId }}</td>
                                     <td>{{ props.item.postTask | parsePostTask }}</td>
+<!--
                                     <td>{{ props.item.shardStatus }}</td>
+-->
                                     <td>{{ props.item.handler }}</td>
                                     <td>{{ props.item.host }}</td>
                                     <td>{{ props.item.beginTime | formatDate}}</td>
@@ -40,8 +42,9 @@
                                             {{props.item.host===""? "Skipped": "Finished"}}</v-btn>
                                         <v-btn small v-else="props.item.taskStatus === 7" color="error">Killed</v-btn>
                                     </td>
-                                    <td class="justify-center layout px-0">
-                                        <v-icon v-if="props.item.host !== ''" small class="mr-2" v-on:click="query(props.item)">search</v-icon>
+                                    <td>
+                                        <a v-if="props.item.host !== ''" v-on:click="query(props.item,'syslog')">syslog &nbsp;</a>
+                                        <a v-if="props.item.host !== ''" v-on:click="query(props.item, 'syserr')">errlog</a>
                                     </td>
                                 </template>
                             </v-data-table>
@@ -64,7 +67,7 @@
 </template>
 
 <script>
-    import {getAllFlowTasks, getFlowTasksByFlowId, getTasks, dataFormat, queryLog, getFlow} from '@/api/workFlow';
+    import {getTasks, dataFormat} from '@/api/workFlow';
     export default {
         data: () => ({
             totalDesserts: 10,
@@ -81,13 +84,15 @@
                 { text: 'JobID', value: 'jobId', sortable: false },
                 { text: 'FlowID', value: 'flowId', sortable: false },
                 { text: '后置任务', value: 'postTask', sortable: false },
+/*
                 { text: '是否分片', value: 'shardStatus', sortable: false },
+*/
                 { text: 'Handler', value: 'handler', sortable: false },
                 { text: '执行位置', value: 'host', sortable: false },
                 { text: '开始时间', value: 'beginTime',sortable: false },
                 { text: '结束时间', value: 'endTime', sortable: false },
                 { text: '作业状态', value: 'taskStatus', sortable: false },
-                { text: '操作', sortable: false }
+                { text: '执行日志', sortable: false }
             ],
             desserts: [],
             editedItem: {
@@ -134,10 +139,12 @@
                     this.pagination.totalItems = data.total;
                 })
             },
-            query(item) {
+            query(item, logName) {
+                let params = Object.assign({}, item);
+                params['logName'] = logName;
                 this.$router.push({
                     path: '/workflow/task/log',
-                    query: {item: item}
+                    query: {item: params}
                 });
             }
         },

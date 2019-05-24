@@ -5,7 +5,7 @@
                 <v-toolbar-title>工作流配置</v-toolbar-title>
                 <v-divider></v-divider>
                 <v-spacer></v-spacer>
-                <v-dialog v-model="dialog" max-width="500px">
+                <v-dialog v-model="dialog" max-width="600px">
                     <template v-slot:activator="{ on }">
                         <v-btn color="primary" dark class="mb-2" v-on="on">新建工作流</v-btn>
                     </template>
@@ -31,7 +31,7 @@
                                     </v-flex>
 
                                     <v-flex xs12 sm6 md12>
-                                        <v-textarea v-model="editedItem.phoneList" label="手机号（失败告警，多个使用逗号分隔）"></v-textarea>
+                                        <v-text-field v-model="editedItem.phoneList" label="手机号（失败告警，多个使用逗号分隔）"></v-text-field>
                                     </v-flex>
 
                                     <v-flex xs12 sm6 md12>
@@ -57,7 +57,9 @@
                     <td>{{ props.item.name }}</td>
                     <td>{{ props.item.cron }}</td>
                     <td>{{ props.item.postFlow }}</td>
+<!--
                     <td>{{ props.item.params }}</td>
+-->
                     <td>{{ props.item.createUser }}</td>
                     <td>{{ props.item.isSchedule === 0 ? "否" : "是" }}</td>
                     <td>{{ props.item.startTime | formatDate }}</td>
@@ -143,15 +145,15 @@
             },
             flowEditorInfo:"",
             dialog: false,
-            handlerList: ["test", "test1","test2"],
-            jobTypes: ["shell", "python","zip"],
             currentUser: true,
             headers: [
                 { text: 'ID', value: 'id', sortable: false },
                 { text: '工作流名称', align: 'left', sortable: false, value: 'name'},
                 { text: 'Cron表达式', value: 'cron', sortable: false },
                 { text: '子任务', value: 'postFlow', sortable: false },
+/*
                 { text: '参数', value: 'shardType', sortable: false },
+*/
                 { text: '创建人', value: 'createUser', sortable: false },
                 { text: '是否调度', value: 'isSchedule', sortable: false },
                 { text: '启动时间', value: 'startTime' },

@@ -25,7 +25,8 @@
             host:'',
             flowTaskId: -1,
             taskId: -1,
-            shardStatus: -1
+            shardStatus: -1,
+            logName:""
 
         }),
         created () {
@@ -38,6 +39,7 @@
                 this.flowTaskId = item['flowTaskId'];
                 this.taskId = item['taskId'];
                 this.shardStatus = item['shardStatus'];
+                this.logName = item['logName'];
                 this.items = [
                     {
                         text: '工作流',
@@ -56,7 +58,7 @@
 
             },
             getLog() {
-                queryLog(this.host, this.flowTaskId, this.taskId, 0)
+                queryLog(this.host, this.flowTaskId, this.taskId, 0, this.logName)
                     .then(data=> {
                         this.log = data;
                     })

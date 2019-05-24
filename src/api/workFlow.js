@@ -73,9 +73,8 @@ export const dataFormat = date => {
     return date.substr(0, 19).replace("T", " ");
 };
 
-export const queryLog = (host, flowTaskId, taskId, shardStatus) => {
-    //return axios.get(`http://${host}/executor/query/logs?flowTaskId=${flowTaskId}&taskId=${taskId}&shardStatus=${shardStatus}`).then(res => res.data);
-    return axios.get(`/console/flow/query/logs?host=${host}&flowTaskId=${flowTaskId}&taskId=${taskId}&shardStatus=${shardStatus}`).then(res => res.data);
+export const queryLog = (host, flowTaskId, taskId, shardStatus, logName) => {
+    return axios.get(`/console/flow/query/logs?host=${host}&flowTaskId=${flowTaskId}&taskId=${taskId}&shardStatus=${shardStatus}&logName=${logName}`).then(res => res.data);
 };
 
 export const getActiveHandlers = () => {

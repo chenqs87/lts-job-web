@@ -27,15 +27,18 @@
                                         <v-textarea v-model="editedItem.params" label="工作流参数"></v-textarea>
                                     </v-flex>
                                     <v-flex xs12 sm6 md12>
-                                        <v-text-field v-model="editedItem.postFlow" label="子工作流（多个使用逗号分隔）"></v-text-field>
+                                        <v-text-field v-model="editedItem.postFlow"
+                                                      label="子工作流（多个使用逗号分隔）"></v-text-field>
                                     </v-flex>
 
                                     <v-flex xs12 sm6 md12>
-                                        <v-textarea v-model="editedItem.phoneList" label="手机号（失败告警，多个使用逗号分隔）"></v-textarea>
+                                        <v-textarea v-model="editedItem.phoneList"
+                                                    label="手机号（失败告警，多个使用逗号分隔）"></v-textarea>
                                     </v-flex>
 
                                     <v-flex xs12 sm6 md12>
-                                        <v-textarea v-model="editedItem.emailList" label="电子邮件（失败告警，多个使用逗号分隔）"></v-textarea>
+                                        <v-textarea v-model="editedItem.emailList"
+                                                    label="电子邮件（失败告警，多个使用逗号分隔）"></v-textarea>
                                     </v-flex>
 
                                 </v-layout>
@@ -50,8 +53,12 @@
                     </v-card>
                 </v-dialog>
             </v-toolbar>
-            <v-data-table :headers="headers" :items="desserts" class="elevation-1" :pagination.sync="pagination"
-                          :total-items="totalDesserts" :rows-per-page-items="[10,15,20,25,30]">
+            <v-data-table :headers="headers"
+                          :items="desserts"
+                          class="elevation-1"
+                          :pagination.sync="pagination"
+                          :total-items="totalDesserts"
+                          :rows-per-page-items="[10,15,20,25,30]">
                 <template v-slot:items="props">
                     <td>{{ props.item.id }}</td>
                     <td>{{ props.item.name }}</td>
@@ -74,17 +81,22 @@
 
                         <v-tooltip top v-if="(permitRule['FlowExec'] & props.item['permit']) > 0">
                             <template v-slot:activator="{ on }">
-                                <v-icon v-on="on" small class="mr-2" @click="trigger(props.item.id)">play_circle_outline</v-icon>
+                                <v-icon v-on="on" small class="mr-2" @click="trigger(props.item.id)">
+                                    play_circle_outline
+                                </v-icon>
                             </template>
                             <span>执行工作流</span>
                         </v-tooltip>
 
                         <v-tooltip top v-if="(permitRule['FlowCron'] & props.item['permit']) > 0">
                             <template v-slot:activator="{ on }">
-                                <v-icon v-if="props.item.isSchedule === 0" v-on="on" small class="mr-2" v-on:click="startCron(props.item)">play_arrow</v-icon>
-                                <v-icon v-on="on" v-else small class="mr-2" v-on:click="stopCron(props.item)">stop</v-icon>
+                                <v-icon v-if="props.item.isSchedule === 0" v-on="on" small class="mr-2"
+                                        v-on:click="startCron(props.item)">play_arrow
+                                </v-icon>
+                                <v-icon v-on="on" v-else small class="mr-2" v-on:click="stopCron(props.item)">stop
+                                </v-icon>
                             </template>
-                            <span>{{props.item.isSchedule === 0 ? "启动定时任务": "终止定时任务"}}</span>
+                            <span>{{props.item.isSchedule === 0 ? "启动定时任务" : "终止定时任务"}}</span>
                         </v-tooltip>
 
                         <v-tooltip top v-if="(permitRule['FlowEdit'] & props.item['permit']) > 0">
@@ -108,7 +120,7 @@
                             <span>删除</span>
                         </v-tooltip>
 
-                        <v-tooltip top v-if="(permitRule['FlowView'] & props.item['permit']) > 0" >
+                        <v-tooltip top v-if="(permitRule['FlowView'] & props.item['permit']) > 0">
                             <template v-slot:activator="{ on }">
                                 <v-icon v-on="on" small @click="history(props.item.id)">history</v-icon>
                             </template>
@@ -119,7 +131,8 @@
             </v-data-table>
             <!-- 授权对话框 -->
             <v-dialog v-model="permitAuthDialog" persistent max-width="1000">
-                <select-auth authType="flow" :resource="editedItem.id" :permit="editedItem.permit" @close="cancelAuthDialog" @save="queryTasks"></select-auth>
+                <select-auth authType="flow" :resource="editedItem.id" :permit="editedItem.permit"
+                             @close="cancelAuthDialog" @save="queryTasks"></select-auth>
             </v-dialog>
         </v-container>
     </div>
@@ -128,10 +141,13 @@
 <script>
     import SelectAuth from '@/components/workflow/SelectAuth';
     import ModelFlowEditor from '@/components/flow-editor/model-flow-editor';
-    import {getAllFlows, newFlow, updateFlow, deleteFlow, dataFormat, triggerFlow,
-        startCronFlow, stopCronFlow, getFlowPermit, reTriggerFlow, getAlertConfig} from '@/api/workFlow';
+    import {
+        getAllFlows, newFlow, updateFlow, deleteFlow, dataFormat, triggerFlow,
+        startCronFlow, stopCronFlow, getFlowPermit, reTriggerFlow, getAlertConfig
+    } from '@/api/workFlow';
+
     export default {
-        components: { ModelFlowEditor, SelectAuth },
+        components: {ModelFlowEditor, SelectAuth},
         data: () => ({
             permitAuthDialog: false,
             permitRule: {},
@@ -141,10 +157,10 @@
                 descending: true,
                 rowsPerPage: 10,
             },
-            flowEditorInfo:"",
+            flowEditorInfo: "",
             dialog: false,
-            handlerList: ["test", "test1","test2"],
-            jobTypes: ["shell", "python","zip"],
+            handlerList: ["test", "test1", "test2"],
+            jobTypes: ["shell", "python", "zip"],
             currentUser: true,
             headers: [
                 { text: 'ID', value: 'id', sortable: false },
@@ -166,14 +182,14 @@
                 flowConfig: "",
                 cron: "",
                 flowStatus: 1,
-                params:"",
+                params: "",
                 createUser: "",
                 isSchedule: 0,
                 startTime: "",
                 createTime: "",
-                postFlow:"",
-                emailList:"",
-                phoneList:"",
+                postFlow: "",
+                emailList: "",
+                phoneList: "",
             },
             defaultItem: {
                 id: -1,
@@ -181,23 +197,23 @@
                 flowConfig: "",
                 cron: "",
                 flowStatus: 1,
-                params:"",
+                params: "",
                 createUser: "",
                 isSchedule: 0,
                 startTime: "",
                 createTime: "",
-                postFlow:"",
-                emailList:"",
-                phoneList:"",
+                postFlow: "",
+                emailList: "",
+                phoneList: "",
             }
         }),
         computed: {
-            formTitle () {
+            formTitle() {
                 return this.editedIndex === -1 ? '新建' : '编辑'
             }
         },
         watch: {
-            dialog (val) {
+            dialog(val) {
                 val || this.close()
             },
             pagination: {
@@ -208,13 +224,13 @@
             }
 
         },
-        created () {
+        created() {
             this.getPermitRule();
         },
         methods: {
             test(data) {
                 console.log(data)
-                this.fullscreen.dialog =false;
+                this.fullscreen.dialog = false;
             },
             editFlow(item) {
                 this.$router.push({
@@ -223,19 +239,19 @@
                 });
 
             },
-            queryTasks () {
+            queryTasks() {
                 let pageNum = this.pagination.page === null || this.pagination.page === undefined
                     ? 1 : this.pagination.page;
                 let pageSize = this.pagination.rowsPerPage === null || this.pagination.rowsPerPage === undefined
                     ? 10 : this.pagination.rowsPerPage;
-                 getAllFlows(pageNum, pageSize).then(data => {
-                     this.desserts = data.list;
-                     this.totalDesserts = data.total;
-                     this.pagination.page = data['pageNum'];
-                     this.pagination.totalItems = data.total;
+                getAllFlows(pageNum, pageSize).then(data => {
+                    this.desserts = data.list;
+                    this.totalDesserts = data.total;
+                    this.pagination.page = data['pageNum'];
+                    this.pagination.totalItems = data.total;
                 });
             },
-            editItem (item) {
+            editItem(item) {
                 getAlertConfig(item.id).then(data => {
                     this.editedIndex = this.desserts.indexOf(item);
                     this.editedItem = Object.assign({}, item);
@@ -246,22 +262,22 @@
                 })
 
             },
-            deleteItem (item) {
+            deleteItem(item) {
                 const index = this.desserts.indexOf(item);
-                if(confirm('Are you sure you want to delete this item?')) {
+                if (confirm('Are you sure you want to delete this item?')) {
                     deleteFlow(item.id).then(() => {
                         this.desserts.splice(index, 1)
                     })
                 }
             },
-            close () {
+            close() {
                 this.dialog = false
                 setTimeout(() => {
                     this.editedItem = Object.assign({}, this.defaultItem)
                     this.editedIndex = -1
                 }, 300)
             },
-            save () {
+            save() {
                 if (this.editedIndex > -1) {
                     updateFlow(this.editedItem).then(data => {
                         Object.assign(this.desserts[this.editedIndex], data);
@@ -289,7 +305,7 @@
                 });
             },
             startCron(item) {
-                if(confirm('确定要启动定时任务吗？')) {
+                if (confirm('确定要启动定时任务吗？')) {
                     this.editedIndex = this.desserts.indexOf(item);
                     this.editedItem = Object.assign({}, item)
                     startCronFlow(item.id).then(data => {
@@ -299,7 +315,7 @@
                 }
             },
             stopCron(item) {
-                if(confirm('确定要终止定时任务吗？')) {
+                if (confirm('确定要终止定时任务吗？')) {
                     this.editedIndex = this.desserts.indexOf(item);
                     this.editedItem = Object.assign({}, item);
                     stopCronFlow(item.id).then(data => {
@@ -308,7 +324,7 @@
                     });
                 }
             },
-            cancelAuthDialog () {
+            cancelAuthDialog() {
                 this.permitAuthDialog = false;
             },
             getPermitRule() {
@@ -323,7 +339,7 @@
                 let permit = this.editedItem.permit;
                 for (let permitRuleKey in this.permitRule) {
                     let cur = this.permitRule[permitRuleKey];
-                    if((permit & cur) > 0) {
+                    if ((permit & cur) > 0) {
                         this.editedItem['permitSelected'].push(cur);
                     }
                 }
@@ -334,7 +350,8 @@
         },
         filters: {
             formatDate: function (value) {
-                return dataFormat(value);
+                //由于vue自带的时区为美国时区 需要转换为本地时区
+                return (new Date(dataFormat(value)+ 'Z')).toLocaleString();
             }
         }
     }

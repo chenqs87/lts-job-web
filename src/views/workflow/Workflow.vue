@@ -18,13 +18,29 @@
                             <v-container grid-list-md>
                                 <v-layout wrap>
                                     <v-flex xs12 sm6 md12>
-                                        <v-text-field v-model="editedItem.name" label="工作流名称"></v-text-field>
+                                        <v-text-field
+                                                v-model="editedItem.name"
+                                                label="工作流名称"
+                                                :validate-on-blur = true
+                                                :rules="[
+                                                   () => !!editedItem.name || 'name is required',
+                                                   () => !!editedItem.name && editedItem.name.length <= 45 || 'name must be less than 45 characters'
+                                                ]"
+                                        ></v-text-field>
                                     </v-flex>
                                     <v-flex xs12 sm6 md12>
-                                        <el-popover v-model="cronPopover">
+                                        <el-popover v-model="cronPopover" >
                                             <cron @change="changeCron" @close="cronPopover=false" i18n="cn"></cron>
                                             <!--<el-input class="cron-input" slot="reference" @click="cronPopover=true" v-model="editedItem.cron" placeholder="请输入定时策略"></el-input>-->
-                                        <v-text-field label="Cron表达式" slot="reference"  @click="cronPopover=true" v-model="editedItem.cron"></v-text-field>
+                                            <v-text-field label="Cron表达式" slot="reference"
+                                                          @blur.native.capture="leaveCron"
+                                                          :validate-on-blur = true
+                                                          :rules="[
+                                                               () => !!editedItem.cron || 'cron is required'
+                                                            ]"
+                                                          v-model="editedItem.cron"
+
+                                            ></v-text-field>
                                         </el-popover>
 
                                     </v-flex>
@@ -217,7 +233,7 @@
         }),
         computed: {
             formTitle() {
-                return this.editedIndex === -1 ? '新建' : '编辑'
+                return this.editedIndex === -1 ? '新建工作流' : '编辑工作流'
             }
         },
         watch: {
@@ -236,6 +252,9 @@
             this.getPermitRule();
         },
         methods: {
+            leaveCron(){
+              this.cronPopover = false;
+            },
             test(data) {
                 console.log(data)
                 this.fullscreen.dialog = false;

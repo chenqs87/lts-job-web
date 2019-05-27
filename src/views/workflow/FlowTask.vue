@@ -15,10 +15,10 @@
                     <td>{{ props.item.beginTime | formatDate}}</td>
                     <td>{{ props.item.endTime | formatDate}}</td>
                     <td>
-                        <v-btn small v-if="props.item.status === 0" color="info">New</v-btn>
-                        <v-btn small v-else-if="props.item.status === 1" color="info">Pending</v-btn>
+                        <v-btn small v-if="props.item.status === 0" color="#85ff98">New</v-btn>
+                        <v-btn small v-else-if="props.item.status === 1" color="#f7e155">Pending</v-btn>
                         <v-btn small v-else-if="props.item.status === 2" color="info">Running</v-btn>
-                        <v-btn small v-else-if="props.item.status === 3" color="error">Killed</v-btn>
+                        <v-btn small v-else-if="props.item.status === 3" color="#bbb7b7">Killed</v-btn>
                         <v-btn small v-else-if="props.item.status === 4" color="success">Finished</v-btn>
                         <v-btn small v-else="props.item.status === 5" color="error">Failed</v-btn>
                     </td>

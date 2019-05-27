@@ -16,11 +16,19 @@
                             <v-container grid-list-md>
                                 <v-layout wrap>
                                     <v-flex xs12 sm6 md12>
-                                        <v-text-field v-if="users.editedIndex !== -1 " disabled v-model="users.editedItem.username" label="用户名称"></v-text-field>
-                                        <v-text-field v-else v-model="users.editedItem.username" label="用户名称"></v-text-field>
+                                        <v-text-field v-if="users.editedIndex !== -1 "
+                                                      disabled v-model="users.editedItem.username"
+                                                      label="用户名称"
+                                        ></v-text-field>
+                                        <v-text-field v-else v-model="users.editedItem.username"
+                                                      label="用户名称"
+                                        ></v-text-field>
                                     </v-flex>
                                     <v-flex xs12 sm6 md12>
-                                        <v-select :items="roles" label="角色" v-model="users.editedItem.role"></v-select>
+                                        <v-select :items="roles"
+                                                  label="角色"
+                                                  v-model="users.editedItem.role"
+                                        ></v-select>
 
                                     </v-flex>
                                     <v-flex xs12 sm6 md12>

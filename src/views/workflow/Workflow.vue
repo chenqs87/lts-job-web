@@ -5,7 +5,7 @@
                 <v-toolbar-title>工作流配置</v-toolbar-title>
                 <v-divider></v-divider>
                 <v-spacer></v-spacer>
-                <v-dialog v-model="dialog" max-width="500px">
+                <v-dialog v-model="dialog" max-width="720px">
                     <template v-slot:activator="{ on }">
                         <v-btn color="primary" dark class="mb-2" v-on="on">新建工作流</v-btn>
                     </template>
@@ -21,7 +21,12 @@
                                         <v-text-field v-model="editedItem.name" label="工作流名称"></v-text-field>
                                     </v-flex>
                                     <v-flex xs12 sm6 md12>
-                                        <v-text-field label="Cron表达式" v-model="editedItem.cron"></v-text-field>
+                                        <el-popover v-model="cronPopover">
+                                            <cron @change="changeCron" @close="cronPopover=false" i18n="cn"></cron>
+                                            <!--<el-input class="cron-input" slot="reference" @click="cronPopover=true" v-model="editedItem.cron" placeholder="请输入定时策略"></el-input>-->
+                                        <v-text-field label="Cron表达式" slot="reference"  @click="cronPopover=true" v-model="editedItem.cron"></v-text-field>
+                                        </el-popover>
+
                                     </v-flex>
                                     <v-flex xs12 sm6 md12>
                                         <v-textarea v-model="editedItem.params" label="工作流参数"></v-textarea>
@@ -141,14 +146,17 @@
 <script>
     import SelectAuth from '@/components/workflow/SelectAuth';
     import ModelFlowEditor from '@/components/flow-editor/model-flow-editor';
+    import {cron} from 'vue-cron';
     import {
         getAllFlows, newFlow, updateFlow, deleteFlow, dataFormat, triggerFlow,
         startCronFlow, stopCronFlow, getFlowPermit, reTriggerFlow, getAlertConfig
     } from '@/api/workFlow';
 
     export default {
-        components: {ModelFlowEditor, SelectAuth},
+        components: {cron, ModelFlowEditor, SelectAuth},
         data: () => ({
+            template: '<cron/>',
+            cronPopover: false,
             permitAuthDialog: false,
             permitRule: {},
             totalDesserts: 0,
@@ -163,16 +171,16 @@
             jobTypes: ["shell", "python", "zip"],
             currentUser: true,
             headers: [
-                { text: 'ID', value: 'id', sortable: false },
-                { text: '工作流名称', align: 'left', sortable: false, value: 'name'},
-                { text: 'Cron表达式', value: 'cron', sortable: false },
-                { text: '子任务', value: 'postFlow', sortable: false },
-                { text: '参数', value: 'shardType', sortable: false },
-                { text: '创建人', value: 'createUser', sortable: false },
-                { text: '是否调度', value: 'isSchedule', sortable: false },
-                { text: '启动时间', value: 'startTime' },
-                { text: '创建时间', value: 'createTime' },
-                { text: '操作', sortable: false }
+                {text: 'ID', value: 'id', sortable: false},
+                {text: '工作流名称', align: 'left', sortable: false, value: 'name'},
+                {text: 'Cron表达式', value: 'cron', sortable: false},
+                {text: '子任务', value: 'postFlow', sortable: false},
+                {text: '参数', value: 'shardType', sortable: false},
+                {text: '创建人', value: 'createUser', sortable: false},
+                {text: '是否调度', value: 'isSchedule', sortable: false},
+                {text: '启动时间', value: 'startTime'},
+                {text: '创建时间', value: 'createTime'},
+                {text: '操作', sortable: false}
             ],
             desserts: [],
             editedIndex: -1,
@@ -346,12 +354,16 @@
 
                 this.permitAuthDialog = true;
             },
+            //改变Cron表达式
+            changeCron(val) {
+                this.editedItem['cron'] = val
+            },
 
         },
         filters: {
             formatDate: function (value) {
                 //由于vue自带的时区为美国时区 需要转换为本地时区
-                return (new Date(dataFormat(value)+ 'Z')).toLocaleString();
+                return (new Date(dataFormat(value) + 'Z')).toLocaleString();
             }
         }
     }

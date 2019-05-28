@@ -18,9 +18,11 @@
                                     <v-flex xs12 sm6 md12>
                                         <v-text-field v-if="users.editedIndex !== -1 "
                                                       disabled v-model="users.editedItem.username"
+                                                      :rules="[() => !!users.editedItem.username || 'username is required']"
                                                       label="用户名称"
                                         ></v-text-field>
                                         <v-text-field v-else v-model="users.editedItem.username"
+                                                      :rules="[() => !!users.editedItem.username || 'username is required']"
                                                       label="用户名称"
                                         ></v-text-field>
                                     </v-flex>
@@ -28,6 +30,7 @@
                                         <v-select :items="roles"
                                                   label="角色"
                                                   v-model="users.editedItem.role"
+                                                  :rules="[() => !!users.editedItem.role || 'role is required']"
                                         ></v-select>
 
                                     </v-flex>
@@ -66,8 +69,14 @@
                             <v-container grid-list-md>
                                 <v-layout wrap>
                                     <v-flex xs12 sm6 md12>
-                                        <v-text-field v-if="groups.editedIndex !==-1 " disabled v-model="groups.editedItem.groupName" label="用户名称"></v-text-field>
-                                        <v-text-field v-else v-model="groups.editedItem.groupName" label="用户组名称"></v-text-field>
+                                        <v-text-field v-if="groups.editedIndex !==-1 "
+                                                      disabled v-model="groups.editedItem.groupName"
+                                                      :rules="[() => !!groups.editedItem.groupName || 'groupName is required']"
+                                                      label="用户组名称"
+                                        ></v-text-field>
+                                        <v-text-field v-else v-model="groups.editedItem.groupName"
+                                                      :rules="[() => !!groups.editedItem.groupName || 'groupName is required']"
+                                                      label="用户组名称"></v-text-field>
 
                                     </v-flex>
                                     <v-flex xs12 sm6 md12>

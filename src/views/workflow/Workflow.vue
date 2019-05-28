@@ -190,7 +190,7 @@
             currentUser: true,
             headers: [
                 {text: 'ID', value: 'id', sortable: false},
-                {text: '工作流名称', align: 'left', sortable: false, value: 'name'},
+                {text: '工作流名称', sortable: false, value: 'name'},
                 {text: 'Cron表达式', value: 'cron', sortable: false},
                 {text: '子任务', value: 'postFlow', sortable: false},
                 /* {text: '参数', value: 'shardType', sortable: false},*/
@@ -390,3 +390,13 @@
         }
 </script>
 
+<style>
+
+    table.v-table {
+        border-radius: 2px;
+        border-collapse: collapse;
+        border-spacing: 0;
+        width: 99%;
+        max-width: 100%;
+    }
+</style>

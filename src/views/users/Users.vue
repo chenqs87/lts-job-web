@@ -353,3 +353,13 @@
         }
     }
 </script>
+<style>
+
+    table.v-table {
+        border-radius: 2px;
+        border-collapse: collapse;
+        border-spacing: 0;
+        width: 99%;
+        max-width: 100%;
+    }
+</style>

@@ -158,7 +158,8 @@
         },
         filters: {
             formatDate: function (value) {
-                return dataFormat(value);
+                //由于vue自带的时区为美国时区 需要转换为本地时区
+                return (new Date(dataFormat(value)+ 'Z')).toLocaleString();
             },
             parsePostTask: function (postTask) {
                 let post = postTask;

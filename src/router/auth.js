@@ -25,6 +25,7 @@ const auth = {
     cleanAuth() {
         this.user.authenticated = false;
         sessionStorage.removeItem('access-token');
+        sessionStorage.removeItem('userName');
         sessionStorage.removeItem('role');
     },
 
@@ -35,7 +36,8 @@ const auth = {
         }).then(res => res.data);
     },
     setAuth(data) {
-        sessionStorage.setItem('access-token', data.token);
+        sessionStorage.setItem('access-token', data.token)
+        sessionStorage.setItem('userName', data.userName);
         sessionStorage.setItem('role', data.role);
         this.refreshAuth();
     },

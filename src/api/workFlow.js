@@ -1,7 +1,13 @@
 import axios from 'axios';
 
-export const getAllFlows = (pageNum, pageSize) => {
-    return axios.get(`/console/flow/getAllFlows`, {params: {pageNum: pageNum, pageSize: pageSize}})
+// 根据用户name查询Flow
+export const getAllFlowsByUser = (pageNum, pageSize) => {
+    return axios.get(`/console/flow/getAllFlowsByUser`, {params: {pageNum: pageNum, pageSize: pageSize}})
+        .then(res => res.data);
+};
+// 根据用户group查询Flow
+export const getAllFlowsByGroup = (pageNum, pageSize) => {
+    return axios.get(`/console/flow/getAllFlowsByGroup`, {params: {pageNum: pageNum, pageSize: pageSize}})
         .then(res => res.data);
 };
 
@@ -23,8 +29,14 @@ export const newFlow = params => {
     return axios.put('/console/flow/flow', params).then(res => res.data);
 };
 
-export const getAllJobs = (params) => {
-    return axios.get(`/console/flow/getAllJobs`, {params: params})
+export const getAllJobsByUser = (params) => {
+    return axios.get(`/console/flow/getAllJobsByUser`, {params: params})
+        .then(res => res.data);
+};
+
+
+export const getAllJobsByGroup = (params) => {
+    return axios.get(`/console/flow/getAllJobsByGroup`, {params: params})
         .then(res => res.data);
 };
 
@@ -48,8 +60,8 @@ export const reTriggerFlow = (flowId, flowTaskId, params) => {
     return axios.post(`/console/flow/reTriggerFlow?flowId=${flowId}&flowTaskId=${flowTaskId}&params=${params}`).then(res => res.data);
 };
 
-export const killFlowTask = (flowTaskId) => {
-    return axios.post(`/console/flow/killFlowTask?flowTaskId=${flowTaskId}`).then(res => res.data);
+export const killFlowTask = (flowId,flowTaskId) => {
+    return axios.post(`/console/flow/killFlowTask?flowId=${flowId}&flowTaskId=${flowTaskId}`).then(res => res.data);
 };
 
 export const getAllFlowTasks = (pageNum, pageSize) => {

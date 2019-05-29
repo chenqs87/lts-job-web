@@ -130,7 +130,7 @@
                 });
             },
             killTask(item) {
-                killFlowTask(item.id).then(data => {
+                killFlowTask(item.flowId,item.id).then(data => {
                     this.queryTasks();
                 })
             },

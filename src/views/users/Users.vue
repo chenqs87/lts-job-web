@@ -43,7 +43,12 @@
                                     </v-flex>
 
                                     <v-flex xs12 sm6 md12>
-                                        <v-textarea v-model="users.editedItem.groupName" label="用户组"></v-textarea>
+
+                                        <v-select :items="groupNames"
+                                                  label="用户组"
+                                                  v-model="users.editedItem.groupName"
+                                                  :rules="[() => !!users.editedItem.groupName || 'groupName is required']"
+                                        ></v-select>
                                     </v-flex>
                                 </v-layout>
                             </v-container>
@@ -144,10 +149,11 @@
 </template>
 
 <script>
-    import {getUsers,getGroups,updateUser,updateGroup,deleteUser,deleteGroup,newUser,newGroup, dataFormat} from '@/api/workFlow';
+    import {getUsers,getGroups,updateUser,updateGroup,deleteUser,deleteGroup,newUser,newGroup, dataFormat,getAllGroups} from '@/api/workFlow';
     export default {
         data: () => ({
             roles:['ROLE_ADMIN','ROLE_USER'],
+            groupNames:[],
             usersDialog: false,
             groupDialog: false,
             users: {
@@ -217,9 +223,18 @@
             }
         }),
         created () {
-
+            this.getAllGroups();
         },
         methods: {
+            getAllGroups() {
+                getAllGroups().then(data =>{
+                    let items = [];
+                    for (let i=0; i< data.length; i++) {
+                        items[i]=data[i]['groupName'];
+                    }
+                    this.groupNames = items;
+                });
+            },
             queryUsers () {
                 let pageNum = this.users.pagination.page === null || this.users.pagination.page === undefined
                     ? 1 : this.users.pagination.page;
@@ -294,7 +309,8 @@
                 setTimeout(() => {
                     this.groups.editedItem = Object.assign({}, this.groups.defaultItem)
                     this.groups.editedIndex = -1
-                }, 300)
+                }, 300);
+                this.getAllGroups();
             },
             groupDeleteItem (item) {
                 if(confirm('Are you sure you want to delete this item?')) {

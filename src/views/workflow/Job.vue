@@ -7,6 +7,7 @@
                 <v-dialog v-model="dialog" max-width="500px">
                     <template v-slot:activator="{ on }">
                         <v-layout>
+
                             <v-flex xs12 md4>
                                 <v-text-field append-icon="search" v-model="search.group" label="分组"></v-text-field>
                             </v-flex>
@@ -17,9 +18,13 @@
 
                             <v-flex xs12 md4>
                                 <v-btn color="primary" dark class="mb-2" v-on:click="queryTasks">搜索</v-btn>
-                                <v-btn color="primary" dark class="mb-2" v-on="on">新建任务</v-btn>
+                                <v-btn color="primary" dark class="mb-2" v-on="on" v-if=" switchUFBtn === '切换用户组任务' ">新建任务</v-btn>
+                            </v-flex>
+                            <v-flex xs12 md4>
+                            <v-btn color="primary" dark class="mb-2" v-on:click="switchUF">{{ switchUFBtn }}</v-btn>
                             </v-flex>
                         </v-layout>
+
                     </template>
                     <v-card>
                         <v-card-title>
@@ -45,7 +50,7 @@
                                     </v-flex>
                                     <v-flex xs12 sm6 md12>
                                         <v-combobox :items="jobTypes" label="作业类型"
-                                                    :validate-on-blur = true
+                                                    :validate-on-blur=true
                                                     :rules="[rules.required]"
                                                     v-model="editedItem.jobType"></v-combobox>
                                     </v-flex>
@@ -58,8 +63,8 @@
                                         <v-textarea v-model="editedItem.config" label="配置"></v-textarea>
                                     </v-flex>
                                     <!--<v-flex xs12 sm6 md12>-->
-                                        <!--<v-switch v-model="editedItem.shardType" true-value="1" false-value="0"-->
-                                                  <!--label="是否分片"></v-switch>-->
+                                    <!--<v-switch v-model="editedItem.shardType" true-value="1" false-value="0"-->
+                                    <!--label="是否分片"></v-switch>-->
                                     <!--</v-flex>-->
                                 </v-layout>
                             </v-container>
@@ -158,7 +163,8 @@
     import 'codemirror/theme/base16-dark.css'
 
     import {
-        getAllJobs,
+        getAllJobsByUser,
+        getAllJobsByGroup,
         newJob,
         updateJob,
         deleteJob,
@@ -172,6 +178,7 @@
         components: {SelectAuth},
         data: () => ({
 
+            switchUFBtn: "切换用户组任务",
             rules: {
                 required: value => !!value || 'Required.',
                 counter: value => value.length <= 45 || 'Max 45 characters',
@@ -288,17 +295,31 @@
                     ? 1 : this.pagination.page;
                 let pageSize = this.pagination.rowsPerPage === null || this.pagination.rowsPerPage === undefined
                     ? 10 : this.pagination.rowsPerPage;
-                getAllJobs({
-                    pageNum: pageNum,
-                    pageSize: pageSize,
-                    name: this.search.name === "" ? null : this.search.name,
-                    group: this.search.group === "" ? null : this.search.group
-                }).then(data => {
-                    this.desserts = data.list;
-                    this.totalDesserts = data.total;
-                    this.pagination.page = data['pageNum'];
-                    this.pagination.totalItems = data.total;
-                });
+                if (this.switchUFBtn === "切换用户个人任务") {
+                    getAllJobsByGroup({
+                        pageNum: pageNum,
+                        pageSize: pageSize,
+                        name: this.search.name === "" ? null : this.search.name,
+                        group: this.search.group === "" ? null : this.search.group
+                    }).then(data => {
+                        this.desserts = data.list;
+                        this.totalDesserts = data.total;
+                        this.pagination.page = data['pageNum'];
+                        this.pagination.totalItems = data.total;
+                    });
+                } else {
+                    getAllJobsByUser({
+                        pageNum: pageNum,
+                        pageSize: pageSize,
+                        name: this.search.name === "" ? null : this.search.name,
+                        group: this.search.group === "" ? null : this.search.group
+                    }).then(data => {
+                        this.desserts = data.list;
+                        this.totalDesserts = data.total;
+                        this.pagination.page = data['pageNum'];
+                        this.pagination.totalItems = data.total;
+                    });
+                }
             },
             editItem(item) {
                 this.editedIndex = this.desserts.indexOf(item)
@@ -367,6 +388,15 @@
                     }
                     this.handlerList = hs;
                 })
+            },
+            //点击按钮转换用户 组的Job
+            switchUF() {
+                if (this.switchUFBtn === "切换用户组任务") {
+                    this.switchUFBtn = "切换用户个人任务";
+                } else {
+                    this.switchUFBtn = "切换用户组任务";
+                }
+                this.queryTasks();
             }
         },
         filters: {
@@ -384,6 +414,7 @@
         color: black;
         direction: ltr;
     }
+
     table.v-table {
         border-radius: 2px;
         border-collapse: collapse;

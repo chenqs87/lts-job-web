@@ -7,7 +7,18 @@
                 <v-spacer></v-spacer>
                 <v-dialog v-model="dialog" max-width="500px">
                     <template v-slot:activator="{ on }">
-                        <v-btn color="primary" dark class="mb-2" v-on="on">新建工作流</v-btn>
+                        <v-layout>
+
+
+                            <v-flex xs12 md4>
+                                <v-btn color="primary" dark class="mb-2" v-on:click="switchUF">{{ switchUFBtn }}</v-btn>
+                            </v-flex>
+                            <v-flex xs12 md4>
+                                <v-btn color="primary" dark class="mb-2" v-on="on" v-if=" switchUFBtn === '切换用户组工作流' ">
+                                    新建工作流
+                                </v-btn>
+                            </v-flex>
+                        </v-layout>
                     </template>
                     <v-card>
                         <v-card-title>
@@ -21,7 +32,7 @@
                                         <v-text-field
                                                 v-model="editedItem.name"
                                                 label="工作流名称"
-                                                :validate-on-blur = true
+                                                :validate-on-blur=true
                                                 :rules="[
                                                    () => !!editedItem.name || 'name is required',
                                                    () => !!editedItem.name && editedItem.name.length <= 45 || 'name must be less than 45 characters'
@@ -29,12 +40,11 @@
                                         ></v-text-field>
                                     </v-flex>
                                     <v-flex xs12 sm6 md12>
-                                        <el-popover v-model="cronPopover" >
+                                        <el-popover v-model="cronPopover">
                                             <cron @change="changeCron" @close="cronPopover=false" i18n="cn"></cron>
                                             <!--<el-input class="cron-input" slot="reference" @click="cronPopover=true" v-model="editedItem.cron" placeholder="请输入定时策略"></el-input>-->
                                             <v-text-field label="Cron表达式" slot="reference"
                                                           @blur.native.capture="leaveCron"
-                                                          :validate-on-blur = true
                                                           :rules="[
                                                                () => !!editedItem.cron || 'cron is required'
                                                             ]"
@@ -166,8 +176,9 @@
     import ModelFlowEditor from '@/components/flow-editor/model-flow-editor';
     import {cron} from 'vue-cron';
     import {
-        getAllFlows, newFlow, updateFlow, deleteFlow, dataFormat, triggerFlow,
-        startCronFlow, stopCronFlow, getFlowPermit, reTriggerFlow, getAlertConfig
+        getAllFlowsByUser, newFlow, updateFlow, deleteFlow, dataFormat, triggerFlow,
+        startCronFlow, stopCronFlow, getFlowPermit, reTriggerFlow, getAlertConfig,
+        getAllFlowsByGroup
     } from '@/api/workFlow';
 
     export default {
@@ -175,6 +186,8 @@
         data: () => ({
             template: '<cron/>',
             cronPopover: false,
+
+            switchUFBtn: "切换用户组工作流",
             permitAuthDialog: false,
             permitRule: {},
             totalDesserts: 0,
@@ -199,195 +212,215 @@
                 {text: '启动时间', value: 'startTime'},
                 {text: '创建时间', value: 'createTime'},
                 {text: '操作', sortable: false}
-                ],
-                desserts: [],
-                editedIndex: -1,
-                editedItem: {
-                    id: -1,
-                    name: "",
-                    flowConfig: "",
-                    cron: "",
-                    flowStatus: 1,
-                    params:"",
-                    createUser: "",
-                    isSchedule: 0,
-                    startTime: "",
-                    createTime: "",
-                    postFlow:"",
-                    emailList:"",
-                    phoneList:"",
-                },
-                defaultItem: {
-                    id: -1,
-                    name: "",
-                    flowConfig: "",
-                    cron: "",
-                    flowStatus: 1,
-                    params:"",
-                    createUser: "",
-                    isSchedule: 0,
-                    startTime: "",
-                    createTime: "",
-                    postFlow:"",
-                    emailList:"",
-                    phoneList:"",
-                }
-            }),
-            computed: {
-                formTitle () {
-                    return this.editedIndex === -1 ? '新建' : '编辑'
-                }
+            ],
+            desserts: [],
+            editedIndex: -1,
+            editedItem: {
+                id: -1,
+                name: "",
+                flowConfig: "",
+                cron: "",
+                flowStatus: 1,
+                params: "",
+                createUser: "",
+                isSchedule: 0,
+                startTime: "",
+                createTime: "",
+                postFlow: "",
+                emailList: "",
+                phoneList: "",
             },
-            watch: {
-                dialog (val) {
-                    val || this.close()
-                },
-                pagination: {
-                    deep: true,
-                    handler() {
-                        this.queryTasks();
-                    }
+            defaultItem: {
+                id: -1,
+                name: "",
+                flowConfig: "",
+                cron: "",
+                flowStatus: 1,
+                params: "",
+                createUser: "",
+                isSchedule: 0,
+                startTime: "",
+                createTime: "",
+                postFlow: "",
+                emailList: "",
+                phoneList: "",
+            }
+        }),
+        computed: {
+            formTitle() {
+                return this.editedIndex === -1 ? '新建' : '编辑'
+            }
+        },
+        watch: {
+            dialog(val) {
+                val || this.close()
+            },
+            pagination: {
+                deep: true,
+                handler() {
+                    this.queryTasks();
                 }
+            }
+
+        },
+        created() {
+            this.getPermitRule();
+        },
+        methods: {
+            leaveCron() {
+                this.cronPopover = false;
+            },
+            test(data) {
+                console.log(data)
+                this.fullscreen.dialog = false;
+            },
+            editFlow(item) {
+                this.$router.push({
+                    path: '/workflow/flow-editor',
+                    query: {id: item.id, flowEditorInfo: item.flowEditorInfo}
+                });
 
             },
-            created () {
-                this.getPermitRule();
-            },
-            methods: {
-                leaveCron(){
-                    this.cronPopover = false;
-                },
-                test(data) {
-                    console.log(data)
-                    this.fullscreen.dialog =false;
-                },
-                editFlow(item) {
-                    this.$router.push({
-                        path: '/workflow/flow-editor',
-                        query: {id: item.id, flowEditorInfo: item.flowEditorInfo}
+            queryTasks() {
+                let pageNum = this.pagination.page === null || this.pagination.page === undefined
+                    ? 1 : this.pagination.page;
+                let pageSize = this.pagination.rowsPerPage === null || this.pagination.rowsPerPage === undefined
+                    ? 10 : this.pagination.rowsPerPage;
+
+
+                if (this.switchUFBtn === "切换用户个人工作流") {
+                    getAllFlowsByGroup(pageNum, pageSize).then(data => {
+                        this.desserts = data.list;
+                        this.totalDesserts = data.total;
+                        this.pagination.page = data['pageNum'];
+                        this.pagination.totalItems = data.total;
                     });
-
-                },
-                queryTasks () {
-                    let pageNum = this.pagination.page === null || this.pagination.page === undefined
-                        ? 1 : this.pagination.page;
-                    let pageSize = this.pagination.rowsPerPage === null || this.pagination.rowsPerPage === undefined
-                        ? 10 : this.pagination.rowsPerPage;
-                     getAllFlows(pageNum, pageSize).then(data => {
-                         this.desserts = data.list;
-                         this.totalDesserts = data.total;
-                         this.pagination.page = data['pageNum'];
-                         this.pagination.totalItems = data.total;
+                } else {
+                    getAllFlowsByUser(pageNum, pageSize).then(data => {
+                        this.desserts = data.list;
+                        this.totalDesserts = data.total;
+                        this.pagination.page = data['pageNum'];
+                        this.pagination.totalItems = data.total;
                     });
-                },
-                editItem (item) {
-                    getAlertConfig(item.id).then(data => {
-                        this.editedIndex = this.desserts.indexOf(item);
-                        this.editedItem = Object.assign({}, item);
-                        this.editedItem['emailList'] = data.emailList;
-                        this.editedItem['phoneList'] = data.phoneList;
+                }
+            },
+            editItem(item) {
+                getAlertConfig(item.id).then(data => {
+                    this.editedIndex = this.desserts.indexOf(item);
+                    this.editedItem = Object.assign({}, item);
+                    this.editedItem['emailList'] = data.emailList;
+                    this.editedItem['phoneList'] = data.phoneList;
 
-                        this.dialog = true
+                    this.dialog = true
+                })
+
+            },
+            deleteItem(item) {
+                const index = this.desserts.indexOf(item);
+                if (confirm('Are you sure you want to delete this item?')) {
+                    deleteFlow(item.id).then(() => {
+                        this.desserts.splice(index, 1)
                     })
+                }
+            },
+            close() {
+                this.dialog = false
+                setTimeout(() => {
+                    this.editedItem = Object.assign({}, this.defaultItem)
+                    this.editedIndex = -1
+                }, 300)
+            },
+            save() {
+                if (this.editedIndex > -1) {
+                    updateFlow(this.editedItem).then(data => {
+                        Object.assign(this.desserts[this.editedIndex], data);
 
-                },
-                deleteItem (item) {
-                    const index = this.desserts.indexOf(item);
-                    if(confirm('Are you sure you want to delete this item?')) {
-                        deleteFlow(item.id).then(() => {
-                            this.desserts.splice(index, 1)
-                        })
-                    }
-                },
-                close () {
-                    this.dialog = false
-                    setTimeout(() => {
-                        this.editedItem = Object.assign({}, this.defaultItem)
-                        this.editedIndex = -1
-                    }, 300)
-                },
-                save () {
-                    if (this.editedIndex > -1) {
-                        updateFlow(this.editedItem).then(data => {
-                            Object.assign(this.desserts[this.editedIndex], data);
-
-                        });
-                    } else {
-                        newFlow(this.editedItem).then(data => {
-                            this.desserts.push(data)
-                        })
-                    }
-                    this.close()
-                },
-                trigger(flowId) {
-                    triggerFlow(flowId, "").then(data => {
-                        this.$router.push({
-                            path: '/workflow/flow-tasks',
-                            query: {flowId: flowId}
-                        });
                     });
-                },
-                history(flowId) {
+                } else {
+                    newFlow(this.editedItem).then(data => {
+                        this.desserts.push(data)
+                    })
+                }
+                this.close()
+            },
+            trigger(flowId) {
+                triggerFlow(flowId, "").then(data => {
                     this.$router.push({
                         path: '/workflow/flow-tasks',
                         query: {flowId: flowId}
                     });
-                },
-                startCron(item) {
-                    if(confirm('确定要启动定时任务吗？')) {
-                        this.editedIndex = this.desserts.indexOf(item);
-                        this.editedItem = Object.assign({}, item)
-                        startCronFlow(item.id).then(data => {
-                            //Object.assign(this.desserts[this.editedIndex], data);
-                            this.queryTasks();
-                        });
-                    }
-                },
-                stopCron(item) {
-                    if(confirm('确定要终止定时任务吗？')) {
-                        this.editedIndex = this.desserts.indexOf(item);
-                        this.editedItem = Object.assign({}, item);
-                        stopCronFlow(item.id).then(data => {
-                            //Object.assign(this.desserts[this.editedIndex], data);
-                            this.queryTasks();
-                        });
-                    }
-                },
-                cancelAuthDialog () {
-                    this.permitAuthDialog = false;
-                },
-                getPermitRule() {
-                    getFlowPermit().then(data => {
-                        this.permitRule = data;
-                    })
-                },
-                auth(item) {
+                });
+            },
+            history(flowId) {
+                this.$router.push({
+                    path: '/workflow/flow-tasks',
+                    query: {flowId: flowId}
+                });
+            },
+            startCron(item) {
+                if (confirm('确定要启动定时任务吗？')) {
+                    this.editedIndex = this.desserts.indexOf(item);
+                    this.editedItem = Object.assign({}, item)
+                    startCronFlow(item.id).then(data => {
+                        //Object.assign(this.desserts[this.editedIndex], data);
+                        this.queryTasks();
+                    });
+                }
+            },
+            stopCron(item) {
+                if (confirm('确定要终止定时任务吗？')) {
                     this.editedIndex = this.desserts.indexOf(item);
                     this.editedItem = Object.assign({}, item);
-                    this.editedItem['permitSelected'] = [];
-                    let permit = this.editedItem.permit;
-                    for (let permitRuleKey in this.permitRule) {
-                        let cur = this.permitRule[permitRuleKey];
-                        if((permit & cur) > 0) {
-                            this.editedItem['permitSelected'].push(cur);
-                        }
-                    }
-
-                    this.permitAuthDialog = true;
-                },
-                //改变Cron表达式
-                changeCron(val) {
-                    this.editedItem['cron'] = val
-                },
-
-            },
-            filters: {
-                formatDate: function (value) {
-                    //由于vue自带的时区为美国时区 需要转换为本地时区
-                    return (new Date(dataFormat(value) + 'Z')).toLocaleString();
+                    stopCronFlow(item.id).then(data => {
+                        //Object.assign(this.desserts[this.editedIndex], data);
+                        this.queryTasks();
+                    });
                 }
+            },
+            cancelAuthDialog() {
+                this.permitAuthDialog = false;
+            },
+            getPermitRule() {
+                getFlowPermit().then(data => {
+                    this.permitRule = data;
+                })
+            },
+            auth(item) {
+                this.editedIndex = this.desserts.indexOf(item);
+                this.editedItem = Object.assign({}, item);
+                this.editedItem['permitSelected'] = [];
+                let permit = this.editedItem.permit;
+                for (let permitRuleKey in this.permitRule) {
+                    let cur = this.permitRule[permitRuleKey];
+                    if ((permit & cur) > 0) {
+                        this.editedItem['permitSelected'].push(cur);
+                    }
+                }
+
+                this.permitAuthDialog = true;
+            },
+            //改变Cron表达式
+            changeCron(val) {
+                this.editedItem['cron'] = val
+            },
+            //点击按钮转换用户 组的Flow
+            switchUF() {
+                if (this.switchUFBtn === "切换用户组工作流") {
+                    this.switchUFBtn = "切换用户个人工作流";
+                } else {
+                    this.switchUFBtn = "切换用户组工作流";
+                }
+                this.queryTasks();
+            }
+
+        },
+        filters: {
+            formatDate: function (value) {
+                //由于vue自带的时区为美国时区 需要转换为本地时区
+                return (new Date(dataFormat(value) + 'Z')).toLocaleString();
             }
         }
+    }
 </script>
 
 <style>

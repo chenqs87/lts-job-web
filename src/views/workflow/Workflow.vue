@@ -44,7 +44,7 @@
                                             <cron @change="changeCron" @close="cronPopover=false" i18n="cn"></cron>
                                             <!--<el-input class="cron-input" slot="reference" @click="cronPopover=true" v-model="editedItem.cron" placeholder="请输入定时策略"></el-input>-->
                                             <v-text-field label="Cron表达式" slot="reference"
-                                                          @blur.native.capture="leaveCron"
+                                                          @click="cronPopover=true"
                                                           :rules="[
                                                                () => !!editedItem.cron || 'cron is required'
                                                             ]"
@@ -59,7 +59,7 @@
                                     </v-flex>
                                     <v-flex xs12 sm6 md12>
                                         <v-text-field v-model="editedItem.postFlow"
-                                                      label="子工作流（多个使用逗号分隔）"></v-text-field>
+                                                      label="子工作流（多个id使用逗号分隔）"></v-text-field>
                                     </v-flex>
 
                                     <v-flex xs12 sm6 md12>
@@ -267,9 +267,6 @@
             this.getPermitRule();
         },
         methods: {
-            leaveCron() {
-                this.cronPopover = false;
-            },
             test(data) {
                 console.log(data)
                 this.fullscreen.dialog = false;
@@ -310,10 +307,8 @@
                     this.editedItem = Object.assign({}, item);
                     this.editedItem['emailList'] = data.emailList;
                     this.editedItem['phoneList'] = data.phoneList;
-
                     this.dialog = true
                 })
-
             },
             deleteItem(item) {
                 const index = this.desserts.indexOf(item);
@@ -331,17 +326,30 @@
                 }, 300)
             },
             save() {
-                if (this.editedIndex > -1) {
-                    updateFlow(this.editedItem).then(data => {
-                        Object.assign(this.desserts[this.editedIndex], data);
+                const l = this;
+                if(l.editedItem.postFlow!=="") {
+                    let split = l.editedItem.postFlow.split(",");
 
+                    var numReg = /^[0-9]+$/
+                    var numRe = new RegExp(numReg)
+
+                    for (let i = 0; i < split.length; i++) {
+                        if (!numRe.test(split[i])) {
+                            alert("子工作流需要都为数字！");
+                            return;
+                        }
+                    }
+                }
+                if (l.editedIndex > -1) {
+                    updateFlow(l.editedItem).then(data => {
+                        l.queryTasks();
                     });
                 } else {
-                    newFlow(this.editedItem).then(data => {
-                        this.desserts.push(data)
+                    newFlow(l.editedItem).then(data => {
+                        l.queryTasks();
                     })
                 }
-                this.close()
+                l.close()
             },
             trigger(flowId) {
                 triggerFlow(flowId, "").then(data => {

@@ -89,7 +89,7 @@
     import Editor from './editor';
     import './register-items.js';
     import JobRegister from './register-items.js';
-    import {getAllJobs} from '@/api/workFlow';
+    import {getAllJobsByUser} from '@/api/workFlow';
 
 
     export default {
@@ -165,7 +165,7 @@
                 }
             });
 
-            getAllJobs({
+            getAllJobsByUser({
                 pageNum: 1,
                 pageSize: 10000,
             }).then(data => {

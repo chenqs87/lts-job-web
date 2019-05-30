@@ -7,7 +7,14 @@
                 <v-icon small class="mr-2" v-on:click="getLog">refresh</v-icon>
             </v-toolbar>
             <v-card-text>
-               <pre>{{log}}</pre>
+                <v-textarea
+                        name="input-7-1"
+                        solo
+                        label="Label"
+                        :readonly = true
+                        auto-grow
+                        :value="log"
+                ></v-textarea>
             </v-card-text>
         </v-container>
     </div>

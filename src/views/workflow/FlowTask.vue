@@ -1,11 +1,6 @@
 <template xmlns:v-slot="http://www.w3.org/1999/XSL/Transform">
     <div>
         <v-container grid-list-xl fluid>
-            <v-toolbar flat color="white">
-                <v-toolbar-title>执行日志</v-toolbar-title>
-                <v-spacer></v-spacer>
-
-            </v-toolbar>
             <v-data-table :headers="headers" :items="desserts" class="elevation-1" :pagination.sync="pagination"
                 :total-items="totalDesserts" :rows-per-page-items="[10,15,20,25,30]">
                 <template v-slot:items="props">

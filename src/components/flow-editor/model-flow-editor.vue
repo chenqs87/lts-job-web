@@ -185,7 +185,23 @@
         methods: {
             submit() {
               alert(this.filter);
-                this.jobsList = []
+              if ("" === this.filter)
+              {
+                  alert("过滤选项为空，请输入！");
+              }else{
+                  alert("过滤选项bu为空");
+//                  getAllJobsByUser({
+//                      pageNum: 1,
+//                      pageSize: 10000,
+//                  }).then(data => {
+//                      this.jobs = data.list;
+//                      this.jobs.forEach(job => {
+//                          JobRegister.registerJob(job.id, job.name);
+//                      });
+//
+//                      this.jobsList = this.jobs;
+//                  })
+              }
             },
             saveData() {
                 this.$emit('save', this.page.save());

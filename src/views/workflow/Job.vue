@@ -2,26 +2,22 @@
     <div>
         <v-container grid-list-xl fluid>
             <v-toolbar flat color="white">
-                <v-toolbar-title>任务配置</v-toolbar-title>
-                <v-spacer></v-spacer>
                 <v-dialog v-model="dialog" max-width="500px">
                     <template v-slot:activator="{ on }">
                         <v-layout>
 
-                            <v-flex xs12 md4>
-                                <v-text-field append-icon="search" v-model="search.group" label="分组"></v-text-field>
+                            <v-flex xs12 md3>
+                                <v-text-field small append-icon="search" v-model="search.group" label="分组"></v-text-field>
                             </v-flex>
 
-                            <v-flex xs12 md4>
-                                <v-text-field append-icon="search" v-model="search.name" label="作业名称"></v-text-field>
+                            <v-flex xs12 md3>
+                                <v-text-field  append-icon="search" v-model="search.name" label="作业名称"></v-text-field>
                             </v-flex>
 
-                            <v-flex xs12 md4>
+                            <v-flex xs12 md6>
                                 <v-btn color="primary" dark class="mb-2" v-on:click="queryTasks">搜索</v-btn>
                                 <v-btn color="primary" dark class="mb-2" v-on="on" v-if=" switchUFBtn === '切换用户组任务' ">新建任务</v-btn>
-                            </v-flex>
-                            <v-flex xs12 md4>
-                            <v-btn color="primary" dark class="mb-2" v-on:click="switchUF">{{ switchUFBtn }}</v-btn>
+                                <v-btn color="primary" dark class="mb-2" v-on:click="switchUF">{{ switchUFBtn }}</v-btn>
                             </v-flex>
                         </v-layout>
 

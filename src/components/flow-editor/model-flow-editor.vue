@@ -7,7 +7,7 @@
 
             <div id="itempannel">
                 <ul>
-                    <el-input placeholder="请输入过滤选项" v-model="filter" class="input-with-select">
+                    <el-input placeholder="请输入过滤组名" v-model="filter" class="input-with-select">
                         <el-button slot="append" icon="el-icon-search" v-on:click="submit"></el-button>
                     </el-input>
                     <li v-for="job in jobsList" :data-shape="job.id" class="getItem" data-type="node" data-size="170*34">
@@ -184,23 +184,33 @@
         },
         methods: {
             submit() {
-              alert(this.filter);
-              if ("" === this.filter)
+                const vueThis = this;
+              console.log(vueThis.filter);
+              if ("" !== vueThis.filter)
               {
-                  alert("过滤选项为空，请输入！");
-              }else{
-                  alert("过滤选项bu为空");
-//                  getAllJobsByUser({
-//                      pageNum: 1,
-//                      pageSize: 10000,
-//                  }).then(data => {
-//                      this.jobs = data.list;
-//                      this.jobs.forEach(job => {
-//                          JobRegister.registerJob(job.id, job.name);
-//                      });
-//
-//                      this.jobsList = this.jobs;
-//                  })
+                  vueThis.jobsList = null;
+                  getAllJobsByUser({
+                      pageNum: 1,
+                      pageSize: 10000,
+                  }).then(data => {
+                      vueThis.jobsList = [];
+                      vueThis.jobs = [];
+                      let list = data.list;
+                      let j = 0;
+                      console.log("list  "+list)
+                      for (let i = 0 ; i< list.length ; i++)
+                      {
+                          console.log("list[i].group  "+list[i].group)
+                          console.log("list[i].group === vueThis.filter  " + (list[i].group === vueThis.filter))
+                          if(list[i].group == vueThis.filter) {
+                              vueThis.jobs[j++] = list[i];
+                              JobRegister.registerJob(list[i].id, list[i].name);
+                          }
+                      }
+                      console.log("vueThis.jobs  " +vueThis.jobs)
+
+                      vueThis.jobsList = vueThis.jobs;
+                  })
               }
             },
             saveData() {

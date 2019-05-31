@@ -1,19 +1,15 @@
 <template xmlns:v-slot="http://www.w3.org/1999/XSL/Transform">
     <div>
         <v-container grid-list-xl fluid>
-            <v-toolbar flat color="white">
-                <v-toolbar-title>工作流配置</v-toolbar-title>
-                <v-divider></v-divider>
+            <v-toolbar flat color="grey">
                 <v-spacer></v-spacer>
                 <v-dialog v-model="dialog" max-width="500px">
                     <template v-slot:activator="{ on }">
                         <v-layout>
-
-
-                            <v-flex xs12 md4>
-                                <v-btn color="primary" dark class="mb-2" v-on:click="switchUF">{{ switchUFBtn }}</v-btn>
+                            <v-flex xs12 md6>
                             </v-flex>
-                            <v-flex xs12 md4>
+                            <v-flex xs12 md6>
+                                <v-btn color="primary" dark class="mb-2" v-on:click="switchUF">{{ switchUFBtn }}</v-btn>
                                 <v-btn color="primary" dark class="mb-2" v-on="on" v-if=" switchUFBtn === '切换用户组工作流' ">
                                     新建工作流
                                 </v-btn>

@@ -10,7 +10,7 @@
                     <el-input placeholder="请输入过滤组名" v-model="filter" class="input-with-select">
                         <el-button slot="append" icon="el-icon-search" v-on:click="submit"></el-button>
                     </el-input>
-                    <li v-for="job in jobsList" :data-shape="job.id" class="getItem" data-type="node" data-size="170*34">
+                    <li v-for="job in jobsList"   :data-shape="job.id" class="getItem" data-type="node" data-size="170*34">
                         <span class="pannel-type-icon"></span>{{job.id + ":" + job.name}}
                     </li>
                 </ul>
@@ -185,7 +185,6 @@
         methods: {
             submit() {
                 const vueThis = this;
-              console.log(vueThis.filter);
               if ("" !== vueThis.filter)
               {
                   vueThis.jobsList = null;
@@ -197,23 +196,29 @@
                       vueThis.jobs = [];
                       let list = data.list;
                       let j = 0;
-                      console.log("list  "+list)
                       for (let i = 0 ; i< list.length ; i++)
                       {
-                          console.log("list[i].group  "+list[i].group)
-                          console.log("list[i].group === vueThis.filter  " + (list[i].group === vueThis.filter))
                           if(list[i].group == vueThis.filter) {
                               vueThis.jobs[j++] = list[i];
                               JobRegister.registerJob(list[i].id, list[i].name);
                           }
                       }
-                      console.log("vueThis.jobs  " +vueThis.jobs)
-
                       vueThis.jobsList = vueThis.jobs;
                   })
               }
             },
             saveData() {
+                console.log(this.page.save());
+                console.log(this.page.save().nodes);
+                var nodes=this.page.save().nodes;
+                for (var i = 0; i < nodes.length; i++) {
+                    for (var j = i+1; j < nodes.length; j++) {
+                        if(nodes[i].shape===nodes[j].shape){
+                           alert("添加的任务有重复的，请删除后保存！");
+                           return;
+                        }
+                    }
+                }
                 this.$emit('save', this.page.save());
             },
             exit() {
@@ -223,7 +228,7 @@
                 this.page.changeAddEdgeModel({
                     shape: type
                 });
-            }
+            },
         }
     };
 </script>

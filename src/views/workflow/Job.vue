@@ -1,79 +1,78 @@
 <template xmlns:v-slot="http://www.w3.org/1999/XSL/Transform" xmlns:v="http://www.w3.org/1999/XSL/Transform">
     <div>
         <v-container grid-list-xl fluid>
-            <v-toolbar flat color="grey">
-                <v-spacer></v-spacer>
-                <v-dialog v-model="dialog" max-width="500px">
-                    <template v-slot:activator="{ on }">
-                        <v-layout>
-                            <v-flex xs12 md3>
-                                <v-text-field append-icon="search" v-model="search.group" label="分组"></v-text-field>
-                            </v-flex>
+            <v-spacer></v-spacer>
+            <v-dialog v-model="dialog" max-width="500px">
+                <template v-slot:activator="{ on }">
+                    <v-layout>
+                        <v-flex xs12 md3>
+                            <v-text-field append-icon="search" v-model="search.group" label="分组"></v-text-field>
+                        </v-flex>
 
-                            <v-flex xs12 md3>
-                                <v-text-field append-icon="search" v-model="search.name" label="作业名称"></v-text-field>
-                            </v-flex>
+                        <v-flex xs12 md3>
+                            <v-text-field append-icon="search" v-model="search.name" label="作业名称"></v-text-field>
+                        </v-flex>
 
-                            <v-flex xs12 md6>
-                                <v-btn color="primary" dark class="mb-2" v-on:click="queryTasks">搜索</v-btn>
-                                <v-btn color="primary" dark class="mb-2" v-on="on" v-if=" switchUFBtn === '切换用户组任务' ">新建任务</v-btn>
-                                <v-btn color="primary" dark class="mb-2" v-on:click="switchUF">{{ switchUFBtn }}</v-btn>
-                            </v-flex>
-                        </v-layout>
+                        <v-flex xs12 md6>
+                            <v-btn color="primary" dark class="mb-2" v-on:click="queryTasks">搜索</v-btn>
+                            <v-btn color="primary" dark class="mb-2" v-on="on" v-if=" switchUFBtn === '切换用户组任务' ">新建任务
+                            </v-btn>
+                            <v-btn color="primary" dark class="mb-2" v-on:click="switchUF">{{ switchUFBtn }}</v-btn>
+                        </v-flex>
+                    </v-layout>
 
-                    </template>
-                    <v-card>
-                        <v-card-title>
-                            <span class="headline">{{ formTitle }}</span>
-                        </v-card-title>
-                        <v-card-text>
-                            <v-container grid-list-md>
-                                <v-layout wrap>
-                                    <v-flex xs12 sm6 md12>
-                                        <v-text-field
-                                                :autofocus=true
-                                                v-model="editedItem.name"
-                                                :rules="[rules.required,rules.counter]"
-                                                label="作业名称"
-                                        ></v-text-field>
-                                    </v-flex>
-                                    <v-flex xs12 sm6 md12>
-                                        <v-select :items="handlerList"
-                                                  :rules="[rules.required]"
-                                                  label="Handler"
-                                                  v-model="editedItem.handler"
-                                        ></v-select>
-                                    </v-flex>
-                                    <v-flex xs12 sm6 md12>
-                                        <v-combobox :items="jobTypes" label="作业类型"
-                                                    :validate-on-blur=true
-                                                    :rules="[rules.required]"
-                                                    v-model="editedItem.jobType"></v-combobox>
-                                    </v-flex>
+                </template>
+                <v-card>
+                    <v-card-title>
+                        <span class="headline">{{ formTitle }}</span>
+                    </v-card-title>
+                    <v-card-text>
+                        <v-container grid-list-md>
+                            <v-layout wrap>
+                                <v-flex xs12 sm6 md12>
+                                    <v-text-field
+                                            :autofocus=true
+                                            v-model="editedItem.name"
+                                            :rules="[rules.required,rules.counter]"
+                                            label="作业名称"
+                                    ></v-text-field>
+                                </v-flex>
+                                <v-flex xs12 sm6 md12>
+                                    <v-select :items="handlerList"
+                                              :rules="[rules.required]"
+                                              label="Handler"
+                                              v-model="editedItem.handler"
+                                    ></v-select>
+                                </v-flex>
+                                <v-flex xs12 sm6 md12>
+                                    <v-combobox :items="jobTypes" label="作业类型"
+                                                :validate-on-blur=true
+                                                :rules="[rules.required]"
+                                                v-model="editedItem.jobType"></v-combobox>
+                                </v-flex>
 
-                                    <v-flex xs12 sm6 md12>
-                                        <v-text-field v-model="editedItem.group" label="分组"></v-text-field>
-                                    </v-flex>
+                                <v-flex xs12 sm6 md12>
+                                    <v-text-field v-model="editedItem.group" label="分组"></v-text-field>
+                                </v-flex>
 
-                                    <v-flex xs12 sm6 md12>
-                                        <v-textarea v-model="editedItem.config" label="配置"></v-textarea>
-                                    </v-flex>
-                                    <!--<v-flex xs12 sm6 md12>-->
-                                    <!--<v-switch v-model="editedItem.shardType" true-value="1" false-value="0"-->
-                                    <!--label="是否分片"></v-switch>-->
-                                    <!--</v-flex>-->
-                                </v-layout>
-                            </v-container>
-                        </v-card-text>
+                                <v-flex xs12 sm6 md12>
+                                    <v-textarea v-model="editedItem.config" label="配置"></v-textarea>
+                                </v-flex>
+                                <!--<v-flex xs12 sm6 md12>-->
+                                <!--<v-switch v-model="editedItem.shardType" true-value="1" false-value="0"-->
+                                <!--label="是否分片"></v-switch>-->
+                                <!--</v-flex>-->
+                            </v-layout>
+                        </v-container>
+                    </v-card-text>
 
-                        <v-card-actions>
-                            <v-spacer></v-spacer>
-                            <v-btn color="blue darken-1" flat @click="close">Cancel</v-btn>
-                            <v-btn color="blue darken-1" flat @click="save">Save</v-btn>
-                        </v-card-actions>
-                    </v-card>
-                </v-dialog>
-            </v-toolbar>
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="blue darken-1" flat @click="close">Cancel</v-btn>
+                        <v-btn color="blue darken-1" flat @click="save">Save</v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
             <v-dialog v-model="fullscreen.dialog" fullscreen transition="dialog-bottom-transition" :overlay="true">
                 <v-card>
                     <v-toolbar dark color="primary">
@@ -130,7 +129,7 @@
 
                         <v-tooltip v-if="(permitRule['JobDelete'] & props.item['permit']) > 0" top>
                             <template v-slot:activator="{ on }">
-                                <v-icon v-on="on" small @click="deleteItem(props.item)">delete</v-icon>
+                                <v-icon v-on="on" small @click="delFlow(props.item)">delete</v-icon>
                             </template>
                             <span>删除</span>
                         </v-tooltip>
@@ -145,12 +144,18 @@
                              @save="queryTasks"></select-auth>
             </v-dialog>
 
+            <!-- 删除确认对话框 -->
+            <v-dialog v-model="zDialog" persistent max-width="500">
+                <z-dialog :message="zMessage"
+                          @close="cancelZDialog" @agree="doDialog"></z-dialog>
+            </v-dialog>
 
         </v-container>
     </div>
 </template>
 
 <script>
+    import ZDialog from '@/components/Dialog';
     import 'codemirror/lib/codemirror.css'
     // mode: text/javascript
     import 'codemirror/mode/javascript/javascript.js'
@@ -171,8 +176,18 @@
     import SelectAuth from '@/components/workflow/SelectAuth';
 
     export default {
-        components: {SelectAuth},
+        components: {SelectAuth, ZDialog},
         data: () => ({
+
+            //zDialog默认为关闭
+            zDialog: false,
+            //存储点击start 或者stop 的 item值
+            cronItem: "",
+            //需要显示的message
+            zMessage: "",
+            //需要删除的索引值  默认为-1
+            delIndex: -1,
+
 
             switchUFBtn: "切换用户组任务",
             rules: {
@@ -393,7 +408,25 @@
                     this.switchUFBtn = "切换用户组任务";
                 }
                 this.queryTasks();
-            }
+            },
+            delFlow(item) {
+                this.cronItem = item;
+                this.zMessage = 'Are you sure you want to delete this job?？';
+                this.zDialog = true;
+                this.delIndex = this.desserts.indexOf(item);
+            },
+            doDialog() {
+                if (this.delIndex !== -1) {
+                        deleteJob(this.cronItem.id).then(() => {
+                            this.desserts.splice(this.delIndex, 1)
+                        });
+                    this.delIndex = -1;
+                    this.cancelZDialog();
+                }
+            },
+            cancelZDialog() {
+                this.zDialog = false;
+            },
         },
         filters: {
             formatDate: function (value) {

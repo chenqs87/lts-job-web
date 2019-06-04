@@ -174,3 +174,17 @@ export const updatePermit = (userOrGroup, name, resource, resourceType, permit) 
 export const getAlertConfig = (flowId) => {
     return axios.get(`/console/flow/getAlertConfig?flowId=${flowId}`).then(res => res.data);
 };
+
+export const importConfig = [
+    {
+        "type": "scylla",
+        "config": {
+            "keySpace": "rec",
+            "tableName": "book_support_version",
+            "ttl": "-1",
+            "columns": "version_id,is_best_book,is_cartoon,is_scroll,is_serial_epub",
+            "types": "int,int,int,int,int"
+        },
+        "input": "hdfs://nn1/warehouse/external.db/t_external_online_version_d/*",
+    }
+];

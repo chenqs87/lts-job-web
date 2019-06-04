@@ -1,85 +1,84 @@
 <template xmlns:v-slot="http://www.w3.org/1999/XSL/Transform">
     <div>
         <v-container grid-list-xl fluid>
-            <v-toolbar flat color="grey">
-                <v-spacer></v-spacer>
-                <v-dialog v-model="dialog" max-width="500px">
-                    <template v-slot:activator="{ on }">
-                        <v-layout>
-                            <v-flex xs12 md6>
-                            </v-flex>
-                            <v-flex xs12 md6>
-                                <v-btn color="primary" dark class="mb-2" v-on:click="switchUF">{{ switchUFBtn }}</v-btn>
-                                <v-btn color="primary" dark class="mb-2" v-on="on" v-if=" switchUFBtn === '切换用户组工作流' ">
-                                    新建工作流
-                                </v-btn>
-                            </v-flex>
-                        </v-layout>
-                    </template>
-                    <v-card>
-                        <v-card-title>
-                            <span class="headline">{{ formTitle }}</span>
-                        </v-card-title>
+            <v-spacer></v-spacer>
+            <v-dialog v-model="dialog" max-width="500px">
+                <template v-slot:activator="{ on }">
+                    <v-layout>
+                        <v-flex xs12 md6>
+                        </v-flex>
+                        <v-flex xs12 md6>
+                            <v-btn color="primary" dark class="mb-2" v-on:click="switchUF">{{ switchUFBtn }}</v-btn>
+                            <v-btn color="primary" dark class="mb-2" v-on="on" v-if=" switchUFBtn === '切换用户组工作流' ">
+                                新建工作流
+                            </v-btn>
+                            <!--<v-btn color="primary" dark class="mb-2" v-on:click="importData = true">新建数据导入工作流</v-btn>-->
+                        </v-flex>
+                    </v-layout>
+                </template>
+                <v-card>
+                    <v-card-title>
+                        <span class="headline">{{ formTitle }}</span>
+                    </v-card-title>
 
-                        <v-card-text>
-                            <v-container grid-list-md>
-                                <v-layout wrap>
-                                    <v-flex xs12 sm6 md12>
-                                        <v-text-field
-                                                v-model="editedItem.name"
-                                                label="工作流名称"
-                                                :validate-on-blur=true
-                                                :rules="[
+                    <v-card-text>
+                        <v-container grid-list-md>
+                            <v-layout wrap>
+                                <v-flex xs12 sm6 md12>
+                                    <v-text-field
+                                            v-model="editedItem.name"
+                                            label="工作流名称"
+                                            :validate-on-blur=true
+                                            :rules="[
                                                    () => !!editedItem.name || 'name is required',
                                                    () => !!editedItem.name && editedItem.name.length <= 45 || 'name must be less than 45 characters'
                                                 ]"
-                                        ></v-text-field>
-                                    </v-flex>
-                                    <v-flex xs12 sm6 md12>
-                                        <el-popover v-model="cronPopover">
-                                            <cron @change="changeCron" @close="cronPopover=false" i18n="cn"></cron>
-                                            <!--<el-input class="cron-input" slot="reference" @click="cronPopover=true" v-model="editedItem.cron" placeholder="请输入定时策略"></el-input>-->
-                                            <v-text-field label="Cron表达式" slot="reference"
-                                                          @click="cronPopover=true"
-                                                          :rules="[
+                                    ></v-text-field>
+                                </v-flex>
+                                <v-flex xs12 sm6 md12>
+                                    <el-popover v-model="cronPopover">
+                                        <cron @change="changeCron" @close="cronPopover=false" i18n="cn"></cron>
+                                        <!--<el-input class="cron-input" slot="reference" @click="cronPopover=true" v-model="editedItem.cron" placeholder="请输入定时策略"></el-input>-->
+                                        <v-text-field label="Cron表达式" slot="reference" :readonly=true
+                                                      @click="changeCron"
+                                                      :rules="[
                                                                () => !!editedItem.cron || 'cron is required'
                                                             ]"
-                                                          v-model="editedItem.cron"
+                                                      v-model="editedItem.cron"
 
-                                            ></v-text-field>
-                                        </el-popover>
+                                        ></v-text-field>
+                                    </el-popover>
 
-                                    </v-flex>
-                                    <v-flex xs12 sm6 md12>
-                                        <v-textarea v-model="editedItem.params" label="工作流参数"></v-textarea>
-                                    </v-flex>
-                                    <v-flex xs12 sm6 md12>
-                                        <v-text-field v-model="editedItem.postFlow"
-                                                      label="子工作流（多个id使用逗号分隔）"></v-text-field>
-                                    </v-flex>
+                                </v-flex>
+                                <v-flex xs12 sm6 md12>
+                                    <v-textarea v-model="editedItem.params" label="工作流参数"></v-textarea>
+                                </v-flex>
+                                <v-flex xs12 sm6 md12>
+                                    <v-text-field v-model="editedItem.postFlow"
+                                                  label="子工作流（多个id使用逗号分隔）"></v-text-field>
+                                </v-flex>
 
-                                    <v-flex xs12 sm6 md12>
-                                        <v-textarea v-model="editedItem.phoneList"
-                                                    label="手机号（失败告警，多个使用逗号分隔）"></v-textarea>
-                                    </v-flex>
+                                <v-flex xs12 sm6 md12>
+                                    <v-textarea v-model="editedItem.phoneList"
+                                                label="手机号（失败告警，多个使用逗号分隔）"></v-textarea>
+                                </v-flex>
 
-                                    <v-flex xs12 sm6 md12>
-                                        <v-textarea v-model="editedItem.emailList"
-                                                    label="电子邮件（失败告警，多个使用逗号分隔）"></v-textarea>
-                                    </v-flex>
+                                <v-flex xs12 sm6 md12>
+                                    <v-textarea v-model="editedItem.emailList"
+                                                label="电子邮件（失败告警，多个使用逗号分隔）"></v-textarea>
+                                </v-flex>
 
-                                </v-layout>
-                            </v-container>
-                        </v-card-text>
+                            </v-layout>
+                        </v-container>
+                    </v-card-text>
 
-                        <v-card-actions>
-                            <v-spacer></v-spacer>
-                            <v-btn color="blue darken-1" flat @click="close">Cancel</v-btn>
-                            <v-btn color="blue darken-1" flat @click="save">Save</v-btn>
-                        </v-card-actions>
-                    </v-card>
-                </v-dialog>
-            </v-toolbar>
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="blue darken-1" flat @click="close">Cancel</v-btn>
+                        <v-btn color="blue darken-1" flat @click="save">Save</v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
             <v-data-table :headers="headers"
                           :items="desserts"
                           class="elevation-1"
@@ -120,9 +119,9 @@
                         <v-tooltip top v-if="(permitRule['FlowCron'] & props.item['permit']) > 0">
                             <template v-slot:activator="{ on }">
                                 <v-icon v-if="props.item.isSchedule === 0" v-on="on" small class="mr-2"
-                                        v-on:click="startCron(props.item)">play_arrow
+                                        v-on:click="openCron(props.item)">play_arrow
                                 </v-icon>
-                                <v-icon v-on="on" v-else small class="mr-2" v-on:click="stopCron(props.item)">stop
+                                <v-icon v-on="on" v-else small class="mr-2" v-on:click="openCron(props.item)">stop
                                 </v-icon>
                             </template>
                             <span>{{props.item.isSchedule === 0 ? "启动定时任务" : "终止定时任务"}}</span>
@@ -144,7 +143,7 @@
 
                         <v-tooltip top v-if="(permitRule['FlowDelete'] & props.item['permit']) > 0">
                             <template v-slot:activator="{ on }">
-                                <v-icon v-on="on" small @click="deleteItem(props.item)">delete</v-icon>
+                                <v-icon v-on="on" small @click="delFlow(props.item)">delete</v-icon>
                             </template>
                             <span>删除</span>
                         </v-tooltip>
@@ -163,13 +162,26 @@
                 <select-auth authType="flow" :resource="editedItem.id" :permit="editedItem.permit"
                              @close="cancelAuthDialog" @save="queryTasks"></select-auth>
             </v-dialog>
+
+            <!-- 确认对话框 -->
+            <v-dialog v-model="zDialog" persistent max-width="500">
+                <z-dialog :message="zMessage"
+                        @close="cancelZDialog" @agree="doCron"></z-dialog>
+            </v-dialog>
+            <!-- 添加导入数据流 -->
+            <v-dialog v-model="importData" persistent maxWidth="1000" >
+                <import-data
+                        @close="closeImportData" @save="queryTasks"></import-data>
+            </v-dialog>
         </v-container>
     </div>
 </template>
 
 <script>
+    import ZDialog from '@/components/Dialog';
     import SelectAuth from '@/components/workflow/SelectAuth';
     import ModelFlowEditor from '@/components/flow-editor/model-flow-editor';
+    import ImportData from '@/components/workflow/ImportData';
     import {cron} from 'vue-cron';
     import {
         getAllFlowsByUser, newFlow, updateFlow, deleteFlow, dataFormat, triggerFlow,
@@ -178,10 +190,21 @@
     } from '@/api/workFlow';
 
     export default {
-        components: {cron, ModelFlowEditor, SelectAuth},
+        components: {cron, ModelFlowEditor, SelectAuth, ZDialog, ImportData},
         data: () => ({
             template: '<cron/>',
             cronPopover: false,
+
+            //zDialog默认为关闭
+            zDialog: false,
+            //存储点击start 或者stop 的 item值
+            cronItem: "",
+            //需要显示的message
+            zMessage: "",
+            //需要删除的索引值  默认为-1
+            delIndex: -1,
+
+            importData: false,
 
             switchUFBtn: "切换用户组工作流",
             permitAuthDialog: false,
@@ -317,15 +340,16 @@
             close() {
                 this.dialog = false
                 setTimeout(() => {
-                    this.editedItem = Object.assign({}, this.defaultItem)
+                    this.editedItem = Object.assign({}, this.defaultItem);
                     this.editedIndex = -1
                 }, 300)
             },
             save() {
                 const l = this;
-                if(l.editedItem.postFlow!=="") {
+                if (l.editedItem.postFlow!==null && l.editedItem.postFlow !== "") {
                     let split = l.editedItem.postFlow.split(",");
 
+                    console.log(split)
                     var numReg = /^[0-9]+$/
                     var numRe = new RegExp(numReg)
 
@@ -361,28 +385,54 @@
                     query: {flowId: flowId}
                 });
             },
-            startCron(item) {
-                if (confirm('确定要启动定时任务吗？')) {
-                    this.editedIndex = this.desserts.indexOf(item);
-                    this.editedItem = Object.assign({}, item)
-                    startCronFlow(item.id).then(data => {
-                        //Object.assign(this.desserts[this.editedIndex], data);
-                        this.queryTasks();
-                    });
-                }
+            delFlow(item){
+                this.cronItem = item;
+                this.zMessage = 'Are you sure you want to delete this flow?？';
+                this.zDialog = true;
+                this.delIndex = this.desserts.indexOf(item);
             },
-            stopCron(item) {
-                if (confirm('确定要终止定时任务吗？')) {
-                    this.editedIndex = this.desserts.indexOf(item);
-                    this.editedItem = Object.assign({}, item);
-                    stopCronFlow(item.id).then(data => {
+            openCron(item){
+                this.cronItem = item;
+                console.log(item.isSchedule);
+                this.zMessage = 'Are you sure you want' + (item.isSchedule === 0 ? 'start' : 'stop')  +'this flow ？';
+                this.zDialog = true;
+            },
+            doCron(){
+
+                if (this.delIndex !== -1){
+                        deleteFlow(this.cronItem.id).then(() => {
+                            this.desserts.splice(this.delIndex, 1)
+                        });
+                    this.delIndex = -1;
+                    this.cancelZDialog();
+                    return;
+                }
+                //启动定时任务
+                if(this.cronItem.isSchedule === 0){
+                    this.editedIndex = this.desserts.indexOf(this.cronItem);
+                    this.editedItem = Object.assign({}, this.cronItem)
+                    startCronFlow(this.cronItem.id).then(data => {
                         //Object.assign(this.desserts[this.editedIndex], data);
                         this.queryTasks();
                     });
                 }
+                //停止定时任务
+                if(this.cronItem.isSchedule === 1){
+                    this.editedIndex = this.desserts.indexOf(this.cronItem);
+                    this.editedItem = Object.assign({}, this.cronItem);
+                    stopCronFlow(this.cronItem.id).then(data => {
+                        //Object.assign(this.desserts[this.editedIndex], data);
+                        this.queryTasks();
+                    });
+                }
+                this.cancelZDialog();
+
             },
             cancelAuthDialog() {
                 this.permitAuthDialog = false;
+            },
+            cancelZDialog() {
+                this.zDialog = false;
             },
             getPermitRule() {
                 getFlowPermit().then(data => {
@@ -415,7 +465,10 @@
                     this.switchUFBtn = "切换用户组工作流";
                 }
                 this.queryTasks();
-            }
+            },
+            closeImportData() {
+                this.importData = false;
+            },
 
         },
         filters: {

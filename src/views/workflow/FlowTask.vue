@@ -1,8 +1,9 @@
 <template xmlns:v-slot="http://www.w3.org/1999/XSL/Transform">
     <div>
         <v-container grid-list-xl fluid>
+            <v-btn  color="primary" dark class="mb-2" v-on:click="queryTasks">刷新</v-btn>
             <v-data-table :headers="headers" :items="desserts" class="elevation-1" :pagination.sync="pagination"
-                :total-items="totalDesserts" :rows-per-page-items="[10,15,20,25,30]">
+                          :total-items="totalDesserts" :rows-per-page-items="[10,15,20,25,30]">
                 <template v-slot:items="props">
                     <td><a v-on:click="query(props.item)">{{ props.item.id }}</a></td>
                     <td>{{ props.item.flowId }}</td>
@@ -48,7 +49,16 @@
 </template>
 
 <script>
-    import {getAllFlowTasks, getFlowTasksByFlowId, getTasks, dataFormat, queryLog, killFlowTask, reTriggerFlow} from '@/api/workFlow';
+    import {
+        getAllFlowTasks,
+        getFlowTasksByFlowId,
+        getTasks,
+        dataFormat,
+        queryLog,
+        killFlowTask,
+        reTriggerFlow
+    } from '@/api/workFlow';
+
     export default {
         data: () => ({
             totalDesserts: 0,
@@ -60,13 +70,13 @@
             },
             flowId: -1,
             headers: [
-                { text: 'ID', align: 'left', sortable: false, value: 'id'},
-                { text: '工作流ID', value: 'flowId', sortable: false },
-                { text: '触发方式', value: 'triggerMode', sortable: false },
-                { text: '开始时间', value: 'beginTime',sortable: false },
-                { text: '结束时间', value: 'endTime', sortable: false },
-                { text: '状态', value: 'status', sortable: false },
-                { text: '操作', sortable: false }
+                {text: 'ID', align: 'left', sortable: false, value: 'id'},
+                {text: '工作流ID', value: 'flowId', sortable: false},
+                {text: '触发方式', value: 'triggerMode', sortable: false},
+                {text: '开始时间', value: 'beginTime', sortable: false},
+                {text: '结束时间', value: 'endTime', sortable: false},
+                {text: '状态', value: 'status', sortable: false},
+                {text: '操作', sortable: false}
             ],
             desserts: [],
             editedItem: {
@@ -75,7 +85,7 @@
                 status: 0,
                 beginTime: '',
                 endTime: '',
-                triggerMode:'',
+                triggerMode: '',
             },
             defaultItem: {
                 id: '',
@@ -83,13 +93,11 @@
                 status: 0,
                 beginTime: '',
                 endTime: '',
-                triggerMode:''
+                triggerMode: ''
             }
         }),
-        computed: {
-
-        },
-        created () {
+        computed: {},
+        created() {
             //this.queryTasks()
         },
         watch: {
@@ -101,7 +109,7 @@
             }
         },
         methods: {
-            queryTasks () {
+            queryTasks() {
                 let flowId = this.$route.query["flowId"]
                 let pageNum = this.pagination.page === null || this.pagination.page === undefined
                     ? 1 : this.pagination.page;
@@ -125,7 +133,7 @@
                 });
             },
             killTask(item) {
-                killFlowTask(item.flowId,item.id).then(data => {
+                killFlowTask(item.flowId, item.id).then(data => {
                     this.queryTasks();
                 })
             },
@@ -138,14 +146,18 @@
         filters: {
             formatDate: function (value) {
                 //由于vue自带的时区为美国时区 需要转换为本地时区
-                return (new Date(dataFormat(value)+ 'Z')).toLocaleString();
+                return (new Date(dataFormat(value) + 'Z')).toLocaleString();
             },
             formatTriggerMode: function (value) {
                 switch (value) {
-                    case 0: return "手动触发";
-                    case 1: return "前置任务触发";
-                    case 2: return "定时任务触发";
-                    default: return "UnKnown";
+                    case 0:
+                        return "手动触发";
+                    case 1:
+                        return "前置任务触发";
+                    case 2:
+                        return "定时任务触发";
+                    default:
+                        return "UnKnown";
                 }
             }
         }

@@ -7,12 +7,12 @@
                 <v-toolbar-title>任务执行日志</v-toolbar-title>
                 <v-divider></v-divider>
                 <v-spacer></v-spacer>
+                <v-btn  color="primary" dark class="mb-2" v-on:click="queryTasks">刷新</v-btn>
 
             </v-toolbar>
 
             <v-tabs fixed-tabs>
                 <v-tab key="1" href="#log">任务列表</v-tab>
-
                 <v-tabs-items>
                     <v-tab-item key="1" value="log">
                         <v-card flat>
@@ -58,7 +58,6 @@
                         </v-card>
                     </v-tab-item>
                 </v-tabs-items>
-
             </v-tabs>
 
         </v-container>

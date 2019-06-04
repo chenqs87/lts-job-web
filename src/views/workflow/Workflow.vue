@@ -2,19 +2,15 @@
     <div>
         <v-container grid-list-xl fluid>
             <v-spacer></v-spacer>
-            <v-dialog v-model="dialog" max-width="500px">
-                <template v-slot:activator="{ on }">
-                    <v-layout>
-                        <v-flex xs12 md6>
-                        </v-flex>
-                        <v-flex xs12 md6>
-                            <v-btn color="primary" dark class="mb-2" v-on:click="switchUF">{{ switchUFBtn }}</v-btn>
-                            <v-btn color="primary" dark class="mb-2" v-on="on" v-if=" switchUFBtn === '切换用户组工作流' ">
-                                新建工作流
-                            </v-btn>
-                            <!--<v-btn color="primary" dark class="mb-2" v-on:click="importData = true">新建数据导入工作流</v-btn>-->
-                        </v-flex>
-                    </v-layout>
+            <v-dialog v-model="dialog" max-width="500px" >
+                <template v-slot:activator="{ on }" style="float: right">
+                    <div style="float: right">
+                        <v-btn color="primary" dark class="mb-2" v-on:click="switchUF">{{ switchUFBtn }}</v-btn>
+                        <v-btn color="primary" dark class="mb-2" v-on="on" v-if=" switchUFBtn === '切换用户组工作流' ">
+                            新建工作流
+                        </v-btn>
+                    </div>
+
                 </template>
                 <v-card>
                     <v-card-title>

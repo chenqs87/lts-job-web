@@ -1,10 +1,9 @@
 <template xmlns:v-slot="http://www.w3.org/1999/XSL/Transform" xmlns:v="http://www.w3.org/1999/XSL/Transform">
     <div>
         <v-container grid-list-xl fluid>
-            <v-spacer></v-spacer>
             <v-dialog v-model="dialog" max-width="500px">
-                <template v-slot:activator="{ on }">
-                    <v-layout>
+                <template v-slot:activator="{ on }" >
+                   <!-- <v-layout>
                         <v-flex xs12 md3>
                             <v-text-field append-icon="search" v-model="search.group" label="分组"></v-text-field>
                         </v-flex>
@@ -19,7 +18,16 @@
                             </v-btn>
                             <v-btn color="primary" dark class="mb-2" v-on:click="switchUF">{{ switchUFBtn }}</v-btn>
                         </v-flex>
-                    </v-layout>
+                    </v-layout>-->
+                    <div style="float: right; display: flex;flex: 1 1 auto;flex-wrap: nowrap;min-width: 0;">
+                        <v-text-field append-icon="search" v-model="search.group" label="分组"></v-text-field>
+                        <v-text-field append-icon="search" v-model="search.name" label="作业名称"></v-text-field>
+                        <v-btn color="primary" dark class="mb-2" v-on:click="queryTasks">搜索</v-btn>
+                        <v-btn color="primary" dark class="mb-2" v-on="on" v-if=" switchUFBtn === '切换用户组任务' ">新建任务
+                        </v-btn>
+                        <v-btn color="primary" dark class="mb-2" v-on:click="switchUF">{{ switchUFBtn }}</v-btn>
+
+                    </div>
 
                 </template>
                 <v-card>

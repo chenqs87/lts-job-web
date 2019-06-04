@@ -1,35 +1,75 @@
 <template xmlns:v-slot="http://www.w3.org/1999/XSL/Transform" xmlns:v="http://www.w3.org/1999/XSL/Transform">
     <div>
         <v-container grid-list-xl fluid>
-            <v-dialog v-model="dialog" max-width="500px">
-                <template v-slot:activator="{ on }" >
-                   <!-- <v-layout>
-                        <v-flex xs12 md3>
-                            <v-text-field append-icon="search" v-model="search.group" label="分组"></v-text-field>
-                        </v-flex>
+            <div style="float: right; display: flex;flex: 1 1 auto;flex-wrap: nowrap;min-width: 0;">
+                <v-text-field append-icon="search" v-model="search.group" label="分组"></v-text-field>
+                <v-text-field append-icon="search" v-model="search.name" label="作业名称"></v-text-field>
+                <v-btn color="primary" dark class="mb-2" v-on:click="queryTasks">搜索</v-btn>
+                <v-btn color="primary" dark class="mb-2" v-on:click="dialog = true" v-if=" switchUFBtn === '切换用户组任务' ">新建任务
+                </v-btn>
+                <v-btn color="primary" dark class="mb-2" v-on:click="switchUF">{{ switchUFBtn }}</v-btn>
 
-                        <v-flex xs12 md3>
-                            <v-text-field append-icon="search" v-model="search.name" label="作业名称"></v-text-field>
-                        </v-flex>
+            </div>
 
-                        <v-flex xs12 md6>
-                            <v-btn color="primary" dark class="mb-2" v-on:click="queryTasks">搜索</v-btn>
-                            <v-btn color="primary" dark class="mb-2" v-on="on" v-if=" switchUFBtn === '切换用户组任务' ">新建任务
-                            </v-btn>
-                            <v-btn color="primary" dark class="mb-2" v-on:click="switchUF">{{ switchUFBtn }}</v-btn>
-                        </v-flex>
-                    </v-layout>-->
-                    <div style="float: right; display: flex;flex: 1 1 auto;flex-wrap: nowrap;min-width: 0;">
-                        <v-text-field append-icon="search" v-model="search.group" label="分组"></v-text-field>
-                        <v-text-field append-icon="search" v-model="search.name" label="作业名称"></v-text-field>
-                        <v-btn color="primary" dark class="mb-2" v-on:click="queryTasks">搜索</v-btn>
-                        <v-btn color="primary" dark class="mb-2" v-on="on" v-if=" switchUFBtn === '切换用户组任务' ">新建任务
-                        </v-btn>
-                        <v-btn color="primary" dark class="mb-2" v-on:click="switchUF">{{ switchUFBtn }}</v-btn>
+            <v-data-table :headers="headers" :items="desserts" class="elevation-1" :pagination.sync="pagination"
+                          :total-items="totalDesserts" :rows-per-page-items="[10,15,20,25,30]">
+                <template v-slot:items="props">
+                    <td>{{ props.item.id }}</td>
+                    <td>{{ props.item.name }}</td>
+                    <td>{{ props.item.handler }}</td>
+                    <td>{{ props.item.jobType }}</td>
+                    <td>{{ props.item.shardType === 0 ? "否" : "是" }}</td>
+                    <td>{{ props.item.group }}</td>
+                    <td>{{ props.item.createUser }}</td>
+                    <td>{{ props.item.createTime | formatDate}}</td>
 
-                    </div>
+                    <td class="justify-center layout px-0">
 
+                        <v-tooltip v-if="(permitRule['JobAuthorized'] & props.item['permit']) > 0" top>
+                            <template v-slot:activator="{ on }">
+                                <v-icon v-on="on" small class="mr-2" @click="auth(props.item)">lock_open</v-icon>
+                            </template>
+                            <span>授权</span>
+                        </v-tooltip>
+
+                        <v-tooltip v-if="(permitRule['JobEdit'] & props.item['permit']) > 0" top>
+                            <template v-slot:activator="{ on }">
+                                <v-icon v-on="on" small class="mr-2" @click="editItem(props.item)">edit</v-icon>
+                            </template>
+                            <span>编辑</span>
+                        </v-tooltip>
+
+                        <v-tooltip v-if="(permitRule['JobEdit'] & props.item['permit']) > 0" top>
+                            <template v-slot:activator="{ on }">
+                                <v-icon v-on="on" small class="mr-2" @click="editCode(props.item)">code</v-icon>
+                            </template>
+                            <span>编辑代码</span>
+                        </v-tooltip>
+
+                        <v-tooltip v-if="(permitRule['JobDelete'] & props.item['permit']) > 0" top>
+                            <template v-slot:activator="{ on }">
+                                <v-icon v-on="on" small @click="delFlow(props.item)">delete</v-icon>
+                            </template>
+                            <span>删除</span>
+                        </v-tooltip>
+                    </td>
                 </template>
+            </v-data-table>
+
+            <!-- 授权对话框 -->
+            <v-dialog v-model="permitAuthDialog" persistent max-width="1000">
+                <select-auth authType="job" :resource="editedItem.id" :permit="editedItem.permit"
+                             @close="cancelAuthDialog"
+                             @save="queryTasks"></select-auth>
+            </v-dialog>
+
+            <!-- 删除确认对话框 -->
+            <v-dialog v-model="zDialog" persistent max-width="500">
+                <z-dialog :message="zMessage"
+                          @close="cancelZDialog" @agree="doDialog"></z-dialog>
+            </v-dialog>
+
+            <v-dialog v-model="dialog" max-width="500px">
                 <v-card>
                     <v-card-title>
                         <span class="headline">{{ formTitle }}</span>
@@ -99,63 +139,6 @@
                         </v-form>
                     </v-card-text>
                 </v-card>
-            </v-dialog>
-            <v-data-table :headers="headers" :items="desserts" class="elevation-1" :pagination.sync="pagination"
-                          :total-items="totalDesserts" :rows-per-page-items="[10,15,20,25,30]">
-                <template v-slot:items="props">
-                    <td>{{ props.item.id }}</td>
-                    <td>{{ props.item.name }}</td>
-                    <td>{{ props.item.handler }}</td>
-                    <td>{{ props.item.jobType }}</td>
-                    <td>{{ props.item.shardType === 0 ? "否" : "是" }}</td>
-                    <td>{{ props.item.group }}</td>
-                    <td>{{ props.item.createUser }}</td>
-                    <td>{{ props.item.createTime | formatDate}}</td>
-
-                    <td class="justify-center layout px-0">
-
-                        <v-tooltip v-if="(permitRule['JobAuthorized'] & props.item['permit']) > 0" top>
-                            <template v-slot:activator="{ on }">
-                                <v-icon v-on="on" small class="mr-2" @click="auth(props.item)">lock_open</v-icon>
-                            </template>
-                            <span>授权</span>
-                        </v-tooltip>
-
-                        <v-tooltip v-if="(permitRule['JobEdit'] & props.item['permit']) > 0" top>
-                            <template v-slot:activator="{ on }">
-                                <v-icon v-on="on" small class="mr-2" @click="editItem(props.item)">edit</v-icon>
-                            </template>
-                            <span>编辑</span>
-                        </v-tooltip>
-
-                        <v-tooltip v-if="(permitRule['JobEdit'] & props.item['permit']) > 0" top>
-                            <template v-slot:activator="{ on }">
-                                <v-icon v-on="on" small class="mr-2" @click="editCode(props.item)">code</v-icon>
-                            </template>
-                            <span>编辑代码</span>
-                        </v-tooltip>
-
-                        <v-tooltip v-if="(permitRule['JobDelete'] & props.item['permit']) > 0" top>
-                            <template v-slot:activator="{ on }">
-                                <v-icon v-on="on" small @click="delFlow(props.item)">delete</v-icon>
-                            </template>
-                            <span>删除</span>
-                        </v-tooltip>
-                    </td>
-                </template>
-            </v-data-table>
-
-            <!-- 授权对话框 -->
-            <v-dialog v-model="permitAuthDialog" persistent max-width="1000">
-                <select-auth authType="job" :resource="editedItem.id" :permit="editedItem.permit"
-                             @close="cancelAuthDialog"
-                             @save="queryTasks"></select-auth>
-            </v-dialog>
-
-            <!-- 删除确认对话框 -->
-            <v-dialog v-model="zDialog" persistent max-width="500">
-                <z-dialog :message="zMessage"
-                          @close="cancelZDialog" @agree="doDialog"></z-dialog>
             </v-dialog>
 
         </v-container>

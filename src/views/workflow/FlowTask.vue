@@ -3,7 +3,6 @@
         <v-container grid-list-xl fluid>
             <div style="float: right">
                 <v-btn  color="primary" dark class="mb-2" v-on:click="queryTasks">刷新</v-btn>
-
             </div>
             <v-data-table :headers="headers" :items="desserts" class="elevation-1" :pagination.sync="pagination"
                           :total-items="totalDesserts" :rows-per-page-items="[10,15,20,25,30]">

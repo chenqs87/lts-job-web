@@ -1,80 +1,13 @@
 <template xmlns:v-slot="http://www.w3.org/1999/XSL/Transform">
     <div>
         <v-container grid-list-xl fluid>
-            <v-spacer></v-spacer>
-            <v-dialog v-model="dialog" max-width="500px" >
-                <template v-slot:activator="{ on }" style="float: right">
-                    <div style="float: right">
-                        <v-btn color="primary" dark class="mb-2" v-on:click="switchUF">{{ switchUFBtn }}</v-btn>
-                        <v-btn color="primary" dark class="mb-2" v-on="on" v-if=" switchUFBtn === '切换用户组工作流' ">
-                            新建工作流
-                        </v-btn>
-                    </div>
+            <div style="float: right">
+                <v-btn color="primary" dark class="mb-2" v-on:click="switchUF">{{ switchUFBtn }}</v-btn>
+                <v-btn color="primary" dark class="mb-2" v-on:click="dialog =true" v-if=" switchUFBtn === '切换用户组工作流' ">
+                    新建工作流
+                </v-btn>
+            </div>
 
-                </template>
-                <v-card>
-                    <v-card-title>
-                        <span class="headline">{{ formTitle }}</span>
-                    </v-card-title>
-
-                    <v-card-text>
-                        <v-container grid-list-md>
-                            <v-layout wrap>
-                                <v-flex xs12 sm6 md12>
-                                    <v-text-field
-                                            v-model="editedItem.name"
-                                            label="工作流名称"
-                                            :validate-on-blur=true
-                                            :rules="[
-                                                   () => !!editedItem.name || 'name is required',
-                                                   () => !!editedItem.name && editedItem.name.length <= 45 || 'name must be less than 45 characters'
-                                                ]"
-                                    ></v-text-field>
-                                </v-flex>
-                                <v-flex xs12 sm6 md12>
-                                    <el-popover v-model="cronPopover">
-                                        <cron @change="changeCron" @close="cronPopover=false" i18n="cn"></cron>
-                                        <!--<el-input class="cron-input" slot="reference" @click="cronPopover=true" v-model="editedItem.cron" placeholder="请输入定时策略"></el-input>-->
-                                        <v-text-field label="Cron表达式" slot="reference" :readonly=true
-                                                      @click="changeCron"
-                                                      :rules="[
-                                                               () => !!editedItem.cron || 'cron is required'
-                                                            ]"
-                                                      v-model="editedItem.cron"
-
-                                        ></v-text-field>
-                                    </el-popover>
-
-                                </v-flex>
-                                <v-flex xs12 sm6 md12>
-                                    <v-textarea v-model="editedItem.params" label="工作流参数"></v-textarea>
-                                </v-flex>
-                                <v-flex xs12 sm6 md12>
-                                    <v-text-field v-model="editedItem.postFlow"
-                                                  label="子工作流（多个id使用逗号分隔）"></v-text-field>
-                                </v-flex>
-
-                                <v-flex xs12 sm6 md12>
-                                    <v-textarea v-model="editedItem.phoneList"
-                                                label="手机号（失败告警，多个使用逗号分隔）"></v-textarea>
-                                </v-flex>
-
-                                <v-flex xs12 sm6 md12>
-                                    <v-textarea v-model="editedItem.emailList"
-                                                label="电子邮件（失败告警，多个使用逗号分隔）"></v-textarea>
-                                </v-flex>
-
-                            </v-layout>
-                        </v-container>
-                    </v-card-text>
-
-                    <v-card-actions>
-                        <v-spacer></v-spacer>
-                        <v-btn color="blue darken-1" flat @click="close">Cancel</v-btn>
-                        <v-btn color="blue darken-1" flat @click="save">Save</v-btn>
-                    </v-card-actions>
-                </v-card>
-            </v-dialog>
             <v-data-table :headers="headers"
                           :items="desserts"
                           class="elevation-1"
@@ -170,6 +103,71 @@
                         @close="closeImportData" @save="queryTasks"></import-data>
             </v-dialog>
         </v-container>
+
+        <v-dialog v-model="dialog" max-width="500px" >
+            <v-card>
+                <v-card-title>
+                    <span class="headline">{{ formTitle }}</span>
+                </v-card-title>
+
+                <v-card-text>
+                    <v-container grid-list-md>
+                        <v-layout wrap>
+                            <v-flex xs12 sm6 md12>
+                                <v-text-field
+                                        v-model="editedItem.name"
+                                        label="工作流名称"
+                                        :validate-on-blur=true
+                                        :rules="[
+                                                   () => !!editedItem.name || 'name is required',
+                                                   () => !!editedItem.name && editedItem.name.length <= 45 || 'name must be less than 45 characters'
+                                                ]"
+                                ></v-text-field>
+                            </v-flex>
+                            <v-flex xs12 sm6 md12>
+                                <el-popover v-model="cronPopover">
+                                    <cron @change="changeCron" @close="cronPopover=false" i18n="cn"></cron>
+                                    <!--<el-input class="cron-input" slot="reference" @click="cronPopover=true" v-model="editedItem.cron" placeholder="请输入定时策略"></el-input>-->
+                                    <v-text-field label="Cron表达式" slot="reference" :readonly=true
+                                                  @click="changeCron"
+                                                  :rules="[
+                                                               () => !!editedItem.cron || 'cron is required'
+                                                            ]"
+                                                  v-model="editedItem.cron"
+
+                                    ></v-text-field>
+                                </el-popover>
+
+                            </v-flex>
+                            <v-flex xs12 sm6 md12>
+                                <v-textarea v-model="editedItem.params" label="工作流参数"></v-textarea>
+                            </v-flex>
+                            <v-flex xs12 sm6 md12>
+                                <v-text-field v-model="editedItem.postFlow"
+                                              label="子工作流（多个id使用逗号分隔）"></v-text-field>
+                            </v-flex>
+
+                            <v-flex xs12 sm6 md12>
+                                <v-textarea v-model="editedItem.phoneList"
+                                            label="手机号（失败告警，多个使用逗号分隔）"></v-textarea>
+                            </v-flex>
+
+                            <v-flex xs12 sm6 md12>
+                                <v-textarea v-model="editedItem.emailList"
+                                            label="电子邮件（失败告警，多个使用逗号分隔）"></v-textarea>
+                            </v-flex>
+
+                        </v-layout>
+                    </v-container>
+                </v-card-text>
+
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="blue darken-1" flat @click="close">Cancel</v-btn>
+                    <v-btn color="blue darken-1" flat @click="save">Save</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
     </div>
 </template>
 

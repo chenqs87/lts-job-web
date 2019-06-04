@@ -47,8 +47,8 @@ export default {
         });
         page.on('afteritemselected', ev => {
             this.selectedModel = ev.item.getModel();
-            console.log(this.selectedModel);
         });
+
         page.on('afterzoom', ev => {
             this.curZoom = ev.updateMatrix[0];
         });

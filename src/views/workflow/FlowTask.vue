@@ -9,7 +9,7 @@
                               v-model="searchStatus"
                     ></v-select>
                 </v-flex>
-                <v-btn color="primary" dark class="mb-2" v-on:click="queryStatus">搜索</v-btn>
+                <v-btn color="primary" dark class="mb-2" v-on:click="queryTasks">搜索</v-btn>
                 <v-btn color="primary" dark class="mb-2" v-on:click="queryTasks">刷新</v-btn>
             </div>
             <v-data-table :headers="headers" :items="desserts" class="elevation-1" :pagination.sync="pagination"
@@ -60,14 +60,12 @@
 
 <script>
     import {
-        getAllFlowTasks,
-        getFlowTasksByFlowId,
+        getFlowTasks,
         getTasks,
         dataFormat,
         queryLog,
         killFlowTask,
         reTriggerFlow,
-        getFlowTasksByStatus,
         getFlowTaskStatus
     } from '@/api/workFlow';
 
@@ -116,61 +114,46 @@
         }),
         computed: {},
         created() {
+            this.flowId = -1;
             this.queryTasks()
         },
         watch: {
-//            pagination: {
-//                deep: true,
-//                handler() {
-//                    this.queryTasks();
-//                }
-//            }
+            pagination: {
+                deep: true,
+                handler() {
+                    this.queryTasks();
+                }
+            }
         },
         methods: {
             queryTasks() {
-                let flowId = this.$route.query["flowId"];
+                let status = -1;
+                console.log(this.$route.query["flowId"]);
+                this.flowId = this.$route.query["flowId"] === undefined ? -1:this.$route.query["flowId"];
                 let pageNum = this.pagination.page === null || this.pagination.page === undefined
                     ? 1 : this.pagination.page;
                 let pageSize = this.pagination.rowsPerPage === null || this.pagination.rowsPerPage === undefined
                     ? 10 : this.pagination.rowsPerPage;
 
-                let response = flowId > 0 ? getFlowTasksByFlowId(flowId, pageNum, pageSize) : getAllFlowTasks(pageNum, pageSize);
 
                 getFlowTaskStatus().then(
                     data=>{
                         this.statusList = data;
                     }
                 );
-                response.then(data => {
-                    this.desserts = data.list;
-                    this.totalDesserts = data.total;
-                    this.pagination.page = data['pageNum'];
-                    this.pagination.totalItems = data.total;
-                });
 
-            },
-            queryStatus() {
-                let pageNum = 1;
-                let pageSize = this.pagination.rowsPerPage === null || this.pagination.rowsPerPage === undefined
-                    ? 10 : this.pagination.rowsPerPage;
-
-                let status = -1;
                 for (let i = 0;i<this.statusList.length;i++){
                     if (this.statusList[i]===this.searchStatus){
                         status = i;
                     }
                 }
-
-                getFlowTasksByStatus(
-                    status,
-                    pageNum,
-                    pageSize
-                ).then(data => {
+                getFlowTasks(this.flowId, status, pageNum, pageSize).then(data => {
                     this.desserts = data.list;
                     this.totalDesserts = data.total;
                     this.pagination.page = data['pageNum'];
                     this.pagination.totalItems = data.total;
                 });
+
             },
             query(item) {
                 this.$router.push({

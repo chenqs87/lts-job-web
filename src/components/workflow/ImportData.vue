@@ -64,7 +64,7 @@
                             color="primary"
                             @click="e1 = 1"
                     >
-                        下一步
+                        提交
                     </v-btn>
                     <v-btn flat @click="e1 = 2">上一步</v-btn>
                     <v-btn style="float:right" flat @click="e1 = 1;$emit('close')">取消</v-btn>
@@ -98,9 +98,19 @@
             checkContent: "",
             ipDataConfig: "",
         }),
+        created() {
+            this.cmOptions["tabSize"] = 4 ;
+            this.cmOptions["mode"] =  'text/x-python';
+            this.cmOptions["theme"]  = 'base16-dark';
+            this.cmOptions["lineNumbers"] = true;
+            this.cmOptions["line"] = true;
+            this.cmOptions["lines"] = 20;
+            this.cmOptions["lineWrapping"] = false;
+            this.cmOptions["autoRefresh"] = true;
+        },
         methods: {
             save() {
-                importDataFlow (this.editedItem).then(data => {
+                importDataFlow (checkSize,checkContent,ipDataConfig).then(data => {
                     this.desserts.push(data)
                 });
             },

@@ -6,6 +6,7 @@
                 <v-btn color="primary" dark class="mb-2" v-on:click="dialog =true" v-if=" switchUFBtn === '切换用户组工作流' ">
                     新建工作流
                 </v-btn>
+                <v-btn color="primary" dark class="mb-2" v-on:click="importData = true">新建数据导入工作流</v-btn>
             </div>
 
             <v-data-table :headers="headers"

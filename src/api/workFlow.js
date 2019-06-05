@@ -64,18 +64,8 @@ export const killFlowTask = (flowId,flowTaskId) => {
     return axios.post(`/console/flow/killFlowTask?flowId=${flowId}&flowTaskId=${flowTaskId}`).then(res => res.data);
 };
 
-export const getAllFlowTasks = (pageNum, pageSize) => {
-    return axios.get(`/console/flow/getAllFlowTasks?pageNum=${pageNum}&pageSize=${pageSize}`).then(res => res.data);
-};
-
-export const getFlowTasksByFlowId = (flowId, pageNum, pageSize) => {
-    return axios.get(`/console/flow/getFlowTasksByFlowId?flowId=${flowId}&pageNum=${pageNum}&pageSize=${pageSize}`)
-        .then(res => res.data);
-};
-
-export const getFlowTasksByStatus = (status, pageNum, pageSize) => {
-    return axios.get(`/console/flow/getFlowTasksByStatus?status=${status}&pageNum=${pageNum}&pageSize=${pageSize}`)
-        .then(res => res.data);
+export const getFlowTasks = (flowId, status, pageNum, pageSize) => {
+    return axios.get(`/console/flow/getFlowTasks?flowId=${flowId}&status=${status}&pageNum=${pageNum}&pageSize=${pageSize}`).then(res => res.data);
 };
 
 export const getTasks = (flowTaskId, pageNum, pageSize) => {

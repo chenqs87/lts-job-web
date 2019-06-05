@@ -12,6 +12,7 @@
             </v-toolbar>
 
             <v-tabs fixed-tabs>
+                <v-breadcrumbs :items="items" divider=">"></v-breadcrumbs>
                 <v-tab key="1" href="#log">任务列表</v-tab>
                 <v-tabs-items>
                     <v-tab-item key="1" value="log">
@@ -75,6 +76,7 @@
                 descending: true,
                 rowsPerPage: 10,
             },
+            items:[],
             flowTaskId: -1,
             flowData: {},
             headers: [
@@ -122,7 +124,7 @@
             }
         }),
         created () {
-            //this.queryTasks()
+            this.queryTasks()
         },
         methods: {
             queryTasks () {
@@ -136,7 +138,15 @@
                     this.totalDesserts = data.total;
                     this.pagination.page = data['pageNum'];
                     this.pagination.totalItems = data.total;
-                })
+                });
+
+                this.items = [
+                    {
+                        text: '历史任务',
+                        disabled: false,
+                        to: '/workflow/flow-tasks'
+                    }
+                ];
             },
             query(item, logName) {
                 let params = Object.assign({}, item);

@@ -73,6 +73,11 @@ export const getFlowTasksByFlowId = (flowId, pageNum, pageSize) => {
         .then(res => res.data);
 };
 
+export const getFlowTasksByStatus = (status, pageNum, pageSize) => {
+    return axios.get(`/console/flow/getFlowTasksByStatus?status=${status}&pageNum=${pageNum}&pageSize=${pageSize}`)
+        .then(res => res.data);
+};
+
 export const getTasks = (flowTaskId, pageNum, pageSize) => {
     return axios.get(`/console/flow/getTasks?flowTaskId=${flowTaskId}&pageNum=${pageNum}&pageSize=${pageSize}`)
         .then(res => res.data);
@@ -173,6 +178,10 @@ export const updatePermit = (userOrGroup, name, resource, resourceType, permit) 
 
 export const getAlertConfig = (flowId) => {
     return axios.get(`/console/flow/getAlertConfig?flowId=${flowId}`).then(res => res.data);
+};
+
+export const getFlowTaskStatus = () => {
+    return axios.get(`/console/flow/getFlowTaskStatus`).then(res => res.data);
 };
 
 export const importConfig = [

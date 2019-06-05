@@ -30,6 +30,13 @@
                     </td>
                     <td class="justify-center layout px-0">
 
+                        <v-tooltip top >
+                            <template v-slot:activator="{ on }">
+                                <v-icon v-on="on" small class="mr-2" v-on:click="queryScheduleLog(props.item)">list</v-icon>
+                            </template>
+                            <span>作业调度流程</span>
+                        </v-tooltip>
+
                         <v-tooltip top v-if="props.item.status === 3 || props.item.status === 5">
                             <template v-slot:activator="{ on }">
                                 <v-icon v-on="on" small class="mr-2" v-on:click="reTrigger(props.item)">loop</v-icon>
@@ -53,6 +60,39 @@
                     </td>
                 </template>
             </v-data-table>
+            <v-dialog v-model="dialog" width="800">
+                <v-card>
+                    <v-card-title class="headline grey lighten-2" primary-title>
+                        作业调度流程
+                    </v-card-title>
+
+                    <v-card-text>
+                        <v-timeline>
+                            <v-timeline-item v-for="(log, i) in schedule_log" :key="i" :color="`${i % 2 === 0 ? 'green' : 'cyan'}`" small>
+                                <template v-slot:opposite>
+                                    <span :class="`font-weight-bold`">
+                                        {{log['createTime'] | formatDate}}
+                                    </span>
+                                </template>
+                                <div class="py-3">
+                                    <div>
+                                        {{log.content}}
+                                    </div>
+                                </div>
+                            </v-timeline-item>
+                        </v-timeline>
+                    </v-card-text>
+
+                    <v-divider></v-divider>
+
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="primary" flat @click="dialog = false">
+                            关闭
+                        </v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
         </v-container>
     </div>
 
@@ -62,9 +102,8 @@
     import {
         getAllFlowTasks,
         getFlowTasksByFlowId,
-        getTasks,
+        getFlowScheduleLog,
         dataFormat,
-        queryLog,
         killFlowTask,
         reTriggerFlow,
         getFlowTasksByStatus,
@@ -73,6 +112,8 @@
 
     export default {
         data: () => ({
+            dialog: false,
+            schedule_log:[],
             totalDesserts: 0,
             pagination: {
                 descending: true,
@@ -188,6 +229,14 @@
                     this.queryTasks();
                 });
             },
+            queryScheduleLog(item) {
+                this.schedule_log = [];
+                getFlowScheduleLog(item.id).then(data => {
+                    this.schedule_log = data;
+                    this.dialog = true;
+
+                })
+            }
         },
         filters: {
             formatDate: function (value) {

@@ -102,7 +102,7 @@
     import {
         getFlowTasks,
         getTasks,
-        getFlowScheduleLog
+        getFlowScheduleLog,
         dataFormat,
         killFlowTask,
         reTriggerFlow,

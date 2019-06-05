@@ -184,6 +184,10 @@ export const getFlowTaskStatus = () => {
     return axios.get(`/console/flow/getFlowTaskStatus`).then(res => res.data);
 };
 
+export const getFlowScheduleLog = (flowTaskId) => {
+    return axios.get(`/console/flow/getFlowScheduleLog?flowTaskId=${flowTaskId}`).then(res => res.data);
+};
+
 export const importConfig = [
     {
         "type": "scylla",

@@ -4,62 +4,44 @@
 
         <v-container grid-list-xl fluid>
             <v-toolbar flat color="white">
-                <v-toolbar-title>任务执行日志</v-toolbar-title>
-                <v-divider></v-divider>
                 <v-spacer></v-spacer>
                 <v-btn  color="primary" dark class="mb-2" v-on:click="queryTasks">刷新</v-btn>
+                <v-btn  color="primary" dark class="mb-2" v-on:click="$router.push({path: '/workflow/flow-tasks'})">返回</v-btn>
 
             </v-toolbar>
 
-            <v-tabs fixed-tabs>
-                <v-breadcrumbs :items="items" divider=">"></v-breadcrumbs>
-                <v-tab key="1" href="#log">任务列表</v-tab>
-                <v-tabs-items>
-                    <v-tab-item key="1" value="log">
-                        <v-card flat>
-                            <v-data-table :headers="headers" :items="desserts" class="elevation-1" :pagination.sync="pagination"
-                                          :total-items="totalDesserts" :rows-per-page-items="[10,15,20,25,30]" >
-                                <template v-slot:items="props">
-                                    <td>{{ props.item.flowTaskId }}</td>
-                                    <td>{{ props.item.taskId }}</td>
-                                    <td>{{ props.item.jobId }}</td>
-                                    <td>{{ props.item.flowId }}</td>
-                                    <td>{{ props.item.postTask | parsePostTask }}</td>
-<!--
-                                    <td>{{ props.item.shardStatus }}</td>
--->
-                                    <td>{{ props.item.handler }}</td>
-                                    <td>{{ props.item.host }}</td>
-                                    <td>{{ props.item.beginTime | formatDate}}</td>
-                                    <td v-if="props.item.taskStatus >= 5">{{ props.item.endTime | formatDate}}</td><td v-else></td>
-                                    <td>
-                                        <v-btn small v-if="props.item.taskStatus === 0" color="info">New</v-btn>
-                                        <v-btn small v-else-if="props.item.taskStatus === 1" color="info">Ready</v-btn>
-                                        <v-btn small v-else-if="props.item.taskStatus === 2" color="info">Pending</v-btn>
-                                        <v-btn small v-else-if="props.item.taskStatus === 3" color="info">Submitted</v-btn>
-                                        <v-btn small v-else-if="props.item.taskStatus === 4" color="info">Running</v-btn>
-                                        <v-btn small v-else-if="props.item.taskStatus === 5" color="error">Failed</v-btn>
-                                        <v-btn small v-else-if="props.item.taskStatus === 6" color="success">
-                                            {{props.item.host===""? "Skipped": "Finished"}}</v-btn>
-                                        <v-btn small v-else="props.item.taskStatus === 7" color="error">Killed</v-btn>
-                                    </td>
-                                    <td>
-                                        <a v-if="props.item.host !== ''" v-on:click="query(props.item,'syslog')">syslog &nbsp;</a>
-                                        <a v-if="props.item.host !== ''" v-on:click="query(props.item, 'syserr')">errlog</a>
-                                    </td>
-                                </template>
-                            </v-data-table>
-                        </v-card>
-                    </v-tab-item>
-                    <v-tab-item key="2" value="test">
-                        <v-card flat>
-                            <v-card-text>
-                                test test
-                            </v-card-text>
-                        </v-card>
-                    </v-tab-item>
-                </v-tabs-items>
-            </v-tabs>
+            <v-data-table :headers="headers" :items="desserts" class="elevation-1" :pagination.sync="pagination"
+                          :total-items="totalDesserts" :rows-per-page-items="[10,15,20,25,30]" >
+                <template v-slot:items="props">
+                    <td>{{ props.item.flowTaskId }}</td>
+                    <td>{{ props.item.taskId }}</td>
+                    <td>{{ props.item.jobId }}</td>
+                    <td>{{ props.item.flowId }}</td>
+                    <td>{{ props.item.postTask | parsePostTask }}</td>
+                    <!--
+                                                        <td>{{ props.item.shardStatus }}</td>
+                    -->
+                    <td>{{ props.item.handler }}</td>
+                    <td>{{ props.item.host }}</td>
+                    <td>{{ props.item.beginTime | formatDate}}</td>
+                    <td v-if="props.item.taskStatus >= 5">{{ props.item.endTime | formatDate}}</td><td v-else></td>
+                    <td>
+                        <v-btn small v-if="props.item.taskStatus === 0" color="info">New</v-btn>
+                        <v-btn small v-else-if="props.item.taskStatus === 1" color="info">Ready</v-btn>
+                        <v-btn small v-else-if="props.item.taskStatus === 2" color="info">Pending</v-btn>
+                        <v-btn small v-else-if="props.item.taskStatus === 3" color="info">Submitted</v-btn>
+                        <v-btn small v-else-if="props.item.taskStatus === 4" color="info">Running</v-btn>
+                        <v-btn small v-else-if="props.item.taskStatus === 5" color="error">Failed</v-btn>
+                        <v-btn small v-else-if="props.item.taskStatus === 6" color="success">
+                            {{props.item.host===""? "Skipped": "Finished"}}</v-btn>
+                        <v-btn small v-else="props.item.taskStatus === 7" color="error">Killed</v-btn>
+                    </td>
+                    <td>
+                        <a v-if="props.item.host !== ''" v-on:click="query(props.item,'syslog')">syslog &nbsp;</a>
+                        <a v-if="props.item.host !== ''" v-on:click="query(props.item, 'syserr')">errlog</a>
+                    </td>
+                </template>
+            </v-data-table>
 
         </v-container>
     </div>

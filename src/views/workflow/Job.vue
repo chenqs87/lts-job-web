@@ -439,7 +439,7 @@
         border-radius: 2px;
         border-collapse: collapse;
         border-spacing: 0;
-        width: 99%;
+        width: 96%;
         max-width: 100%;
     }
 </style>

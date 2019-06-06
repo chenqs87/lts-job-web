@@ -6,7 +6,7 @@
                 <v-btn color="primary" dark class="mb-2" v-on:click="dialog =true" v-if=" switchUFBtn === '切换用户组工作流' ">
                     新建工作流
                 </v-btn>
-                <v-btn color="primary" dark class="mb-2" v-on:click="importData = true">新建数据导入工作流</v-btn>
+                <v-btn color="primary" dark class="mb-2" v-on:click="openIpData">新建数据导入工作流</v-btn>
             </div>
 
             <v-data-table :headers="headers"
@@ -107,16 +107,23 @@
             <!-- 确认对话框 -->
             <v-dialog v-model="zDialog" persistent max-width="500">
                 <z-dialog :message="zMessage"
-                        @close="cancelZDialog" @agree="doCron"></z-dialog>
+                          @close="cancelZDialog" @agree="doCron"></z-dialog>
             </v-dialog>
             <!-- 添加导入数据流 -->
-            <v-dialog v-model="importData" persistent maxWidth="1000" >
+            <v-dialog v-model="importData" persistent maxWidth="1000">
                 <import-data
-                        @close="closeImportData" @save="queryTasks"></import-data>
+                        :checkGroupName="this.check.group"
+                        :checkSize="this.check.size"
+                        :checkContent="this.check.content"
+                        :ipDataConfig="this.check.config"
+
+                        @close="closeImportData"
+                        @save="queryTasks"
+                ></import-data>
             </v-dialog>
         </v-container>
 
-        <v-dialog v-model="dialog" max-width="500px" >
+        <v-dialog v-model="dialog" max-width="500px">
             <v-card>
                 <v-card-title>
                     <span class="headline">{{ formTitle }}</span>
@@ -198,6 +205,14 @@
     export default {
         components: {cron, ModelFlowEditor, SelectAuth, ZDialog, ImportData},
         data: () => ({
+
+            check: {
+                group: "",
+                size: "",
+                content: "",
+                config: "",
+            },
+
             template: '<cron/>',
             cronPopover: false,
 
@@ -292,6 +307,14 @@
             this.getPermitRule();
         },
         methods: {
+            openIpData() {
+                this.check["group"] = "\n\n\n\n";
+                this.check["size"] = "\n\n\n\n";
+                this.check["content"] = "\n\n\n\n";
+                this.check["config"] = "\n\n\n\n";
+
+                this.importData = true;
+            },
             test(data) {
                 console.log(data)
                 this.fullscreen.dialog = false;
@@ -344,7 +367,7 @@
                 }
             },
             close() {
-                this.dialog = false
+                this.dialog = false;
                 setTimeout(() => {
                     this.editedItem = Object.assign({}, this.defaultItem);
                     this.editedIndex = -1
@@ -352,7 +375,7 @@
             },
             save() {
                 const l = this;
-                if (l.editedItem.postFlow!==null && l.editedItem.postFlow !== "") {
+                if (l.editedItem.postFlow !== null && l.editedItem.postFlow !== "") {
                     let split = l.editedItem.postFlow.split(",");
 
                     console.log(split)
@@ -391,30 +414,30 @@
                     query: {flowId: flowId}
                 });
             },
-            delFlow(item){
+            delFlow(item) {
                 this.cronItem = item;
                 this.zMessage = 'Are you sure you want to delete this flow?？';
                 this.zDialog = true;
                 this.delIndex = this.desserts.indexOf(item);
             },
-            openCron(item){
+            openCron(item) {
                 this.cronItem = item;
                 console.log(item.isSchedule);
-                this.zMessage = 'Are you sure you want' + (item.isSchedule === 0 ? 'start' : 'stop')  +'this flow ？';
+                this.zMessage = 'Are you sure you want' + (item.isSchedule === 0 ? 'start' : 'stop') + 'this flow ？';
                 this.zDialog = true;
             },
-            doCron(){
+            doCron() {
 
-                if (this.delIndex !== -1){
-                        deleteFlow(this.cronItem.id).then(() => {
-                            this.desserts.splice(this.delIndex, 1)
-                        });
+                if (this.delIndex !== -1) {
+                    deleteFlow(this.cronItem.id).then(() => {
+                        this.desserts.splice(this.delIndex, 1)
+                    });
                     this.delIndex = -1;
                     this.cancelZDialog();
                     return;
                 }
                 //启动定时任务
-                if(this.cronItem.isSchedule === 0){
+                if (this.cronItem.isSchedule === 0) {
                     this.editedIndex = this.desserts.indexOf(this.cronItem);
                     this.editedItem = Object.assign({}, this.cronItem)
                     startCronFlow(this.cronItem.id).then(data => {
@@ -423,7 +446,7 @@
                     });
                 }
                 //停止定时任务
-                if(this.cronItem.isSchedule === 1){
+                if (this.cronItem.isSchedule === 1) {
                     this.editedIndex = this.desserts.indexOf(this.cronItem);
                     this.editedItem = Object.assign({}, this.cronItem);
                     stopCronFlow(this.cronItem.id).then(data => {
@@ -474,6 +497,7 @@
             },
             closeImportData() {
                 this.importData = false;
+                this.queryTasks();
             },
 
         },
@@ -492,7 +516,7 @@
         border-radius: 2px;
         border-collapse: collapse;
         border-spacing: 0;
-        width: 99%;
+        width: 96%;
         max-width: 100%;
     }
 </style>

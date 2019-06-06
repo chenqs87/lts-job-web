@@ -60,7 +60,7 @@ export const reTriggerFlow = (flowId, flowTaskId, params) => {
     return axios.post(`/console/flow/reTriggerFlow?flowId=${flowId}&flowTaskId=${flowTaskId}&params=${params}`).then(res => res.data);
 };
 
-export const killFlowTask = (flowId,flowTaskId) => {
+export const killFlowTask = (flowId, flowTaskId) => {
     return axios.post(`/console/flow/killFlowTask?flowId=${flowId}&flowTaskId=${flowTaskId}`).then(res => res.data);
 };
 
@@ -98,11 +98,21 @@ export const stopCronFlow = (flowId) => {
 
 
 export const getUsers = (pageNum, pageSize) => {
-    return axios.get("/console/manager/getAllUsers", {params: {pageNum: pageNum, pageSize: pageSize}}).then(res => res.data);
+    return axios.get("/console/manager/getAllUsers", {
+        params: {
+            pageNum: pageNum,
+            pageSize: pageSize
+        }
+    }).then(res => res.data);
 };
 
 export const getGroups = (pageNum, pageSize) => {
-    return axios.get("/console/manager/getAllGroups",  {params: {pageNum: pageNum, pageSize: pageSize}}).then(res => res.data);
+    return axios.get("/console/manager/getAllGroups", {
+        params: {
+            pageNum: pageNum,
+            pageSize: pageSize
+        }
+    }).then(res => res.data);
 };
 
 export const newUser = params => {
@@ -114,7 +124,7 @@ export const newGroup = params => {
 };
 
 export const updateUser = (user) => {
-    return axios.post(`/console/manager/updateUser`,  user).then(res => res.data);
+    return axios.post(`/console/manager/updateUser`, user).then(res => res.data);
 };
 
 export const updateGroup = (group) => {
@@ -147,23 +157,25 @@ export const getAllGroups = () => {
 
 export const getResourcePermit = (userOrGroup, name, resource, resourceType) => {
     return axios.get(`/console/manager/getResourcePermit`,
-            { params: {
+        {
+            params: {
                 userOrGroup: userOrGroup,
                 name: name,
                 resource: resource,
                 resourceType: resourceType
-            }})
+            }
+        })
         .then(res => res.data);
 };
 
 export const updatePermit = (userOrGroup, name, resource, resourceType, permit) => {
     return axios.post(`/console/manager/updatePermit`, {
-            userOrGroup: userOrGroup,
-            name: name,
-            resource: resource,
-            resourceType: resourceType,
-            permit: permit
-        }).then(res => res.data);
+        userOrGroup: userOrGroup,
+        name: name,
+        resource: resource,
+        resourceType: resourceType,
+        permit: permit
+    }).then(res => res.data);
 };
 
 export const getAlertConfig = (flowId) => {
@@ -177,6 +189,16 @@ export const getFlowTaskStatus = () => {
 export const getFlowScheduleLog = (flowTaskId) => {
     return axios.get(`/console/flow/getFlowScheduleLog?flowTaskId=${flowTaskId}`).then(res => res.data);
 };
+
+export const importDataFlow = (checkGroupName, checkSize, checkContent, ipDataConfig) => {
+    return axios.post(`/console/flow/importDataFlow?checkGroupName`, {
+        checkGroupName: checkGroupName,
+        checkSize: checkSize,
+        checkContent: checkContent,
+        ipDataConfig: ipDataConfig,
+    }).then(res => res.data);
+};
+
 
 export const importConfig = [
     {

@@ -16,6 +16,7 @@
                           :total-items="totalDesserts"
                           :rows-per-page-items="[10,15,20,25,30]">
                 <template v-slot:items="props">
+                    <tr @click="props.expanded = !props.expanded">
                     <td>{{ props.item.id }}</td>
                     <td>{{ props.item.name }}</td>
                     <td>{{ props.item.cron }}</td>
@@ -85,6 +86,16 @@
                             <span>执行历史</span>
                         </v-tooltip>
                     </td>
+                    </tr>
+                </template>
+
+                <template v-slot:expand="props">
+                    <v-card flat>
+                        <v-card-text>
+                            工作流参数：<br/>
+                            {{props.item.params}}
+                        </v-card-text>
+                    </v-card>
                 </template>
             </v-data-table>
             <!-- 授权对话框 -->

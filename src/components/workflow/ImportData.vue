@@ -22,6 +22,20 @@
                     <v-flex xs12 sm6 md12>
                         <v-text-field v-model="checkGroupName" label="分组"></v-text-field>
                     </v-flex>
+                    <v-flex xs12 sm6 md12>
+                        <el-popover v-model="cronPopover">
+                            <cron @change="changeCron" @close="cronPopover=false" i18n="cn"></cron>
+                            <v-text-field label="Cron表达式" slot="reference" :readonly=true
+                                          @click="changeCron"
+                                          :rules="[
+                                                               () => !!checkCron || 'cron is required'
+                                                            ]"
+                                          v-model="checkCron"
+
+                            ></v-text-field>
+                        </el-popover>
+
+                    </v-flex>
                 </div>
                 <v-btn
                         color="primary"
@@ -83,10 +97,11 @@
                         提交
                     </v-btn>
                     <v-btn flat @click="e1 = 3">上一步</v-btn>
-                    <v-btn style="float:right" flat @click="e1 = 1;$emit('close')">取消</v-btn>
                 </div>
             </v-stepper-content>
         </v-stepper-items>
+
+        <v-btn style="float:right" flat @click="$emit('close')">取消</v-btn>
     </v-stepper>
 </template>
 
@@ -101,6 +116,7 @@
 
     // theme css
     import 'codemirror/theme/base16-dark.css'
+    import {cron} from 'vue-cron';
     import {
         importDataFlow,
         importConfig,
@@ -108,6 +124,12 @@
 
     export default {
         data: () => ({
+            //cron表达式
+            components: {cron},
+            template: '<cron/>',
+            cronPopover: false,
+            checkCron:"",
+
             cardText: importConfig[0],
             cmOptions: {
                 tabSize: 4,
@@ -140,9 +162,13 @@
         },
         methods: {
             save() {
-                importDataFlow (this.checkGroupName,this.checkSize,this.checkContent,this.ipDataConfig).then(data => {
-                    this.$emit('close');
+                importDataFlow (this.checkGroupName,this.checkSize,this.checkContent,this.ipDataConfig,this.checkCron).then(data => {
+                    this.$emit('close`');
                 });
+            },
+            //改变Cron表达式
+            changeCron(val) {
+                this.checkCron = val
             },
         }
     }

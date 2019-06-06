@@ -190,12 +190,13 @@ export const getFlowScheduleLog = (flowTaskId) => {
     return axios.get(`/console/flow/getFlowScheduleLog?flowTaskId=${flowTaskId}`).then(res => res.data);
 };
 
-export const importDataFlow = (checkGroupName, checkSize, checkContent, ipDataConfig) => {
+export const importDataFlow = (checkGroupName, checkSize, checkContent, ipDataConfig,checkCron) => {
     return axios.post(`/console/flow/importDataFlow?checkGroupName`, {
         checkGroupName: checkGroupName,
         checkSize: checkSize,
         checkContent: checkContent,
         ipDataConfig: ipDataConfig,
+        checkCron: checkCron
     }).then(res => res.data);
 };
 

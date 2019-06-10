@@ -136,7 +136,8 @@
                                     </el-popover>
                                 </v-flex>
                             </div>
-                            <v-btn color="primary" @click="e1 = 2" :disabled = "ipData.group.match(/^[ ]*$/) || ipData.cron.match(/^[ ]*$/)">下一步</v-btn>
+                            <v-btn color="primary" @click="e1 = 2"
+                                   :disabled = "ipData.group.match(/^[ ]*$/)=== null || ipData.cron.match(/^[ ]*$/) === null">下一步</v-btn>
                             <v-btn flat @click="e1 = 1">上一步</v-btn>
                         </v-stepper-content>
                         <v-stepper-content step="2">
@@ -144,7 +145,8 @@
                                 <v-select :items="handlerList" label="Handler" v-model="ipData.sizeHandler"></v-select>
                                 <editor v-model="ipData.size" :options="{fontSize:18}" @init="editorInit" lang="sh" theme="pastel_on_dark" width="100%" height="300"></editor>
                             </div>
-                            <v-btn color="primary" @click="e1 = 3" :disabled = "ipData.size.match(/^[ ]*$/) || ipData.sizeHandler.match(/^[ ]*$/)">下一步</v-btn>
+                            <v-btn color="primary" @click="e1 = 3"
+                                   :disabled = "ipData.size.match(/^[ ]*$/)=== null || ipData.sizeHandler.match(/^[ ]*$/) === null">下一步</v-btn>
                             <v-btn flat @click="e1 = 1">上一步</v-btn>
                         </v-stepper-content>
                         <v-stepper-content step="3">
@@ -153,7 +155,8 @@
                                 <editor v-model="ipData.content" :options="{fontSize:18}"  @init="editorInit" lang="sh" theme="pastel_on_dark" width="100%" height="300"></editor>
                             </div>
 
-                            <v-btn color="primary" @click="e1 = 4" :disabled = "ipData.content.match(/^[ ]*$/) || ipData.contentHandler.match(/^[ ]*$/)">下一步</v-btn>
+                            <v-btn color="primary" @click="e1 = 4"
+                                   :disabled = "ipData.content.match(/^[ ]*$/) === null || ipData.contentHandler.match(/^[ ]*$/) === null">下一步</v-btn>
                             <v-btn flat @click="e1 = 2">上一步</v-btn>
                         </v-stepper-content>
 
@@ -167,7 +170,8 @@
                             </div>
                             <div style="width: 100%">
                                 <v-btn color="primary" @click="displaySample=!displaySample">样例配置</v-btn>
-                                <v-btn color="primary" @click="saveImportData" :disabled = "ipData.config.match(/^[ ]*$/) || ipData.importDataHandler.match(/^[ ]*$/)">提交</v-btn>
+                                <v-btn color="primary" @click="saveImportData"
+                                       :disabled = "ipData.config.match(/^[ ]*$/)===null || ipData.importDataHandler.match(/^[ ]*$/) === null">提交</v-btn>
                                 <v-btn flat @click="e1 = 3">上一步</v-btn>
                             </div>
                         </v-stepper-content>
@@ -201,7 +205,6 @@
                             <v-flex xs12 sm6 md12>
                                 <el-popover v-model="cronPopover">
                                     <cron @change="changeCron" @close="cronPopover=false" i18n="cn"></cron>
-                                    <!--<el-input class="cron-input" slot="reference" @click="cronPopover=true" v-model="editedItem.cron" placeholder="请输入定时策略"></el-input>-->
                                     <v-text-field label="Cron表达式" slot="reference" :readonly=true
                                                   @click="changeCron"
                                                   :rules="[
@@ -344,6 +347,17 @@
 
 
             ipData: {
+                group: "",
+                cron: "",
+                size: "",
+                sizeHandler:"",
+                content: "",
+                contentHandler:"",
+                config: "",
+                importDataHandler:"",
+            },
+
+            defaultIpData: {
                 group: "",
                 cron: "",
                 size: "",
@@ -571,7 +585,7 @@
                 this.queryTasks();
             },
             saveImportData() {
-                importDataFlow(this.ipData['group'], this.ipData['size'], this.ipData['content'], this.ipData['config'], this.ipData['cron']).then(data => {
+                importDataFlow(this.ipData).then(data => {
                     this.importDataDialog = false;
                     this.queryTasks();
                 });
@@ -586,9 +600,9 @@
                 })
             },
             openImportData() {
+                this.ipData = Object.assign({}, this.defaultIpData);
+                this.e1 = 1;
                 this.importDataDialog = true;
-
-
             }
 
         },

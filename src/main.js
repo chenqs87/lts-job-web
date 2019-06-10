@@ -12,11 +12,6 @@ import 'element-ui/lib/theme-chalk/index.css';
 Vue.use(ElementUI, { size: 'mini', zIndex: 3000 });
 
 
-import VueCodemirror from 'vue-codemirror'
-import 'codemirror/lib/codemirror.css'
-Vue.use(VueCodemirror)
-
-
 Vue.config.productionTip = false;
 
 new Vue({

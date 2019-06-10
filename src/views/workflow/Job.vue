@@ -134,9 +134,9 @@
                         </v-toolbar-items>
                     </v-toolbar>
                     <v-card-text>
-                        <v-form>
-                            <codemirror v-model="editedItem.content" :options="cmOptions"></codemirror>
-                        </v-form>
+                            <div width="100%">
+                                <editor v-model="editedItem.content" :options="{fontSize:18}" @init="editorInit" lang="sh" theme="pastel_on_dark" width="100%" :height="editorHeight"></editor>
+                            </div>
                     </v-card-text>
                 </v-card>
             </v-dialog>
@@ -147,12 +147,6 @@
 
 <script>
     import ZDialog from '@/components/Dialog';
-    import 'codemirror/lib/codemirror.css'
-    // mode: text/javascript
-    import 'codemirror/mode/javascript/javascript.js'
-    //mode: text/x-python
-    import 'codemirror/mode/python/python.js'
-    import 'codemirror/theme/base16-dark.css'
 
     import {
         getAllJobsByUser,
@@ -167,7 +161,7 @@
     import SelectAuth from '@/components/workflow/SelectAuth';
 
     export default {
-        components: {SelectAuth, ZDialog},
+        components: {SelectAuth, ZDialog,  editor: require('vue2-ace-editor')},
         data: () => ({
 
             //zDialog默认为关闭
@@ -262,6 +256,11 @@
         computed: {
             formTitle() {
                 return this.editedIndex === -1 ? '新建' : '编辑'
+            },
+
+            editorHeight() {
+                let h = document.documentElement.clientHeight || document.body.clientHeight;
+                return h -100;
             }
         },
         watch: {
@@ -280,6 +279,15 @@
             this.getHandlers();
         },
         methods: {
+            editorInit: function () {
+                require('brace/ext/language_tools')
+                require('brace/mode/sh')
+                require('brace/mode/javascript')
+                require('brace/mode/less')
+                require('brace/theme/monokai')
+                require('brace/theme/pastel_on_dark')
+                require('brace/snippets/javascript')
+            },
             editCode(item) {
 
                 this.editedIndex = this.desserts.indexOf(item)

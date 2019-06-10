@@ -6,7 +6,7 @@
                 <v-btn color="primary" dark class="mb-2" v-on:click="dialog =true" v-if=" switchUFBtn === '切换用户组工作流' ">
                     新建工作流
                 </v-btn>
-                <v-btn color="primary" dark class="mb-2" v-on:click="importDataDialog = true">新建数据导入工作流</v-btn>
+                <v-btn color="primary" dark class="mb-2" @click.stop="openImportData" >新建数据导入工作流</v-btn>
             </div>
 
             <v-data-table :headers="headers"
@@ -21,9 +21,6 @@
                     <td>{{ props.item.name }}</td>
                     <td>{{ props.item.cron }}</td>
                     <td>{{ props.item.postFlow }}</td>
-                    <!--
-                       <td>{{ props.item.params }}</td>
-                    -->
                     <td>{{ props.item.createUser }}</td>
                     <td>{{ props.item.isSchedule === 0 ? "否" : "是" }}</td>
                     <td>{{ props.item.startTime | formatDate }}</td>
@@ -111,28 +108,14 @@
             </v-dialog>
             <!-- 添加导入数据流 -->
             <v-dialog v-model="importDataDialog" persistent maxWidth="1000">
-                <!--<import-data-->
-                <!--:checkGroupName="this.check.group"-->
-                <!--:checkSize="this.check.size"-->
-                <!--:checkContent="this.check.content"-->
-                <!--:ipDataConfig="this.check.config"-->
-
-                <!--@close="closeImportData"-->
-                <!--@save="queryTasks"-->
-                <!--&gt;</import-data>-->
                 <v-stepper v-model="e1">
                     <v-stepper-header>
                         <v-stepper-step :complete="e1 > 1" step="1">配置组</v-stepper-step>
-
                         <v-divider></v-divider>
                         <v-stepper-step :complete="e1 > 2" step="2">校验数据大小</v-stepper-step>
-
                         <v-divider></v-divider>
-
                         <v-stepper-step :complete="e1 > 3" step="3">校验数据内容</v-stepper-step>
-
                         <v-divider></v-divider>
-
                         <v-stepper-step step="4">配工作流参数</v-stepper-step>
                     </v-stepper-header>
 
@@ -141,82 +124,50 @@
                             <div>
 
                                 <v-flex xs12 sm6 md12>
-                                    <v-text-field v-model="ipData.group" label="分组"></v-text-field>
+                                    <v-text-field v-model="ipData.group" label="分组" :rules="[() => !!ipData.group || 'group is required']"></v-text-field>
                                 </v-flex>
                                 <v-flex xs12 sm6 md12>
                                     <el-popover v-model="importCronPopover">
                                         <cron @change="changeCheckCron" @close="importCronPopover=false" i18n="cn"></cron>
                                         <v-text-field label="Cron表达式" slot="reference" :readonly=true
                                                       @click="changeCron"
-                                                      :rules="[
-                                                               () => !!ipData.cron || 'cron is required'
-                                                            ]"
-                                                      v-model="ipData.cron"
-
-                                        ></v-text-field>
+                                                      :rules="[() => !!ipData.cron || 'cron is required']"
+                                                      v-model="ipData.cron"></v-text-field>
                                     </el-popover>
-
                                 </v-flex>
                             </div>
-                            <v-btn
-                                    color="primary"
-                                    @click="e1 = 2"
-                            >
-                                下一步
-                            </v-btn>
-
+                            <v-btn color="primary" @click="e1 = 2" :disabled = "ipData.group.match(/^[ ]*$/) || ipData.cron.match(/^[ ]*$/)">下一步</v-btn>
                             <v-btn flat @click="e1 = 1">上一步</v-btn>
                         </v-stepper-content>
                         <v-stepper-content step="2">
-                            <div>
-                                <codemirror
-                                        v-model="ipData.size" :options="cmOptions"></codemirror>
+                            <div width="100%" height="100%">
+                                <v-select :items="handlerList" label="Handler" v-model="ipData.sizeHandler"></v-select>
+                                <editor v-model="ipData.size" :options="{fontSize:18}" @init="editorInit" lang="sh" theme="pastel_on_dark" width="100%" height="300"></editor>
                             </div>
-                            <v-btn
-                                    color="primary"
-                                    @click="e1 = 3"
-                            >
-                                下一步
-                            </v-btn>
-
+                            <v-btn color="primary" @click="e1 = 3" :disabled = "ipData.size.match(/^[ ]*$/) || ipData.sizeHandler.match(/^[ ]*$/)">下一步</v-btn>
                             <v-btn flat @click="e1 = 1">上一步</v-btn>
                         </v-stepper-content>
-
                         <v-stepper-content step="3">
+                            <div width="100%">
+                                <v-select :items="handlerList" label="Handler" v-model="ipData.contentHandler"></v-select>
+                                <editor v-model="ipData.content" :options="{fontSize:18}"  @init="editorInit" lang="sh" theme="pastel_on_dark" width="100%" height="300"></editor>
+                            </div>
 
-                            <codemirror
-                                    v-model="ipData.content" :options="cmOptions"></codemirror>
-
-                            <v-btn
-                                    color="primary"
-                                    @click="e1 = 4"
-                            >
-                                下一步
-                            </v-btn>
-
+                            <v-btn color="primary" @click="e1 = 4" :disabled = "ipData.content.match(/^[ ]*$/) || ipData.contentHandler.match(/^[ ]*$/)">下一步</v-btn>
                             <v-btn flat @click="e1 = 2">上一步</v-btn>
                         </v-stepper-content>
 
                         <v-stepper-content step="4">
-                            <div style="float: left;width: 50%;height:100%">
-                                <v-card>
-                                    <v-card-title primary-title>
-                                        <div>
-                                            <h3 class="headline mb-0">数据导入配置参数举例</h3>
-                                            <div> {{ cardText }} </div>
-                                        </div>
-                                    </v-card-title>
-                                </v-card>
+                            <div v-if="displaySample" style="float: left;width: 100%;height:100%">
+                                <editor v-model="cardText" :options="{fontSize:18}"  @init="editorInit" lang="sh" theme="pastel_on_dark" width="100%" height="300"></editor>
                             </div>
-                            <div style="float: left;width: 50%;height:100%">
-                                <codemirror
-                                        v-model="ipData.config" :options="cmOptions"></codemirror>
-
+                            <div v-else style="float: left;width: 100%;height:100%">
+                                <v-select :items="handlerList" label="Handler" v-model="ipData.importDataHandler"></v-select>
+                                <editor v-model="ipData.config" :options="{fontSize:18}"  @init="editorInit" lang="sh" theme="pastel_on_dark" width="100%" height="300"></editor>
                             </div>
                             <div style="width: 100%">
-                                <v-btn color="primary" @click="saveImportData">
-                                    提交
-                                </v-btn>
+                                <v-btn color="primary" @click="displaySample=!displaySample">样例配置</v-btn>
+                                <v-btn color="primary" @click="saveImportData" :disabled = "ipData.config.match(/^[ ]*$/) || ipData.importDataHandler.match(/^[ ]*$/)">提交</v-btn>
                                 <v-btn flat @click="e1 = 3">上一步</v-btn>
                             </div>
                         </v-stepper-content>
@@ -297,33 +248,26 @@
 </template>
 
 <script>
-    // require st先yles
-    import 'codemirror/lib/codemirror.css'
-    // mode: text/javascript
-    import 'codemirror/mode/javascript/javascript.js'
 
-    //mode: text/x-python
-    import 'codemirror/mode/python/python.js'
-
-    // theme css
-    import 'codemirror/theme/base16-dark.css'
     import ZDialog from '@/components/Dialog';
     import SelectAuth from '@/components/workflow/SelectAuth';
     import ModelFlowEditor from '@/components/flow-editor/model-flow-editor';
-    import ImportData from '@/components/workflow/ImportData';
     import {cron} from 'vue-cron';
+
+
     import {
         getAllFlowsByUser, newFlow, updateFlow, deleteFlow, dataFormat, triggerFlow,
-        startCronFlow, stopCronFlow, getFlowPermit, reTriggerFlow, getAlertConfig,
-        getAllFlowsByGroup,
+        startCronFlow, stopCronFlow, getFlowPermit, getAlertConfig,
+        getAllFlowsByGroup, getActiveHandlers,
         importDataFlow,
         importConfig,
     } from '@/api/workFlow';
 
     export default {
-        components: {cron, ModelFlowEditor, SelectAuth, ZDialog, ImportData},
+        components: {cron, ModelFlowEditor, SelectAuth, ZDialog, editor: require('vue2-ace-editor')},
         data: () => ({
 
+            displaySample: false,
             template: '<cron/>',
             cronPopover: false,
             importCronPopover: false,
@@ -350,8 +294,8 @@
             },
             flowEditorInfo: "",
             dialog: false,
-            handlerList: ["test", "test1", "test2"],
-            jobTypes: ["shell", "python", "zip"],
+            handlerList: [],
+            jobTypes: ["shell", "python"],
             currentUser: true,
             headers: [
                 {text: 'ID', value: 'id', sortable: false},
@@ -403,27 +347,20 @@
                 group: "",
                 cron: "",
                 size: "",
+                sizeHandler:"",
                 content: "",
+                contentHandler:"",
                 config: "",
+                importDataHandler:"",
             },
 
-            cardText: importConfig[0],
-            cmOptions: {
-                tabSize: 4,
-                mode: 'text/x-python',
-                theme: 'base16-dark',
-                lineNumbers: true,
-                line: true,
-                lines: 20,
-                lineWrapping: false,
-                autoRefresh: true,
-            },
+            cardText: importConfig,
             e1: 0,
         }),
         computed: {
             formTitle() {
                 return this.editedIndex === -1 ? '新建' : '编辑'
-            }
+            },
         },
         watch: {
             dialog(val) {
@@ -439,8 +376,18 @@
         },
         created() {
             this.getPermitRule();
+            this.getHandlers();
         },
         methods: {
+            editorInit: function () {
+                require('brace/ext/language_tools') //language extension prerequsite...
+                require('brace/mode/sh')
+                require('brace/mode/javascript')    //language
+                require('brace/mode/less')
+                require('brace/theme/monokai')
+                require('brace/theme/pastel_on_dark')
+                require('brace/snippets/javascript') //snippet
+            },
             test(data) {
                 console.log(data)
                 this.fullscreen.dialog = false;
@@ -450,7 +397,6 @@
                     path: '/workflow/flow-editor',
                     query: {id: item.id, flowEditorInfo: item.flowEditorInfo}
                 });
-
             },
             queryTasks() {
                 let pageNum = this.pagination.page === null || this.pagination.page === undefined
@@ -505,8 +451,8 @@
                     let split = l.editedItem.postFlow.split(",");
 
                     console.log(split)
-                    var numReg = /^[0-9]+$/
-                    var numRe = new RegExp(numReg)
+                    let numReg = /^[0-9]+$/
+                    let numRe = new RegExp(numReg)
 
                     for (let i = 0; i < split.length; i++) {
                         if (!numRe.test(split[i])) {
@@ -630,6 +576,20 @@
                     this.queryTasks();
                 });
             },
+            getHandlers() {
+                getActiveHandlers().then(data => {
+                    let hs = [];
+                    for (let handler in data) {
+                        hs.push(handler)
+                    }
+                    this.handlerList = hs;
+                })
+            },
+            openImportData() {
+                this.importDataDialog = true;
+
+
+            }
 
         },
         filters: {
@@ -641,8 +601,13 @@
     }
 </script>
 
-<style>
-
+<style scoped>
+    .CodeMirror {
+        font-family: monospace;
+        height: 500px;
+        color: black;
+        direction: ltr;
+    }
     table.v-table {
         border-radius: 2px;
         border-collapse: collapse;
@@ -650,4 +615,5 @@
         width: 96%;
         max-width: 100%;
     }
+
 </style>

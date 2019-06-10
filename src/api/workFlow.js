@@ -201,7 +201,7 @@ export const importDataFlow = (checkGroupName, checkSize, checkContent, ipDataCo
 };
 
 
-export const importConfig = [
+export const importConfig = `[
     {
         "type": "scylla",
         "config": {
@@ -211,6 +211,6 @@ export const importConfig = [
             "columns": "version_id,is_best_book,is_cartoon,is_scroll,is_serial_epub",
             "types": "int,int,int,int,int"
         },
-        "input": "hdfs://nn1/warehouse/external.db/t_external_online_version_d/*",
+        "input": "hdfs://nn1/warehouse/external.db/t_external_online_version_d",
     }
-];
+]`;

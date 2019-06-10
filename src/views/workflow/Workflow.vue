@@ -137,7 +137,7 @@
                                 </v-flex>
                             </div>
                             <v-btn color="primary" @click="e1 = 2"
-                                   :disabled = "ipData.group.match(/^[ ]*$/)=== null || ipData.cron.match(/^[ ]*$/) === null">下一步</v-btn>
+                                   :disabled = "ipData.group === '' || ipData.cron === ''">下一步</v-btn>
                             <v-btn flat @click="e1 = 1">上一步</v-btn>
                         </v-stepper-content>
                         <v-stepper-content step="2">
@@ -146,7 +146,7 @@
                                 <editor v-model="ipData.size" :options="{fontSize:18}" @init="editorInit" lang="sh" theme="pastel_on_dark" width="100%" height="300"></editor>
                             </div>
                             <v-btn color="primary" @click="e1 = 3"
-                                   :disabled = "ipData.size.match(/^[ ]*$/)=== null || ipData.sizeHandler.match(/^[ ]*$/) === null">下一步</v-btn>
+                                   :disabled = "ipData.size === '' || ipData.sizeHandler ==='' ">下一步</v-btn>
                             <v-btn flat @click="e1 = 1">上一步</v-btn>
                         </v-stepper-content>
                         <v-stepper-content step="3">
@@ -156,7 +156,7 @@
                             </div>
 
                             <v-btn color="primary" @click="e1 = 4"
-                                   :disabled = "ipData.content.match(/^[ ]*$/) === null || ipData.contentHandler.match(/^[ ]*$/) === null">下一步</v-btn>
+                                   :disabled = "ipData.content === '' || ipData.contentHandler === ''">下一步</v-btn>
                             <v-btn flat @click="e1 = 2">上一步</v-btn>
                         </v-stepper-content>
 
@@ -171,7 +171,7 @@
                             <div style="width: 100%">
                                 <v-btn color="primary" @click="displaySample=!displaySample">样例配置</v-btn>
                                 <v-btn color="primary" @click="saveImportData"
-                                       :disabled = "ipData.config.match(/^[ ]*$/)===null || ipData.importDataHandler.match(/^[ ]*$/) === null">提交</v-btn>
+                                       :disabled = "ipData.config === '' || ipData.importDataHandler === ''">提交</v-btn>
                                 <v-btn flat @click="e1 = 3">上一步</v-btn>
                             </div>
                         </v-stepper-content>

@@ -96,7 +96,7 @@
                                     <v-combobox :items="jobTypes" label="作业类型"
                                                 :validate-on-blur=true
                                                 :rules="[rules.required]"
-                                                v-model="editedItem.jobType"></v-combobox>
+                                                :value="editedItem.jobType"></v-combobox>
                                 </v-flex>
 
                                 <v-flex xs12 sm6 md12>

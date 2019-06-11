@@ -368,9 +368,11 @@
             ipData: {
                 group: "",
                 cron: "",
-                size: "",
+                size: "echo $1",
                 sizeHandler:"",
-                content: "",
+                content: "import sys\n" +
+                    "for line in sys.stdin:\n" +
+                    "\tprint(line)\n",
                 contentHandler:"",
                 config: "",
                 importDataHandler:"",
@@ -379,10 +381,13 @@
             defaultIpData: {
                 group: "",
                 cron: "",
-                size: "",
+                size: "echo $1",
                 sizeHandler:"",
-                content: "",
+                content: "import sys\n" +
+                    "for line in sys.stdin:\n" +
+                    "\tprint(line)\n",
                 contentHandler:"",
+
                 config: "",
                 importDataHandler:"",
             },

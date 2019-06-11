@@ -95,7 +95,7 @@
             </v-dialog>
         </v-container>
 
-        <v-dialog v-model="triggerAlertDialog" persistent max-width="600">
+        <v-dialog v-model="triggerAlertDialog" persistent max-width="1000">
             <v-card>
                 <v-card-title class="headline">参数</v-card-title>
                 <v-card-text>

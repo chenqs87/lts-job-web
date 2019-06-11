@@ -37,7 +37,7 @@
 
                         <v-tooltip top v-if="(permitRule['FlowExec'] & props.item['permit']) > 0">
                             <template v-slot:activator="{ on }">
-                                <v-icon v-on="on" small class="mr-2" @click="trigger(props.item.id)">
+                                <v-icon v-on="on" small class="mr-2" @click="trigger(props.item)">
                                     play_circle_outline
                                 </v-icon>
                             </template>
@@ -247,6 +247,21 @@
         </v-dialog>
 
 
+        <v-dialog v-model="triggerAlertDialog" persistent max-width="600">
+            <v-card>
+                <v-card-title class="headline">参数</v-card-title>
+                <v-card-text>
+                    <editor v-model="triggerParams" :options="{fontSize:18}"  @init="editorInit" lang="sh" theme="pastel_on_dark" width="100%" height="300"></editor>
+                </v-card-text>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="green darken-1" flat @click="closeTriggerDialog">取消</v-btn>
+                    <v-btn color="green darken-1" flat @click="doTrigger">提交</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+
+
     </div>
 </template>
 
@@ -269,6 +284,10 @@
     export default {
         components: {cron, ModelFlowEditor, SelectAuth, ZDialog, editor: require('vue2-ace-editor')},
         data: () => ({
+
+            triggerAlertDialog: false,
+            triggerParams:"",
+            triggerFlowId: -1,
 
             displaySample: false,
             template: '<cron/>',
@@ -486,8 +505,20 @@
                 }
                 l.close()
             },
-            trigger(flowId) {
-                triggerFlow(flowId, "").then(data => {
+            trigger(item) {
+                this.triggerParams=item.params;
+                this.triggerFlowId=item.id;
+                this.triggerAlertDialog = true;
+            },
+            closeTriggerDialog() {
+                this.triggerParams="";
+                this.triggerFlowId=-1;
+                this.triggerAlertDialog = false;
+            },
+            doTrigger() {
+                let flowId=this.triggerFlowId;
+                triggerFlow(flowId, this.triggerParams).then(data => {
+                    this.closeTriggerDialog();
                     this.$router.push({
                         path: '/workflow/flow-tasks',
                         query: {flowId: flowId}

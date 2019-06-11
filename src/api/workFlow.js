@@ -53,11 +53,14 @@ export const newJob = params => {
 };
 
 export const triggerFlow = (flowId, params) => {
-    return axios.post(`/console/flow/triggerFlow?flowId=${flowId}&params=${params}`).then(res => res.data);
+    let encodeParams = encodeURIComponent(params);
+    return axios.post(`/console/flow/triggerFlow?flowId=${flowId}&params=${encodeParams}`).then(res => res.data);
 };
 
 export const reTriggerFlow = (flowId, flowTaskId, params) => {
-    return axios.post(`/console/flow/reTriggerFlow?flowId=${flowId}&flowTaskId=${flowTaskId}&params=${params}`).then(res => res.data);
+    let encodeParams = encodeURIComponent(params);
+
+    return axios.post(`/console/flow/reTriggerFlow?flowId=${flowId}&flowTaskId=${flowTaskId}&params=${encodeParams}`).then(res => res.data);
 };
 
 export const killFlowTask = (flowId, flowTaskId) => {

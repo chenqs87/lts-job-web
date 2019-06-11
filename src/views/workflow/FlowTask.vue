@@ -94,6 +94,21 @@
                 </v-card>
             </v-dialog>
         </v-container>
+
+        <v-dialog v-model="triggerAlertDialog" persistent max-width="600">
+            <v-card>
+                <v-card-title class="headline">参数</v-card-title>
+                <v-card-text>
+                    <editor v-model="triggerParams" :options="{fontSize:18}"  @init="editorInit" lang="sh" theme="pastel_on_dark" width="100%" height="300"></editor>
+                </v-card-text>
+                <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn color="green darken-1" flat @click="closeTriggerFlowDialog">取消</v-btn>
+                    <v-btn color="green darken-1" flat @click="doReTrigger">提交</v-btn>
+                </v-card-actions>
+            </v-card>
+        </v-dialog>
+
     </div>
 
 </template>
@@ -110,7 +125,14 @@
     } from '@/api/workFlow';
 
     export default {
+        components: { editor: require('vue2-ace-editor')},
         data: () => ({
+
+            triggerAlertDialog: false,
+            triggerParams:"",
+            triggerFlowId: -1,
+            triggerFlowTaskId: -1,
+
             dialog: false,
             schedule_log:[],
             totalDesserts: 0,
@@ -144,6 +166,7 @@
                 beginTime: '',
                 endTime: '',
                 triggerMode: '',
+                params:''
             },
             defaultItem: {
                 id: '',
@@ -151,7 +174,8 @@
                 status: 0,
                 beginTime: '',
                 endTime: '',
-                triggerMode: ''
+                triggerMode: '',
+                params:''
             }
         }),
         computed: {},
@@ -168,6 +192,15 @@
             }
         },
         methods: {
+            editorInit: function () {
+                require('brace/ext/language_tools') //language extension prerequsite...
+                require('brace/mode/sh')
+                require('brace/mode/javascript')    //language
+                require('brace/mode/less')
+                require('brace/theme/monokai')
+                require('brace/theme/pastel_on_dark')
+                require('brace/snippets/javascript') //snippet
+            },
             queryTasks() {
                 let status = -1;
                 console.log(this.$route.query["flowId"]);
@@ -209,7 +242,22 @@
                 })
             },
             reTrigger(item) {
-                reTriggerFlow(item.flowId, item.id, "").then(data => {
+
+                this.triggerParams=item.params;
+                this.triggerFlowId=item.flowId;
+                this.triggerFlowTaskId=item.id;
+                this.triggerAlertDialog = true;
+
+            },
+            closeTriggerFlowDialog() {
+                this.triggerParams='';
+                this.triggerFlowId=-1;
+                this.triggerFlowTaskId=-1;
+                this.triggerAlertDialog = false;
+            },
+            doReTrigger() {
+                reTriggerFlow(this.triggerFlowId, this.triggerFlowTaskId, this.triggerParams).then(data => {
+                    this.closeTriggerFlowDialog();
                     this.queryTasks();
                 });
             },

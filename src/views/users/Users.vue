@@ -184,7 +184,7 @@
             delType: -1,
 
 
-            roles: ['ROLE_ADMIN', 'ROLE_USER'],
+            roles: ['ROLE_ADMIN', 'ROLE_USER', 'ROLE_MONITOR'],
             groupNames: [],
             usersDialog: false,
             groupDialog: false,

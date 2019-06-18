@@ -15,6 +15,7 @@
             <v-data-table :headers="headers" :items="desserts" class="elevation-1" :pagination.sync="pagination"
                           :total-items="totalDesserts" :rows-per-page-items="[10,15,20,25,30]">
                 <template v-slot:items="props">
+                    <tr @click="props.expanded = !props.expanded">
                     <td><a v-on:click="query(props.item)">{{ props.item.id }}</a></td>
                     <td>{{ props.item.flowId }}</td>
                     <td>{{ props.item.triggerMode | formatTriggerMode }}</td>
@@ -58,6 +59,15 @@
                             <span>Kill工作流</span>
                         </v-tooltip>
                     </td>
+                    </tr>
+                </template>
+                <template v-slot:expand="props">
+                    <v-card flat>
+                        <v-card-text>
+                            工作流参数：<br/>
+                            {{props.item.params}}
+                        </v-card-text>
+                    </v-card>
                 </template>
             </v-data-table>
             <v-dialog v-model="dialog" width="800">

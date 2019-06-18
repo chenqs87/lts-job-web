@@ -182,7 +182,7 @@
             </v-dialog>
         </v-container>
 
-        <v-dialog v-model="dialog" max-width="500px">
+        <v-dialog v-model="dialog" max-width="800px">
             <v-card>
                 <v-card-title>
                     <span class="headline">{{ formTitle }}</span>
@@ -229,10 +229,10 @@
                                             label="手机号（失败告警，多个使用逗号分隔）"></v-textarea>
                             </v-flex>
 
-                            <v-flex xs12 sm6 md12>
+                            <!--<v-flex xs12 sm6 md12>
                                 <v-textarea v-model="editedItem.emailList"
                                             label="电子邮件（失败告警，多个使用逗号分隔）"></v-textarea>
-                            </v-flex>
+                            </v-flex>-->
 
                         </v-layout>
                     </v-container>

@@ -2,19 +2,15 @@
     <div>
         <v-container grid-list-xl fluid>
             <v-toolbar flat color="white">
+<!--
                 <v-breadcrumbs :items="items" divider=">"></v-breadcrumbs>
+-->
                 <v-spacer></v-spacer>
                 <v-icon small class="mr-2" v-on:click="getLog">refresh</v-icon>
             </v-toolbar>
             <v-card-text>
-                <v-textarea
-                        name="input-7-1"
-                        solo
-                        label="Label"
-                        :readonly = true
-                        auto-grow
-                        :value="log"
-                ></v-textarea>
+
+                <v-textarea :rows="rows" solo :readonly = true :value="log" box></v-textarea>
             </v-card-text>
         </v-container>
     </div>
@@ -38,6 +34,11 @@
         }),
         created () {
             this.queryTasks()
+        },
+        computed: {
+           rows() {
+               return (window.innerHeight -100)/24;
+           }
         },
         methods: {
             queryTasks () {

@@ -37,8 +37,7 @@
                         <v-btn small v-else="props.item.taskStatus === 7" color="error">Killed</v-btn>
                     </td>
                     <td>
-                        <a v-if="props.item.host !== ''" v-on:click="query(props.item,'syslog')">syslog &nbsp;</a>
-                        <a v-if="props.item.host !== ''" v-on:click="query(props.item, 'syserr')">errlog</a>
+                        <a v-if="props.item.host !== ''" v-on:click="query(props.item,'syslog')">日志</a>
                     </td>
                 </template>
             </v-data-table>
@@ -67,9 +66,6 @@
                 { text: 'JobID', value: 'jobId', sortable: false },
                 { text: 'FlowID', value: 'flowId', sortable: false },
                 { text: '后置任务', value: 'postTask', sortable: false },
-/*
-                { text: '是否分片', value: 'shardStatus', sortable: false },
-*/
                 { text: 'Handler', value: 'handler', sortable: false },
                 { text: '执行位置', value: 'host', sortable: false },
                 { text: '开始时间', value: 'beginTime',sortable: false },

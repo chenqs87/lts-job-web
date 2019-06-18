@@ -42,14 +42,14 @@
 <script>
 export default {
   props: {
-    source: String,
+    source: String
   },
-  data () {
+  data() {
     return {
       alert: true
     };
   },
-  created () {
+  created() {
     console.log(this.$route);
   }
 };

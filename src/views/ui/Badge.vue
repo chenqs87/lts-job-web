@@ -23,15 +23,15 @@
           <v-widget title="Inline Badge">
             <div slot="widget-content">
               <div class="text-xs-center">
-              <v-badge left>
-                <span slot="badge">2</span>
-                <span>Examples</span>
-              </v-badge>
-              &nbsp;&nbsp;
-              <v-badge color="green">
-                <v-icon slot="badge" dark small>list</v-icon>
-                <span>Lists</span>
-              </v-badge>
+                <v-badge left>
+                  <span slot="badge">2</span>
+                  <span>Examples</span>
+                </v-badge>
+                &nbsp;&nbsp;
+                <v-badge color="green">
+                  <v-icon slot="badge" dark small>list</v-icon>
+                  <span>Lists</span>
+                </v-badge>
               </div>
             </div>
           </v-widget>
@@ -63,19 +63,15 @@
 </template>
 
 <script>
-import VWidget from '@/components/VWidget';
+import VWidget from "@/components/VWidget";
 export default {
   components: {
-    VWidget,
+    VWidget
   },
-  data () {
-    return {
-
-    };
+  data() {
+    return {};
   },
-  computed: {
-  },  
-  methods: {
-  }
+  computed: {},
+  methods: {}
 };
 </script>

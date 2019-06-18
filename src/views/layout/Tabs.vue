@@ -7,27 +7,19 @@
             <div slot="widget-content">
               <v-subheader>Left Align</v-subheader>
               <v-tabs>
-                <v-tab v-for="n in 3" :key="n">
-                  Item {{ n }}
-                </v-tab>
+                <v-tab v-for="n in 3" :key="n"> Item {{ n }} </v-tab>
               </v-tabs>
               <v-subheader>Right Align</v-subheader>
               <v-tabs right>
-                <v-tab v-for="n in 3" :key="n">
-                  Item {{ n }}
-                </v-tab>
+                <v-tab v-for="n in 3" :key="n"> Item {{ n }} </v-tab>
               </v-tabs>
               <v-subheader>Center Align</v-subheader>
               <v-tabs centered>
-                <v-tab v-for="n in 3" :key="n">
-                  Item {{ n }}
-                </v-tab>
+                <v-tab v-for="n in 3" :key="n"> Item {{ n }} </v-tab>
               </v-tabs>
               <v-subheader>With menu</v-subheader>
               <v-tabs centered>
-                <v-tab v-for="n in 3" :key="n">
-                  Item {{ n }}
-                </v-tab>
+                <v-tab v-for="n in 3" :key="n"> Item {{ n }} </v-tab>
                 <v-menu left bottom class="tabs__div" v-if="more.length">
                   <a class="tabs__item" slot="activator">
                     more
@@ -42,7 +34,7 @@
                       {{ item }}
                     </v-list-tile>
                   </v-list>
-                </v-menu>                
+                </v-menu>
               </v-tabs>
 
               <v-subheader>Icon and text</v-subheader>
@@ -60,16 +52,12 @@
                   Nearby
                   <v-icon>account_box</v-icon>
                 </v-tab>
-                <v-tab-item
-                  v-for="i in 3"
-                  :key="i"
-                  :id="'tab-' + i"
-                >
+                <v-tab-item v-for="i in 3" :key="i" :id="'tab-' + i">
                   <v-card flat>
                     <v-card-text>{{ text }}</v-card-text>
                   </v-card>
                 </v-tab-item>
-              </v-tabs>              
+              </v-tabs>
             </div>
           </v-widget>
         </v-flex>
@@ -87,12 +75,7 @@
                 <v-btn icon>
                   <v-icon>more_vert</v-icon>
                 </v-btn>
-                <v-tabs
-                  color="cyan"
-                  slot="extension"
-                  v-model="tab"
-                  grow
-                >
+                <v-tabs color="cyan" slot="extension" v-model="tab" grow>
                   <v-tabs-slider color="yellow"></v-tabs-slider>
                   <v-tab v-for="item in items" :key="item">
                     {{ item }}
@@ -136,16 +119,12 @@
                 </v-tabs>
               </v-toolbar>
               <v-tabs-items v-model="tabs" class="white elevation-1">
-                <v-tab-item
-                  v-for="i in 3"
-                  :key="i"
-                  :id="'mobile-tabs-5-' + i"
-                >
+                <v-tab-item v-for="i in 3" :key="i" :id="'mobile-tabs-5-' + i">
                   <v-card>
                     <v-card-text>{{ text }}</v-card-text>
                   </v-card>
                 </v-tab-item>
-              </v-tabs-items>              
+              </v-tabs-items>
             </div>
           </v-widget>
         </v-flex>
@@ -155,26 +134,24 @@
 </template>
 
 <script>
-import VWidget from '@/components/VWidget';
+import VWidget from "@/components/VWidget";
 export default {
   components: {
     VWidget
   },
-  data () {
+  data() {
     return {
-      items: ['Item One', 'Item Seventeen', 'Item Five'],
-      tab: null,      
+      items: ["Item One", "Item Seventeen", "Item Five"],
+      tab: null,
       tabs: null,
-      more: [
-        'News', 'Maps', 'Books', 'Flights', 'Apps'
-      ],      
-      text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'      
+      more: ["News", "Maps", "Books", "Flights", "Apps"],
+      text:
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."
     };
   },
-  computed: {
-  },  
+  computed: {},
   methods: {
-    handleClick (e) {
+    handleClick(e) {
       e.preventDefault();
     }
   }

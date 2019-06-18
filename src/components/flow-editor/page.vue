@@ -1,19 +1,18 @@
 <template>
-    <div id="page"/>
+  <div id="page" />
 </template>
 
 <script>
-
 export default {
-    data() {
-        return {
-            name: 'page'
-        };
-    }
+  data() {
+    return {
+      name: "page"
+    };
+  }
 };
 </script>
 <style lang="scss">
-#page{
+#page {
   margin-left: 200px;
   margin-right: 200px;
 }

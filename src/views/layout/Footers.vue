@@ -5,40 +5,48 @@
         <v-flex lg12>
           <v-widget title="Default">
             <div slot="widget-content">
-            <v-footer class="pa-3">
-              <v-spacer></v-spacer>
-              <div>&copy; {{ new Date().getFullYear() }}</div>
-            </v-footer>
+              <v-footer class="pa-3">
+                <v-spacer></v-spacer>
+                <div>&copy; {{ new Date().getFullYear() }}</div>
+              </v-footer>
             </div>
           </v-widget>
         </v-flex>
         <v-flex lg12>
           <v-widget title="With icon">
             <div slot="widget-content">
-                <v-footer height="auto">
-                  <v-card
-                    flat
-                    tile
-                    class="indigo lighten-1 white--text text-xs-center"
-                  >
-                    <v-card-text>
-                      <v-btn
-                        v-for="icon in icons"
-                        :key="icon"
-                        icon
-                        class="mx-3 white--text"
-                      >
-                        <v-icon size="24px">{{ icon }}</v-icon>
-                      </v-btn>
-                    </v-card-text>
-                    <v-card-text class="white--text pt-0">
-                      Phasellus feugiat arcu sapien, et iaculis ipsum elementum sit amet. Mauris cursus commodo interdum. Praesent ut risus eget metus luctus accumsan id ultrices nunc. Sed at orci sed massa consectetur dignissim a sit amet dui. Duis commodo vitae velit et faucibus. Morbi vehicula lacinia malesuada. Nulla placerat augue vel ipsum ultrices, cursus iaculis dui sollicitudin. Vestibulum eu ipsum vel diam elementum tempor vel ut orci. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.
-                    </v-card-text>
-                    <v-card-text class="white--text">
-                      &copy;2018 — <strong>Vuetify</strong>
-                    </v-card-text>
-                  </v-card>
-                </v-footer>
+              <v-footer height="auto">
+                <v-card
+                  flat
+                  tile
+                  class="indigo lighten-1 white--text text-xs-center"
+                >
+                  <v-card-text>
+                    <v-btn
+                      v-for="icon in icons"
+                      :key="icon"
+                      icon
+                      class="mx-3 white--text"
+                    >
+                      <v-icon size="24px">{{ icon }}</v-icon>
+                    </v-btn>
+                  </v-card-text>
+                  <v-card-text class="white--text pt-0">
+                    Phasellus feugiat arcu sapien, et iaculis ipsum elementum
+                    sit amet. Mauris cursus commodo interdum. Praesent ut risus
+                    eget metus luctus accumsan id ultrices nunc. Sed at orci sed
+                    massa consectetur dignissim a sit amet dui. Duis commodo
+                    vitae velit et faucibus. Morbi vehicula lacinia malesuada.
+                    Nulla placerat augue vel ipsum ultrices, cursus iaculis dui
+                    sollicitudin. Vestibulum eu ipsum vel diam elementum tempor
+                    vel ut orci. Orci varius natoque penatibus et magnis dis
+                    parturient montes, nascetur ridiculus mus.
+                  </v-card-text>
+                  <v-card-text class="white--text">
+                    &copy;2018 — <strong>Vuetify</strong>
+                  </v-card-text>
+                </v-card>
+              </v-footer>
             </div>
           </v-widget>
         </v-flex>
@@ -48,7 +56,9 @@
               <v-footer height="auto">
                 <v-card flat tile>
                   <v-card-title class="teal white--text">
-                    <strong class="subheading">Get connected with us on social networks!</strong>
+                    <strong class="subheading"
+                      >Get connected with us on social networks!</strong
+                    >
                     <v-spacer></v-spacer>
                     <v-btn
                       v-for="icon in icons"
@@ -62,12 +72,8 @@
                   </v-card-title>
                   <v-card-text class="grey lighten-3">
                     <v-layout>
-                      <v-flex
-                        v-for="(col, i) in rows"
-                        :key="i"
-                        xs3
-                      >
-                        <span class="body-2" v-text="col.title.toUpperCase()"/>
+                      <v-flex v-for="(col, i) in rows" :key="i" xs3>
+                        <span class="body-2" v-text="col.title.toUpperCase()" />
                         <div
                           v-for="(child, i) in col.children"
                           :key="i"
@@ -109,33 +115,49 @@
 </template>
 
 <script>
-import VWidget from '@/components/VWidget';
+import VWidget from "@/components/VWidget";
 export default {
   components: {
     VWidget
   },
-  data () {
+  data() {
     return {
-      icons: ['fa-facebook', 'fa-twitter', 'fa-google-plus', 'fa-linkedin', 'fa-instagram'],
+      icons: [
+        "fa-facebook",
+        "fa-twitter",
+        "fa-google-plus",
+        "fa-linkedin",
+        "fa-instagram"
+      ],
       rows: [
         {
-          title: 'Company Name',
-          children: ['Here you can use rows and columns here to organize your footer content. Lorem ipsum dolor sit amet, consectetur adipisicing elit']
+          title: "Company Name",
+          children: [
+            "Here you can use rows and columns here to organize your footer content. Lorem ipsum dolor sit amet, consectetur adipisicing elit"
+          ]
         },
         {
-          title: 'Products',
-          children: ['MDBootstrap', 'MDWordPress', 'BrandFlow', 'Bootstrap Angular']
+          title: "Products",
+          children: [
+            "MDBootstrap",
+            "MDWordPress",
+            "BrandFlow",
+            "Bootstrap Angular"
+          ]
         },
         {
-          title: 'Useful Links',
-          children: ['Your account', 'Become an Affiliate', 'Shipping Rates', 'Helper']
+          title: "Useful Links",
+          children: [
+            "Your account",
+            "Become an Affiliate",
+            "Shipping Rates",
+            "Helper"
+          ]
         }
-      ]      
+      ]
     };
   },
-  computed: {
-  },  
-  methods: {
-  }
+  computed: {},
+  methods: {}
 };
 </script>

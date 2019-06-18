@@ -5,16 +5,24 @@
         <v-flex lg6 sm12>
           <v-widget title="Basic Usage">
             <div slot="widget-content">
-              <v-time-picker color="primary lighten-1" v-model="picker"></v-time-picker>
+              <v-time-picker
+                color="primary lighten-1"
+                v-model="picker"
+              ></v-time-picker>
             </div>
           </v-widget>
         </v-flex>
         <v-flex lg6 sm12 class="hidden-sm-and-down">
           <v-widget title="Full Width">
             <div slot="widget-content">
-              <v-time-picker landscape full-width color="green lighten-1" v-model="picker"></v-time-picker>
+              <v-time-picker
+                landscape
+                full-width
+                color="green lighten-1"
+                v-model="picker"
+              ></v-time-picker>
             </div>
-          </v-widget>   
+          </v-widget>
         </v-flex>
         <v-flex lg6 sm12>
           <v-widget title="In dialog and menu" class="mt-3">
@@ -43,8 +51,15 @@
                       ></v-text-field>
                       <v-time-picker v-model="date" no-title scrollable>
                         <v-spacer></v-spacer>
-                        <v-btn flat color="primary" @click="menu = false">Cancel</v-btn>
-                        <v-btn flat color="primary" @click="$refs.menu.save(date)">OK</v-btn>
+                        <v-btn flat color="primary" @click="menu = false"
+                          >Cancel</v-btn
+                        >
+                        <v-btn
+                          flat
+                          color="primary"
+                          @click="$refs.menu.save(date)"
+                          >OK</v-btn
+                        >
                       </v-time-picker>
                     </v-menu>
                   </v-flex>
@@ -68,28 +83,35 @@
                       ></v-text-field>
                       <v-time-picker v-model="date" scrollable>
                         <v-spacer></v-spacer>
-                        <v-btn flat color="primary" @click="modal = false">Cancel</v-btn>
-                        <v-btn flat color="primary" @click="$refs.dialog.save(date)">OK</v-btn>
+                        <v-btn flat color="primary" @click="modal = false"
+                          >Cancel</v-btn
+                        >
+                        <v-btn
+                          flat
+                          color="primary"
+                          @click="$refs.dialog.save(date)"
+                          >OK</v-btn
+                        >
                       </v-time-picker>
                     </v-dialog>
                   </v-flex>
                 </v-layout>
               </v-container>
             </div>
-          </v-widget>                 
-        </v-flex>        
+          </v-widget>
+        </v-flex>
       </v-layout>
     </v-container>
   </div>
 </template>
 
 <script>
-import VWidget from '@/components/VWidget';
+import VWidget from "@/components/VWidget";
 export default {
   components: {
     VWidget
   },
-  data () {
+  data() {
     return {
       picker: null,
       picker2: null,
@@ -100,12 +122,10 @@ export default {
       //
       date: null,
       menu: false,
-      modal: false            
+      modal: false
     };
   },
 
-  methods: {
-
-  }
+  methods: {}
 };
 </script>

@@ -54,13 +54,15 @@
                     <v-btn flat>Link Two</v-btn>
                     <v-btn flat>Link Three</v-btn>
                   </v-toolbar-items>
-                </v-toolbar>                
+                </v-toolbar>
               </div>
               <div>
                 <v-subheader>Extended</v-subheader>
                 <v-toolbar dark color="primary" extended>
                   <v-toolbar-side-icon></v-toolbar-side-icon>
-                  <v-toolbar-title class="white--text" slot="extension">Title</v-toolbar-title>
+                  <v-toolbar-title class="white--text" slot="extension"
+                    >Title</v-toolbar-title
+                  >
                   <v-spacer></v-spacer>
                   <v-btn icon>
                     <v-icon>search</v-icon>
@@ -74,7 +76,7 @@
                   <v-btn icon>
                     <v-icon>more_vert</v-icon>
                   </v-btn>
-                </v-toolbar>             
+                </v-toolbar>
               </div>
             </div>
           </v-widget>
@@ -89,7 +91,9 @@
               <v-flex xs8 offset-xs2>
                 <v-card class="card--flex-toolbar">
                   <v-toolbar card prominent>
-                    <v-toolbar-title class="body-2 grey--text">Title</v-toolbar-title>
+                    <v-toolbar-title class="body-2 grey--text"
+                      >Title</v-toolbar-title
+                    >
                     <v-spacer></v-spacer>
                     <v-btn icon>
                       <v-icon>search</v-icon>
@@ -114,24 +118,21 @@
 </template>
 
 <script>
-import VWidget from '@/components/VWidget';
+import VWidget from "@/components/VWidget";
 export default {
   components: {
     VWidget
   },
-  data () {
-    return {
-    };
+  data() {
+    return {};
   },
-  computed: {
-  },  
-  methods: {
-  }
+  computed: {},
+  methods: {}
 };
 </script>
 
 <style lang="css" scoped>
-  .card--flex-toolbar {
-    margin-top: -64px;
-  }
+.card--flex-toolbar {
+  margin-top: -64px;
+}
 </style>

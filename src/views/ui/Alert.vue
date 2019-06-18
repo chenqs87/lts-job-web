@@ -41,13 +41,23 @@
         <v-flex sm12 md6 sm6>
           <v-widget title="Outline Alerts">
             <div slot="widget-content">
-              <v-alert outline color="success" icon="check_circle" :value="true">
+              <v-alert
+                outline
+                color="success"
+                icon="check_circle"
+                :value="true"
+              >
                 This is a success alert.
               </v-alert>
               <v-alert outline color="info" icon="info" :value="true">
                 This is an info alert.
               </v-alert>
-              <v-alert outline color="warning" icon="priority_high" :value="true">
+              <v-alert
+                outline
+                color="warning"
+                icon="priority_high"
+                :value="true"
+              >
                 This is a warning alert.
               </v-alert>
               <v-alert outline color="error" icon="warning" :value="true">
@@ -59,7 +69,12 @@
         <v-flex sm12 md6 sm6>
           <v-widget title="Closable Alerts">
             <div slot="widget-content">
-              <v-alert type="success" dismissible v-model="alert.showSuccess" transition="scale-transition">
+              <v-alert
+                type="success"
+                dismissible
+                v-model="alert.showSuccess"
+                transition="scale-transition"
+              >
                 This is a success alert that is closable with scale transition.
               </v-alert>
               <v-alert type="error" dismissible v-model="alert.showError">
@@ -83,28 +98,33 @@
 </template>
 
 <script>
-import VWidget from '@/components/VWidget';
+import VWidget from "@/components/VWidget";
 export default {
   components: {
     VWidget
   },
-  data () {
+  data() {
     return {
       alert: {
         showSuccess: true,
         showError: true,
         showWarnning: true,
-        showInfo: true,
+        showInfo: true
       }
     };
   },
   computed: {
-    showReset: function () {
-      return (this.alert.showSuccess === this.alert.showError === this.alert.showWarnning === this.alert.showInfo === false);
+    showReset: function() {
+      return (
+        (((this.alert.showSuccess === this.alert.showError) ===
+          this.alert.showWarnning) ===
+          this.alert.showInfo) ===
+        false
+      );
     }
-  },  
+  },
   methods: {
-    handleReset () {
+    handleReset() {
       this.alert.showError = true;
       this.alert.showSuccess = true;
       this.alert.showWarnning = true;

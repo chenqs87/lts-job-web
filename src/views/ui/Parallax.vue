@@ -5,8 +5,7 @@
         <v-flex lg12>
           <v-widget title="Default">
             <div slot="widget-content" class="text-xs-center">
-              <v-parallax src="/static/bg/12.jpg">
-              </v-parallax>
+              <v-parallax src="/static/bg/12.jpg"> </v-parallax>
             </div>
           </v-widget>
           <v-widget title="Content inside" class="mt-3">
@@ -35,19 +34,17 @@
 </template>
 
 <script>
-import VWidget from '@/components/VWidget';
+import VWidget from "@/components/VWidget";
 export default {
   components: {
     VWidget
   },
-  data () {
+  data() {
     return {
       page: 1
     };
   },
-  computed: {
-  },  
-  methods: {
-  }
+  computed: {},
+  methods: {}
 };
 </script>

@@ -22,7 +22,7 @@
                 <v-btn color="info" flat>Info</v-btn>
               </div>
             </div>
-          </v-widget>   
+          </v-widget>
           <v-widget title="Depressed button" class="mt-3">
             <div slot="widget-content">
               <div>
@@ -32,7 +32,7 @@
                 <v-btn color="info" depressed>Info</v-btn>
               </div>
             </div>
-          </v-widget>                 
+          </v-widget>
           <v-widget title="Outline button" class="mt-3">
             <div slot="widget-content">
               <div>
@@ -42,7 +42,7 @@
                 <v-btn color="info" outline>Info</v-btn>
               </div>
             </div>
-          </v-widget>                 
+          </v-widget>
           <v-widget title="Rounded button" class="mt-3">
             <div slot="widget-content">
               <div>
@@ -52,7 +52,7 @@
                 <v-btn color="info" round>Info</v-btn>
               </div>
             </div>
-          </v-widget>                 
+          </v-widget>
           <v-widget title="Floating button" class="mt-3">
             <div slot="widget-content">
               <div>
@@ -67,7 +67,7 @@
                 </v-btn>
               </div>
             </div>
-          </v-widget>                 
+          </v-widget>
           <v-widget title="Loading button" class="mt-3">
             <div slot="widget-content">
               <div>
@@ -114,7 +114,7 @@
                 </v-btn>
               </div>
             </div>
-          </v-widget>                 
+          </v-widget>
         </v-flex>
         <v-flex xl6>
           <v-widget title="Icon button">
@@ -222,7 +222,7 @@
                 <v-btn color="info" block>Info</v-btn>
               </div>
             </div>
-          </v-widget>             
+          </v-widget>
         </v-flex>
         <v-flex xl12>
           <v-widget title="Toggle button">
@@ -346,30 +346,29 @@
 </template>
 
 <script>
-import VWidget from '@/components/VWidget';
+import VWidget from "@/components/VWidget";
 export default {
   components: {
     VWidget
   },
-  data () {
+  data() {
     return {
-      text: 'center',
-      icon: 'justify',
+      text: "center",
+      icon: "justify",
       toggle_none: null,
       toggle_one: 0,
       toggle_exclusive: 2,
-      toggle_multiple: [0, 1, 2],      
+      toggle_multiple: [0, 1, 2],
       loader: null,
       loading: false,
       loading2: false,
       loading3: false,
-      loading4: false      
+      loading4: false
     };
   },
-  computed: {
-  },  
+  computed: {},
   watch: {
-    loader () {
+    loader() {
       const l = this.loader;
       this[l] = !this[l];
 
@@ -378,47 +377,46 @@ export default {
       }, 3000);
       this.loader = null;
     }
-  },  
-  methods: {
-  }
+  },
+  methods: {}
 };
 </script>
 
 <style>
-  .custom-loader {
-    animation: loader 1s infinite;
-    display: flex;
+.custom-loader {
+  animation: loader 1s infinite;
+  display: flex;
+}
+@-moz-keyframes loader {
+  from {
+    transform: rotate(0);
   }
-  @-moz-keyframes loader {
-    from {
-      transform: rotate(0);
-    }
-    to {
-      transform: rotate(360deg);
-    }
+  to {
+    transform: rotate(360deg);
   }
-  @-webkit-keyframes loader {
-    from {
-      transform: rotate(0);
-    }
-    to {
-      transform: rotate(360deg);
-    }
+}
+@-webkit-keyframes loader {
+  from {
+    transform: rotate(0);
   }
-  @-o-keyframes loader {
-    from {
-      transform: rotate(0);
-    }
-    to {
-      transform: rotate(360deg);
-    }
+  to {
+    transform: rotate(360deg);
   }
-  @keyframes loader {
-    from {
-      transform: rotate(0);
-    }
-    to {
-      transform: rotate(360deg);
-    }
+}
+@-o-keyframes loader {
+  from {
+    transform: rotate(0);
   }
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes loader {
+  from {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
 </style>

@@ -267,7 +267,7 @@ export default {
   left: 0px;
   z-index: 2;
   background: #f7f9fb;
-  width: 200px;
+  width: 300px;
   padding-top: 8px;
   border-right: 1px solid #e6e9ed;
   text-align: left;
@@ -279,7 +279,7 @@ export default {
 #itempannel li {
   color: rgba(0, 0, 0, 0.65);
   border-radius: 4px;
-  width: 160px;
+  width: 280px;
   height: 28px;
   line-height: 26px;
   padding-left: 8px;

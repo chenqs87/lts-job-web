@@ -260,8 +260,19 @@ export const importDataFlow = param => {
 };
 
 export const importConfig = `[
+    //算法集群hdfs://ns2 万兆集群hdfs://ns1 赞不支持老集群
+    //时间函数#{lts:date('yyyyMMdd','-1d','-1w','-1y','-1M','-1m','-h')}
+    {
+        "type": "ugf", 
+        "version":"old", 
+        "env":"prod", 
+        "config": { }, 
+        "input": "" 
+    },
     {
         "type": "scylla",
+        "version":"new",
+        "env":"grey",
         "config": {
             "keySpace": "rec",
             "tableName": "book_support_version",
@@ -269,6 +280,31 @@ export const importConfig = `[
             "columns": "version_id,is_best_book,is_cartoon,is_scroll,is_serial_epub",
             "types": "int,int,int,int,int"
         },
-        "input": "hdfs://nn1/warehouse/external.db/t_external_online_version_d",
+        "input": "",
+    },
+    {
+        "type":"redis",
+        "version":"new",
+        "env":"grey",
+        "config": {
+            "prefix":"CH_SQ",
+            "redisType":"list",
+            "isVersion":"true",
+            "isCompress":"false",
+            "timeout":"-1"
+            }
+         },
+         "input": ""
+    },
+    {
+        "type":"scylla_kv",
+        "version":"new",
+        "env":"grey",
+        "config":{
+            "key":"SPCRK_ALGO",
+            "version":"true",
+            "ttl":"10"
+         },
+        "input":""
     }
 ]`;

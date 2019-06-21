@@ -28,7 +28,7 @@ export default {
       container: "contextmenu"
     });
     const itempannel = new G6Editor.Itempannel({
-      container: "itempannel"
+      container: "itempannel",
     });
     const detailpannel = new G6Editor.Detailpannel({
       container: "detailpannel"
@@ -108,4 +108,5 @@ input {
   -webkit-user-select: none;
   -ms-user-select: none;
 }
+
 </style>

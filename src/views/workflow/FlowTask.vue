@@ -28,7 +28,7 @@
         :rows-per-page-items="[10, 15, 20, 25, 30]"
       >
         <template v-slot:items="props">
-          <tr @click="props.expanded = !props.expanded">
+          <tr @dblclick="props.expanded = !props.expanded">
             <td>
               <a v-on:click="query(props.item)">{{ props.item.id }}</a>
             </td>

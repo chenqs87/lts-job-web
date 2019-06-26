@@ -259,6 +259,10 @@ export const importDataFlow = param => {
     .then(res => res.data);
 };
 
+export const getTaskInfo= () => {
+  return axios.get(`/console/manager/tasks/info`).then(res => res.data);
+};
+
 export const importConfig = `[
     //算法集群hdfs://ns2 万兆集群hdfs://ns1 赞不支持老集群
     //时间函数#{lts:date('yyyyMMdd','-1d','-1w','-1y','-1M','-1m','-h')}

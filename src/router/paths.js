@@ -55,7 +55,7 @@ export default [
     meta: { },
     name: 'Root',
     redirect: {
-      name: 'Jobs'
+      name: 'Dashboard'
     }
   },
   {

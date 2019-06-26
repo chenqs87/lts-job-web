@@ -1,6 +1,12 @@
 import auth from "../router/auth";
 const Menu = [
-  { header: "Apps" },
+  {
+    title: 'Dashboard',
+    group: 'apps',
+    icon: 'dashboard',
+    name: 'Dashboard',
+  },
+
   {
     title: "任务调度",
     group: "workflow",
@@ -19,9 +25,9 @@ if (auth.getRole() === "ROLE_ADMIN") {
     title: "管理",
     group: "manager",
     component: "manager",
-    icon: "cast_connected",
+    icon: "settings",
     items: [
-      { name: "Handlers", title: "Handlers", component: "Handlers" },
+      //{ name: "Handlers", title: "Handlers", component: "Handlers" },
       { name: "Users", title: "Users", component: "Users" }
     ]
   });

@@ -117,4 +117,8 @@ export default {
   border-radius:0
 .page-wrapper
   min-height:calc(100vh - 64px - 50px );
+
+
+.v-icon
+  font-size 14px !important
 </style>

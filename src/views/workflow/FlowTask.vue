@@ -1,24 +1,14 @@
 <template xmlns:v-slot="http://www.w3.org/1999/XSL/Transform">
   <div>
     <v-container grid-list-xl fluid>
-      <div
-        style="float: right; display: flex;flex: 1 1 auto;flex-wrap: nowrap;min-width: 0;"
-      >
+      <div style="float: right; display: flex;flex: 1 1 auto;flex-wrap: nowrap;min-width: 0;">
         <v-flex xs12 sm6 md12>
-          <v-select
-            :items="statusList"
-            :rules="[rules.required]"
-            label="状态"
-            v-model="searchStatus"
-          ></v-select>
+          <v-select :items="statusList" :rules="[rules.required]" label="状态" v-model="searchStatus"></v-select>
         </v-flex>
-        <v-btn color="primary" dark class="mb-2" v-on:click="queryTasks"
-          >搜索</v-btn
-        >
-        <v-btn color="primary" dark class="mb-2" v-on:click="queryTasks"
-          >刷新</v-btn
-        >
+        <v-btn color="primary" dark class="mb-2" v-on:click="queryTasks">搜索</v-btn>
+        <v-btn color="primary" dark class="mb-2" v-on:click="queryTasks">刷新</v-btn>
       </div>
+
       <v-data-table
         :headers="headers"
         :items="desserts"
@@ -278,20 +268,9 @@ export default {
     },
     queryTasks() {
       let status = -1;
-      console.log(this.$route.query["flowId"]);
-      this.flowId =
-        this.$route.query["flowId"] === undefined
-          ? -1
-          : this.$route.query["flowId"];
-      let pageNum =
-        this.pagination.page === null || this.pagination.page === undefined
-          ? 1
-          : this.pagination.page;
-      let pageSize =
-        this.pagination.rowsPerPage === null ||
-        this.pagination.rowsPerPage === undefined
-          ? 10
-          : this.pagination.rowsPerPage;
+      this.flowId = this.$route.query["flowId"] === undefined ? -1 : this.$route.query["flowId"];
+      let pageNum = this.pagination.page === null || this.pagination.page === undefined ? 1 : this.pagination.page;
+      let pageSize = this.pagination.rowsPerPage === null || this.pagination.rowsPerPage === undefined ? 10 : this.pagination.rowsPerPage;
 
       getFlowTaskStatus().then(data => {
         this.statusList = data;

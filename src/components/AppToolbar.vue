@@ -2,36 +2,33 @@
   <v-toolbar color="primary" fixed dark app>
     <v-toolbar-title class="ml-0 pl-3"> </v-toolbar-title>
     <v-toolbar-side-icon @click.stop="handleDrawerToggle"></v-toolbar-side-icon>
-    <v-text-field
-      flat
-      solo-inverted
-      prepend-icon="search"
-      label="Search"
-      class="hidden-sm-and-down"
-    >
-    </v-text-field>
+
+
+    <v-btn icon @click="go('/dashboard')">
+      <v-icon>dashboard</v-icon>
+    </v-btn>
+
+    <v-btn icon @click="go('/workflow/jobs')">
+      <v-icon>fa fa-tasks</v-icon>
+    </v-btn>
+
+    <v-btn icon @click="go('/workflow/workflow')">
+      <v-icon>share</v-icon>
+    </v-btn>
+
+    <v-btn icon @click="go('/workflow/flow-tasks')">
+      <v-icon>fa fa-history</v-icon>
+    </v-btn>
     <v-spacer></v-spacer>
     <v-toolbar-items>
       <v-btn flat>
         {{ userName }}
       </v-btn>
     </v-toolbar-items>
-    <!--
-              <v-btn icon href="https://github.com/tookit/vue-material-admin">
-                <v-icon class="fa-2x">fa-github</v-icon>
-              </v-btn>-->
+
     <v-btn icon @click="handleFullScreen()">
       <v-icon>fullscreen</v-icon>
     </v-btn>
-    <!--      <v-menu offset-y origin="center center" class="elelvation-1" :nudge-bottom="14" transition="scale-transition">
-                <v-btn icon flat slot="activator">
-                <v-badge color="red" overlap>
-                  <span slot="badge">3</span>
-                  <v-icon medium>notifications</v-icon>
-                </v-badge>
-                </v-btn>
-                <notification-list></notification-list>
-              </v-menu>-->
     <v-menu
       offset-y
       origin="center center"
@@ -39,9 +36,7 @@
       transition="scale-transition"
     >
       <v-btn icon large flat slot="activator">
-        <v-avatar size="30px">
-          <img src="/static/user.png" alt="User" />
-        </v-avatar>
+        <v-icon>fa fa-user-o</v-icon>
       </v-btn>
       <v-list class="pa-0">
         <v-list-tile
@@ -78,7 +73,7 @@ export default {
   data: () => ({
     userName: sessionStorage.getItem("userName"),
     items: [
-      {
+/*      {
         icon: "account_circle",
         href: "#",
         title: "Profile",
@@ -93,7 +88,7 @@ export default {
         click: e => {
           console.log(e);
         }
-      },
+      },*/
       {
         icon: "fullscreen_exit",
         href: "#",
@@ -115,6 +110,11 @@ export default {
     },
     handleFullScreen() {
       Util.toggleFullScreen();
+    },
+    go(url){
+      this.$router.push({
+        path: url
+      });
     }
   }
 };

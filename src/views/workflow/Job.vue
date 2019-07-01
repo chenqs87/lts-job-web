@@ -49,7 +49,7 @@
           <td>{{ props.item.shardType === 0 ? "否" : "是" }}</td>
           <td>{{ props.item.group }}</td>
           <td>{{ props.item.createUser }}</td>
-          <td>{{ props.item.createTime | formatDate }}</td>
+          <td>{{ props.item.createTime }}</td>
 
           <td class="justify-center layout px-0">
             <v-tooltip

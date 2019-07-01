@@ -35,8 +35,8 @@
             <td>{{ props.item.postFlow }}</td>
             <td>{{ props.item.createUser }}</td>
             <td>{{ props.item.isSchedule === 0 ? "否" : "是" }}</td>
-            <td>{{ props.item.startTime | formatDate }}</td>
-            <td>{{ props.item.createTime | formatDate }}</td>
+            <td>{{ props.item.startTime  }}</td>
+            <td>{{ props.item.createTime }}</td>
 
             <td class="justify-center layout px-0">
               <v-tooltip

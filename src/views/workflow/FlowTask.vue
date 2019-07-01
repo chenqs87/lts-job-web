@@ -24,8 +24,8 @@
             </td>
             <td>{{ props.item.flowId }}</td>
             <td>{{ props.item.triggerMode | formatTriggerMode }}</td>
-            <td>{{ props.item.beginTime | formatDate }}</td>
-            <td>{{ props.item.endTime | formatDate }}</td>
+            <td>{{ props.item.beginTime }}</td>
+            <td>{{ props.item.endTime }}</td>
             <td>
               <v-btn small v-if="props.item.status === 0" color="#85ff98"
                 >New</v-btn
@@ -129,7 +129,7 @@
               >
                 <template v-slot:opposite>
                   <span :class="`font-weight-bold`">
-                    {{ log["createTime"] | formatDate }}
+                    {{ log["createTime"] }}
                   </span>
                 </template>
                 <div class="py-3">

@@ -34,9 +34,9 @@
                     -->
           <td>{{ props.item.handler }}</td>
           <td>{{ props.item.host }}</td>
-          <td>{{ props.item.beginTime | formatDate }}</td>
+          <td>{{ props.item.beginTime  }}</td>
           <td v-if="props.item.taskStatus >= 5">
-            {{ props.item.endTime | formatDate }}
+            {{ props.item.endTime  }}
           </td>
           <td v-else></td>
           <td>

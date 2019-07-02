@@ -498,7 +498,7 @@ export default {
       /* {text: '参数', value: 'shardType', sortable: false},*/
       { text: "创建人", value: "createUser", sortable: false },
       { text: "是否调度", value: "isSchedule", sortable: false },
-      { text: "启动时间", value: "startTime" },
+      { text: "下次执行", value: "startTime" },
       { text: "创建时间", value: "createTime" },
       { text: "操作", sortable: false }
     ],
